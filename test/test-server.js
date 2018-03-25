@@ -15,6 +15,6 @@ describe('make sure root serves static html', function () {
     .get('/')
     .then(res => {
       expect(res).to.have.status(200);
-    });
+    }); 
   });
 });
