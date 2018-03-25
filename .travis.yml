@@ -1,9 +1,11 @@
 language: node_js
 node_js: node
-deploy: shielded-stream-67138
+services:
+- mongodb
+deploy:
   provider: heroku
   api_key:
     secure: Z6n4d6Jdb66BD51hiIKoEfcPeePy2xhjdjcvV75yJQWKPF1P9u79a9FMhJHd2iEBd+Ut2QLW/BWkmdidPad7ZP1h6eH9P+6AHMt70FDDkU8zUw551alSkfHmVpfgY0uECMGa7JWs+3KlpIAqxDi0P3uHko8+bP7ybpmHd/7bAM8wCrknNxIw2lTbRk2yaTUPhGMoHRC1485ybXIGIFA32sYPIIFVAnk3ssGoNbV53znx8EE+7jAlUH1zEQRmqDImAFu8Wmf4GhlS2ahjuUccrSvehve2iMFvRNzu9mcjVRoaV6mNsoybFhAmFB76E7LaVs39SuSt9XmD09Co3Yv2mEJrrbRs43fdIkJQhiqLYrnFPIhWBNrBxveq8a2eXmJImCvA4AqoLqoHqvpO2nhkV6nzbjm/vCk9Yq6AxlAwNyhD+Bz0BNWtsYwOEg6L90LnaBbi99pQdDDcNdIsl2sDbFNDkfJjOoffAjEiX6lLK1OXRAyn4MxJrtq2llhhuVvtkIspn4csB2wPVJpvnl2BGIioVNhNJ4hDk7gr3wpKFGW+niaQ0WpKXIbCD9pxtHDPYK4nz3rGStuDOmO9hEPFFrKrVlFw6LFLq0VgjiloplEKWLfKzHtDTHL5dtYdfZORmewolvOXtfk9+4ySD9oedvWbmEDBnriftUrKewcL8r8=
-  app: whatdoio
+  app: shielded-stream-67138
   on:
     repo: chrisbridges/whatdoio
