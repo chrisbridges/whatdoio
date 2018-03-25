@@ -1,7 +1,5 @@
 language: node_js
 node_js: node
-services:
-- mongodb
 deploy: shielded-stream-67138
   provider: heroku
   api_key:
