@@ -27,7 +27,7 @@ describe('make sure html is loading for all routes', function () {
       expect(res).to.have.status(200);
     });
   });
-/*
+
   it('should serve login page', function() {
     return chai
     .request(app)
@@ -45,5 +45,5 @@ describe('make sure html is loading for all routes', function () {
       expect(res).to.have.status(200);
     });
   });
-*/
+
 });
