@@ -4,6 +4,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
 
+const {User} = require('../models');
+const {TEST_DATABASE_URL} = require('../config');
 const {app, runServer, closeServer} = require('../server');
 
 const expect = chai.expect;

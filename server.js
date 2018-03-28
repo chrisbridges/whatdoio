@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 app.use(morgan('common'));
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 const signupRouter = require('./signupRouter');
 const loginRouter = require('./loginRouter');
