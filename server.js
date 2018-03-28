@@ -13,7 +13,7 @@ const loginRouter = require('./loginRouter');
 const userRouter = require('./userRouter');
 
 app.use(express.static('public'));
-app.listen(process.env.PORT || 8080);
+//app.listen(process.env.PORT || 8080);
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + 'public/index.html');
@@ -22,6 +22,10 @@ app.get('/', (req, res) => {
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
 app.use('/user', userRouter);
+
+app.use('*', function (req, res) {
+  res.status(404).json({ message: 'Not Found' });
+});
 
 let server;
 
@@ -59,9 +63,7 @@ function closeServer() {
 }
 
 if (require.main === module) {
-  app.listen(process.env.PORT || 8080, function () {
-    console.info(`App listening on ${this.address().port}`);
-  });
+  runServer(DATABASE_URL).catch(err => console.error(err));
 }
 
 module.exports = {app, runServer, closeServer};
