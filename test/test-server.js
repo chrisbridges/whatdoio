@@ -142,4 +142,36 @@ describe('Testing API', function () {
     });
   });
 
+  describe('Sign up page', function () {
+    it('should add a new user', function () {
+      function generateRandomUser () {
+        return {
+          username: faker.internet.userName(),
+          pass: faker.internet.password(),
+          name: faker.name.firstName()
+        }
+      }
+      const randomUser = generateRandomUser();
+
+      return chai.request(app)
+        .post('/signup')
+        .send(randomUser)
+        .then(function(res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.include.keys('username', 'name');
+          expect(res.body.username).to.equal(randomUser.username);
+          expect(res.body.name).to.equal(randomUser.name);
+          
+          return User.findById(res.body.id);
+        })
+        .then(function(user) {
+          expect(user.username).to.equal(randomUser.username);
+          expect(user.name).to.equal(randomUser.name);
+        });
+
+    });
+  });
+
 });

@@ -30,6 +30,13 @@ const userDataSchena = mongoose.Schema({
   }]
 });
 
+userDataSchena.methods.serialize = function () {
+  return {
+    username: this.username,
+    name: this.name
+  };
+};
+
 const User = mongoose.model('User', userDataSchena);
 
 module.exports = {User};
