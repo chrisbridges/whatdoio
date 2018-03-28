@@ -82,7 +82,7 @@ function tearDownDB () {
   return mongoose.connection.dropDatabase();
 }
 
-describe('make sure html is loading for all routes', function () {
+describe('Testing API', function () {
 
   before(function () {
     return runServer(TEST_DATABASE_URL);
@@ -100,39 +100,41 @@ describe('make sure html is loading for all routes', function () {
     return closeServer();
   });
 
-  it('should serve home page', function () {
-    return chai
-    .request(app)
-    .get('/')
-    .then(res => {
-      expect(res).to.have.status(200);
+  describe('should serve static assets', function() {
+    it('should serve home page', function () {
+      return chai
+      .request(app)
+      .get('/')
+      .then(res => {
+        expect(res).to.have.status(200);
+      });
     });
-  });
 
-  it('should serve signup page', function() {
-    return chai
-    .request(app)
-    .get('/signup')
-    .then(res => {
-      expect(res).to.have.status(200);
+    it('should serve signup page', function() {
+      return chai
+      .request(app)
+      .get('/signup')
+      .then(res => {
+        expect(res).to.have.status(200);
+      });
     });
-  });
 
-  it('should serve login page', function() {
-    return chai
-    .request(app)
-    .get('/login')
-    .then(res => {
-      expect(res).to.have.status(200);
+    it('should serve login page', function() {
+      return chai
+      .request(app)
+      .get('/login')
+      .then(res => {
+        expect(res).to.have.status(200);
+      });
     });
-  });
 
-  it('should serve user page', function() {
-    return chai
-    .request(app)
-    .get('/user')
-    .then(res => {
-      expect(res).to.have.status(200);
+    it('should serve user page', function() {
+      return chai
+      .request(app)
+      .get('/user')
+      .then(res => {
+        expect(res).to.have.status(200);
+      });
     });
   });
 
