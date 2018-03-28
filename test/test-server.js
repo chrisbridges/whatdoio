@@ -77,7 +77,7 @@ function seedUserData () {
       bills: generateBills()
     });
   }
-  console.log(seedData);
+
   return User.insertMany(seedData);
 }
 
