@@ -5,6 +5,9 @@ app.use(morgan('common'));
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
+const {DATABASE_URL, TEST_DATABASE_URL, PORT} = require('./config');
+const {User} = require('./models');
+
 const signupRouter = require('./signupRouter');
 const loginRouter = require('./loginRouter');
 const userRouter = require('./userRouter');

@@ -3,6 +3,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const faker = require('faker');
+const mongoose = require('mongoose');
 
 const {User} = require('../models');
 const {TEST_DATABASE_URL} = require('../config');
@@ -41,7 +42,7 @@ function seedUserData () {
     }
     if (randomInterval === 'yearly') {
       result.yearly = {
-        monthDue = faker.date.month(),
+        monthDue: faker.date.month(),
         dueDate: randomNumberWithinRange(1, 31)
       };
     }
@@ -76,6 +77,7 @@ function seedUserData () {
       bills: generateBills()
     });
   }
+  console.log(seedData);
   return User.insertMany(seedData);
 }
 
@@ -91,7 +93,7 @@ describe('Testing API', function () {
   });
 
   beforeEach(function () {
-    return seedPostData();
+    return seedUserData();
   });
 
   afterEach(function () {
