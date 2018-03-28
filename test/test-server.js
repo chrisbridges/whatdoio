@@ -14,29 +14,67 @@ function seedUserData () {
   const seedData = [];
 
   // generate random number for # of bills
-  
-  // if recurring === true, set up intervals
+  function randomNumberWithinRange (min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-  for (let i = 0; i < 10; i++) {
+  function generateBillInterval () {
+    const result = {daily: null, weekly: null, monthly: null, yearly: null};
+    const intervals = Object.keys(result);
+    const randomIntervalIndex = randomNumberWithinRange(0, intervals.length);
+    const randomInterval = intervals[randomIntervalIndex];
+
+    if (randomInterval === 'daily') {
+      result.daily = true;
+    }
+    if (randomInterval === 'weekly') {
+      result.weekly = {
+        dueDay: faker.date.weekday()
+      };
+    }
+    if (randomInterval ==='monthly') {
+      result.monthly = {
+        dueDate: randomNumberWithinRange(1, 31)
+      };
+    }
+    if (randomInterval === 'yearly') {
+      result.yearly = {
+        monthDue = faker.date.month(),
+        dueDate: randomNumberWithinRange(1, 31)
+      };
+    }
+    return result;
+  }
+
+  function generateBills () { 
+    const bills = [];
+    const randomNum = randomNumberWithinRange(1, 10);
+    for (let i = 0; i < randomNum; i++) {
+        const bill = {
+          from: [faker.name.firstName()],
+          for: [faker.name.firstName()],
+          recurring: faker.random.boolean(),
+          title: faker.lorem.words(),
+          amount: faker.random.number()
+        };
+        if (bill.recurring === true) {
+          bill.interval = generateBillInterval();
+        }
+        bills.push(bill);
+    }
+    return bills;
+  }
+  // if recurring === true, set up intervals
+  const randomNumberOfUsers = randomNumberWithinRange(1,10);
+  for (let i = 0; i < randomNumberOfUsers; i++) {
     seedData.push({
       username: faker.internet.userName(),
       pass: faker.internet.password(),
       name: faker.name.firstName(),
-      bills: [
-        {
-          from: [faker.name.firstName()],
-          for: [faker.name.firstName()],
-          recurring: faker.random.boolean(),
-          interval: {
-            
-          },
-          title: faker.lorem.words(),
-          amount: faker.random.number()
-        }
-      ]
+      bills: generateBills()
     });
   }
-  return BlogPost.insertMany(seedData); // change
+  return User.insertMany(seedData);
 }
 
 function tearDownDB () {
