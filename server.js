@@ -4,6 +4,7 @@ const morgan = require('morgan');
 app.use(morgan('common'));
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
+const bodyParser = require('body-parser');
 
 const {DATABASE_URL, TEST_DATABASE_URL, PORT} = require('./config');
 const {User} = require('./models');
@@ -13,7 +14,7 @@ const loginRouter = require('./loginRouter');
 const userRouter = require('./userRouter');
 
 app.use(express.static('public'));
-//app.listen(process.env.PORT || 8080);
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + 'public/index.html');

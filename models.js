@@ -32,6 +32,7 @@ const userDataSchena = mongoose.Schema({
 
 userDataSchena.methods.serialize = function () {
   return {
+    id: this._id,
     username: this.username,
     name: this.name
   };

@@ -1,4 +1,12 @@
 const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+
+const {User} = require('./models');
+
+app.use(bodyParser.json());
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -13,7 +21,7 @@ router.post('/', (req, res) => {
     if (!(field in req.body)) {
       const message = `Missing ${field} in request body`;
       console.error(message);
-      return res.status(404).send(message);
+      return res.status(400).send(message);
     }
   }
 

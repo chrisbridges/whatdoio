@@ -152,12 +152,13 @@ describe('Testing API', function () {
         }
       }
       const randomUser = generateRandomUser();
-
+      //console.log(randomUser);
       return chai.request(app)
         .post('/signup')
         .send(randomUser)
         .then(function(res) {
-          expect(res).to.have.status(200);
+          //console.log(res);
+          expect(res).to.have.status(201);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
           expect(res.body).to.include.keys('username', 'name');
@@ -167,6 +168,7 @@ describe('Testing API', function () {
           return User.findById(res.body.id);
         })
         .then(function(user) {
+          console.log(user);
           expect(user.username).to.equal(randomUser.username);
           expect(user.name).to.equal(randomUser.name);
         });
