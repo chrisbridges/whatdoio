@@ -3,8 +3,8 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const userDataSchena = mongoose.Schema({
-  username: {type: String, required: true, index: {unique: true}},
+const userDataSchema = mongoose.Schema({
+  username: {type: String, required: true, unique: true},
   pass: {type: String, required: true},
   name: {type: String, required: true},
   bills: [{
@@ -30,7 +30,7 @@ const userDataSchena = mongoose.Schema({
   }]
 });
 
-userDataSchena.methods.serialize = function () {
+userDataSchema.methods.serialize = function () {
   return {
     id: this._id,
     username: this.username,
@@ -38,6 +38,6 @@ userDataSchena.methods.serialize = function () {
   };
 };
 
-const User = mongoose.model('User', userDataSchena);
+const User = mongoose.model('User', userDataSchema);
 
 module.exports = {User};
