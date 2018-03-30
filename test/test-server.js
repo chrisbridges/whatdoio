@@ -171,7 +171,7 @@ describe('Testing API', function () {
           expect(user.username).to.equal(randomUser.username);
           expect(user.name).to.equal(randomUser.name);
 
-          return user.validatePassword(user.pass);
+          return user.validatePassword(randomUser.pass);
         })
         .then(passwordIsCorrect => {
           expect(passwordIsCorrect).to.be.true;
