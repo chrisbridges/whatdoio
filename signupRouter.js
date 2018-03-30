@@ -58,7 +58,7 @@ router.post('/', (req, res) => {
 
   //see if user already exists / name is already taken
     //create user if unique and hash password
-
+      //look at 'Authenticating with JWS' curriculum for example glitch
   User.create({
     username: req.body.username,
     pass: req.body.pass,
