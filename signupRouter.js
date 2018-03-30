@@ -59,7 +59,7 @@ router.post('/', (req, res) => {
     username: {
       min: 1
     },
-    password: {
+    pass: {
       min: 10,
       max: 72 // bycrypt max
     }
@@ -109,7 +109,7 @@ router.post('/', (req, res) => {
     .then(hash => {
       return User.create({
         username,
-        password: hash,
+        pass: hash,
         name
       });
     })
