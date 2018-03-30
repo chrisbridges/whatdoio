@@ -39,12 +39,12 @@ userDataSchema.methods.serialize = function () {
   };
 };
 
-userDataSchema.methods.validatePassword = function(password) {
-  return bcrypt.compare(password, this.pass);
+userDataSchema.methods.validatePassword = function(pass) {
+  return bcrypt.compare(pass, this.pass);
 };
 
-userDataSchema.statics.hashPassword = function(password) {
-  return bcrypt.hash(password, 10);
+userDataSchema.statics.hashPassword = function(pass) {
+  return bcrypt.hash(pass, 10);
 }
 
 const User = mongoose.model('User', userDataSchema);
