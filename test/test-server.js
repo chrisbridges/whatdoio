@@ -167,8 +167,14 @@ describe('Testing API', function () {
           return User.findById(res.body.id);
         })
         .then(function(user) {
+          expect(user).to.not.be.null;
           expect(user.username).to.equal(randomUser.username);
           expect(user.name).to.equal(randomUser.name);
+
+          return user.validatePassword(user.pass);
+        })
+        .then(passwordIsCorrect => {
+          expect(passwordIsCorrect).to.be.true;
         });
 
     });
