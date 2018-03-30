@@ -25,6 +25,11 @@ router.post('/', (req, res) => {
     }
   }
 
+  const stringFields = ['username', 'pass', 'name'];
+  const nonStringField = stringFields.find(
+    field => field in req.body && typeof req.body[field] !== 'string'
+  );
+
   User.create({
     username: req.body.username,
     pass: req.body.pass,
@@ -37,6 +42,7 @@ router.post('/', (req, res) => {
     console.error(err);
     res.status(500).json({error: 'Something went wrong'});
   });
+
 });
 
 module.exports = router;
