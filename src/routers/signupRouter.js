@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 //mongoose.Promise = global.Promise;
 
-const {User} = require('./models');
+const {User} = require('../models');
 
 //app.use(bodyParser.json());
 const router = express.Router();

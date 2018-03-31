@@ -7,11 +7,11 @@ mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
 
 const {DATABASE_URL, TEST_DATABASE_URL, PORT} = require('./config');
-const {User} = require('./models');
+const {User} = require('./src/models');
 
-const signupRouter = require('./signupRouter');
-const loginRouter = require('./loginRouter');
-const userRouter = require('./userRouter');
+const signupRouter = require('./src/routers/signupRouter');
+const loginRouter = require('./src/routers/loginRouter');
+const userRouter = require('./src/routers/userRouter');
 
 app.use(express.static('public'));
 app.use(bodyParser.json());

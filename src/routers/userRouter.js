@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const {User} = require('../models');
+
 router.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/user-page.html'); //rename this to user. page is redudant
 });
