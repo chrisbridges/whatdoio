@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 //mongoose.Promise = global.Promise;
+const path = require('path');
 
 const {User} = require('../models');
 
@@ -10,7 +11,8 @@ const {User} = require('../models');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/signup.html');
+  //console.log('/public/signup.html');
+  res.sendFile('signup.html', { root: path.join(__dirname, '../../public') });
 });
 
 // look at blogpost post end point for help

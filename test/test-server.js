@@ -22,31 +22,10 @@ function seedUserData () {
   }
 
   function generateBillInterval () {
-    const result = {daily: null, weekly: null, monthly: null, yearly: null};
-    const intervals = Object.keys(result);
+    const intervals = ['1d', '7d', '1m', '1y'];
     const randomIntervalIndex = randomNumberWithinRange(0, intervals.length);
     const randomInterval = intervals[randomIntervalIndex];
-
-    if (randomInterval === 'daily') {
-      result.daily = true;
-    }
-    if (randomInterval === 'weekly') {
-      result.weekly = {
-        dueDay: faker.date.weekday()
-      };
-    }
-    if (randomInterval ==='monthly') {
-      result.monthly = {
-        dueDate: randomNumberWithinRange(1, 31)
-      };
-    }
-    if (randomInterval === 'yearly') {
-      result.yearly = {
-        monthDue: faker.date.month(),
-        dueDate: randomNumberWithinRange(1, 31)
-      };
-    }
-    return result;
+    return randomInterval;    
   }
 
   function generateBills () { 
@@ -58,7 +37,8 @@ function seedUserData () {
           for: [faker.name.firstName()],
           recurring: faker.random.boolean(),
           title: faker.lorem.words(),
-          amount: faker.random.number()
+          amount: faker.random.number(),
+          dueDate: new Date(faker.date.recent())
         };
         if (bill.recurring === true) {
           bill.interval = generateBillInterval();
