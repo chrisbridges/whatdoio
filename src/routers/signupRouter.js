@@ -2,16 +2,12 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-//mongoose.Promise = global.Promise;
 const path = require('path');
 
 const {User} = require('../models');
-
-//app.use(bodyParser.json());
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  //console.log('/public/signup.html');
   res.sendFile('signup.html', { root: path.join(__dirname, '../../public') });
 });
 

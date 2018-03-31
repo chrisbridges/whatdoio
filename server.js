@@ -5,6 +5,8 @@ app.use(morgan('common'));
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
+const passport = require('passport');
+//passport.use(jwtStrategy);
 
 const {DATABASE_URL, TEST_DATABASE_URL, PORT} = require('./config');
 const {User} = require('./src/models');
