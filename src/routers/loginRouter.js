@@ -38,6 +38,12 @@ router.post('/', (req, res) => {
 		})
 		.catch(err => {
 			console.error(err);
+			if (err.message === 'username or password incorrect') {
+				res.status(err.code).json(err);
+			}
+			if (err.message === 'Username not found') {
+				res.status(err.code).json(err);
+			}
 			res.status(500).json({code: 500, message: 'Internal server error'});
 		});
 });

@@ -61,6 +61,14 @@ function seedUserData () {
   return User.insertMany(seedData);
 }
 
+function generateRandomUser () {
+  return {
+    username: faker.internet.userName(),
+    pass: faker.internet.password(),
+    name: faker.name.firstName()
+  }
+}
+
 function tearDownDB () {
   console.warn('Deleting database');
   return mongoose.connection.dropDatabase();
@@ -124,13 +132,6 @@ describe('Testing API', function () {
 
   describe('Sign up page', function () {
     it('should add a new user', function () {
-      function generateRandomUser () {
-        return {
-          username: faker.internet.userName(),
-          pass: faker.internet.password(),
-          name: faker.name.firstName()
-        }
-      }
       const randomUser = generateRandomUser();
       
       return chai.request(app)
@@ -158,6 +159,76 @@ describe('Testing API', function () {
         });
 
     });
+  });
+
+  describe('Login page', function () {
+
+    const username = faker.internet.userName();
+    const pass = faker.internet.password();
+    const name = faker.name.firstName();
+
+    beforeEach(function() {
+      return User.create({
+          username,
+          pass,
+          name
+        })
+    });
+  
+    afterEach(function () {
+      return User.remove({});
+    });
+
+    it('should reject users with no credentials', function () {
+
+      return chai.request(app)
+        .post('/login')
+        .then((res) => {
+          expect(res).to.have.status(404);
+        })
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
+          }
+          const res = err.response;
+          expect(res).to.have.status(400);
+        });
+    });
+
+    it('should reject users with incorrect username', function () {
+  
+      return chai.request(app)
+        .post('/login')
+        .send({username: 'wrongUserName', pass})
+        .then(res => {
+          expect(res).to.have.status(404);
+        })
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
+          }
+          const res = err.response;
+          expect(res).to.have.status(400);
+        });
+    });
+
+    it('should reject users with incorrect password', function () {
+
+      return chai.request(app)
+        .post('/login')
+        .send({username, pass: 'wrongPass'})
+        .then(res => {
+          expect(res).to.have.status(401);
+        })
+        .catch(err => {
+          if (err instanceof chai.AssertionError) {
+            throw err;
+          }
+          const res = err.response;
+          expect(res).to.have.status(400);
+        });
+    });
+
   });
 
 });
