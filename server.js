@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-app.use(morgan('common'));
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
@@ -15,6 +14,7 @@ const signupRouter = require('./src/routers/signupRouter');
 const loginRouter = require('./src/routers/loginRouter');
 const userRouter = require('./src/routers/userRouter');
 
+app.use(morgan('common'));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 

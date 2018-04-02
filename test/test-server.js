@@ -260,6 +260,9 @@ describe('Testing API', function () {
             firstName,
             lastName
           });
+        })
+        .catch(err => {
+          console.error(err);
         });
     });
 
