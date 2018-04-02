@@ -179,6 +179,18 @@ describe('Testing API', function () {
       return User.remove({});
     });
 
+    it('should accept users with proper credentials', function () {
+      return chai.request(app)
+        .post('/login')
+        .send({username, pass})
+        .then(res => {
+          expect(res).to.have.status(200);
+          expect(res).to.have.keys(auth, token);
+          expect(res.auth).to.be.true;
+          expect(res.token).to.be.a('string');
+        })
+    });
+
     it('should reject users with no credentials', function () {
 
       return chai.request(app)
@@ -226,6 +238,28 @@ describe('Testing API', function () {
           }
           const res = err.response;
           expect(res).to.have.status(400);
+        });
+    });
+
+    it('Should return a valid auth token', function () {
+      return chai
+        .request(app)
+        .post('/login')
+        .send({username, pass})
+        .then(res => {
+          console.log(res);
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('object');
+          const token = res.body.token;
+          expect(token).to.be.a('string');
+          const payload = jwt.verify(token, JWT_SECRET, {
+            algorithm: ['HS256']
+          });
+          expect(payload.user).to.deep.equal({
+            username,
+            firstName,
+            lastName
+          });
         });
     });
 

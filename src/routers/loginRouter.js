@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
           location: 'username'
         });
 			}
-			return bcrypt.compareSync(req.body.pass, user.pass);
+			return User.validatePassword(req.body.pass);
 		})
 		.then(passwordIsValid => {
 			if (!passwordIsValid) {
