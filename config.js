@@ -6,4 +6,5 @@ exports.PORT = process.env.PORT || 8080;
 
 // have dev secret key here
 exports.JWT_SECRET = process.env.JWT_SECRET || 'secretkey';
+exports.JWT_EXPIRY = process.env.JWT_EXPIRY || '7d';
   // production key is on heroku
