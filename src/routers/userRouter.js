@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const passport = require('passport');
+const {jwtStrategy} = require('../../auth/strategies');
 
 const {User} = require('../models');
 
@@ -22,4 +23,4 @@ router.get('/', (req, res) => {
   // text/html would lead to html
   // applicaiton/json would return user data
 
-module.exports = router;
+module.exports = {router, jwtAuth};

@@ -4,9 +4,10 @@ const jsonParser = bodyParser.json();
 const router = express.Router();
 const {User} = require('../models');
 const path = require('path');
+const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const {JWT_SECRET} = require('../../config');
+const {JWT_SECRET, JWT_EXPIRY} = require('../../config');
 
 router.get('/', (req, res) => {
   res.sendFile('login.html', { root: path.join(__dirname, '../../public') });
@@ -18,35 +19,52 @@ router.post('/', (req, res) => {
 		.then(_user => {
 			user = _user;
 			if (!user) {
-				return Promise.reject({
+				res.status(404).json({message: 'username not found', location: 'username'});
+				/*return Promise.reject({
           code: 404,
           message: 'Username not found',
           location: 'username'
-        });
+        });*/
 			}
-			return User.validatePassword(req.body.pass);
+			return user.validatePassword(req.body.pass);
 		})
 		.then(passwordIsValid => {
 			if (!passwordIsValid) {
-				return Promise.reject({
+				res.status(401).json({message: 'username or password incorrect'});
+				/*return Promise.reject({
 					code: 401,
 					message: 'username or password incorrect'
-				});
+				});*/
 			}
-			const token = jwt.sign({id: user._id}, JWT_SECRET);
-			res.status(200).send({auth: true, token: token});
+			// put this here, or in auth/router??
+			const createAuthToken = function(user) {
+				return jwt.sign({user}, JWT_SECRET, {
+					subject: user.username,
+					expiresIn: JWT_EXPIRY,
+					algorithm: 'HS256'
+				});
+			};
+			const authToken = createAuthToken(user);
+			res.json({authToken});
 		})
 		.catch(err => {
 			console.error(err);
-			if (err.message === 'username or password incorrect') {
+			/*if (err.message === 'username or password incorrect') {
 				res.status(err.code).json(err);
 			}
 			if (err.message === 'Username not found') {
 				res.status(err.code).json(err);
-			}
-			res.status(500).json({code: 500, message: 'Internal server error'});
+			}*/
+			res.status(500).json({message: 'Internal server error'});
 		});
 });
- 
+
+const jwtAuth = passport.authenticate('jwt', {session: false});
+
+// The user exchanges a valid JWT for a new one with a later expiration
+router.post('/refresh', jwtAuth, (req, res) => {
+  const authToken = createAuthToken(req.user);
+  res.json({authToken});
+});
 
 module.exports = router;

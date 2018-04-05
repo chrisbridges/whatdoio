@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
-app.use('/user', userRouter);
+//app.use('/user', userRouter);
 
 app.use('*', function (req, res) {
   res.status(404).json({ message: 'Not Found' });
