@@ -13,7 +13,15 @@ router.get('/', (req, res) => {
   res.sendFile('login.html', { root: path.join(__dirname, '../../public') });
 });
 
-router.post('/', (req, res) => {
+const createAuthToken = function(user) {
+	return jwt.sign({user}, JWT_SECRET, {
+		subject: user.username,
+		expiresIn: JWT_EXPIRY,
+		algorithm: 'HS256'
+	});
+};
+
+router.post('/', jsonParser, (req, res) => {
 	let user;
   return User.findOne({username: req.body.username})
 		.then(_user => {
@@ -36,14 +44,6 @@ router.post('/', (req, res) => {
 					message: 'username or password incorrect'
 				});*/
 			}
-			// put this here, or in auth/router??
-			const createAuthToken = function(user) {
-				return jwt.sign({user}, JWT_SECRET, {
-					subject: user.username,
-					expiresIn: JWT_EXPIRY,
-					algorithm: 'HS256'
-				});
-			};
 			const authToken = createAuthToken(user);
 			res.json({authToken});
 		})
