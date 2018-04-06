@@ -8,6 +8,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const {JWT_SECRET, JWT_EXPIRY} = require('../../config');
+const jwtStrategy = require('../../auth/strategies');
 
 router.get('/', (req, res) => {
   res.sendFile('login.html', { root: path.join(__dirname, '../../public') });
@@ -28,37 +29,24 @@ router.post('/', jsonParser, (req, res) => {
 			user = _user;
 			if (!user) {
 				res.status(404).json({message: 'username not found', location: 'username'});
-				/*return Promise.reject({
-          code: 404,
-          message: 'Username not found',
-          location: 'username'
-        });*/
 			}
 			return user.validatePassword(req.body.pass);
 		})
 		.then(passwordIsValid => {
 			if (!passwordIsValid) {
 				res.status(401).json({message: 'username or password incorrect'});
-				/*return Promise.reject({
-					code: 401,
-					message: 'username or password incorrect'
-				});*/
 			}
 			const authToken = createAuthToken(user);
+			//console.log(user);
 			res.json({authToken});
 		})
 		.catch(err => {
 			console.error(err);
-			/*if (err.message === 'username or password incorrect') {
-				res.status(err.code).json(err);
-			}
-			if (err.message === 'Username not found') {
-				res.status(err.code).json(err);
-			}*/
 			res.status(500).json({message: 'Internal server error'});
 		});
 });
 
+passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
 // The user exchanges a valid JWT for a new one with a later expiration

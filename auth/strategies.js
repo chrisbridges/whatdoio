@@ -15,4 +15,4 @@ const jwtStrategy = new JwtStrategy(
   }
 );
 
-module.exports = {jwtStrategy};
+module.exports = jwtStrategy;

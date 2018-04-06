@@ -12,7 +12,7 @@ const {User} = require('./src/models');
 
 const signupRouter = require('./src/routers/signupRouter');
 const loginRouter = require('./src/routers/loginRouter');
-const userRouter = require('./src/routers/userRouter');
+//const userRouter = require('./src/routers/userRouter');
 
 app.use(morgan('common'));
 app.use(express.static('public'));
