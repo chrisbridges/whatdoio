@@ -37,7 +37,6 @@ router.post('/', jsonParser, (req, res) => {
 				res.status(401).json({message: 'username or password incorrect'});
 			}
 			const authToken = createAuthToken(user);
-			//console.log(user);
 			res.json({authToken});
 		})
 		.catch(err => {
