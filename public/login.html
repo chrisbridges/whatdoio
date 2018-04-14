@@ -8,13 +8,20 @@
 </head>
 <body>
 
-  <form role="form" id="signup-form">
+  <form role="form" id="login-form">
     <legend>Login</legend>
     <label for="username">Username</label>
     <input type="text" name="username" id="username" placeholder="sallySample" required>
-    <label for="password">Password</label>
-    <input type="text" name="password" id="password" placeholder="superSecurePassword626" required>
+    <label for="pass">Password</label>
+    <input type="text" name="pass" id="pass" placeholder="superSecurePassword626" required>
+    <button type="submit">Submit</button>
   </form>
+  <div>Don't have an account? <a href="http://localhost:8080/signup">Sign Up</a></div>
 
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="login.js"></script>
 </body>
 </html>

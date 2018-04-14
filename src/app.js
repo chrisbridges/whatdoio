@@ -84,12 +84,12 @@ $(function() {
 })
 
 // sample ajax post request
-$.ajax({
+/*$.ajax({
   type: "POST",
   url: 'localhost:8080/signup',
   data: //data from form,
   success: //callback function for success,
-});
+});*/
 
 //  TODO: WRITE THE html for each page
   //  each page has their own JS file

@@ -27,7 +27,8 @@ userSchema.methods.serialize = function () {
   return {
     id: this._id,
     username: this.username,
-    name: this.name
+    name: this.name,
+    bills: this.bills
   };
 };
 
