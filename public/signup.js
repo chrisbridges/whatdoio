@@ -6,9 +6,11 @@ function processSignUpForm () {
     $.ajax({
       type: "POST",
       url: 'signup',
-      data: {"name": $("#name").val(), "username": $("#username").val(), "password": $("#password").val()},
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify({"name": $("#name").val(), "username": $("#username").val(), "pass": $("#pass").val()}),
       success: function() {console.log('SUCCESS')},
-      error: function() {console.log('Error')}
+      error: function(error) {console.log(error)}
     });
 
   });
