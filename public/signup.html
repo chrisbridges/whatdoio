@@ -8,7 +8,22 @@
 </head>
 <body>
 
-  <p>Hello New User</p>
+  <form role="form" id="signup-form">
+    <legend>Sign Up</legend>
+    <label for="name">Your Name</label>
+    <input type="text" name="name" id="name" placeholder="Sally" required>
+    <label for="username">Username</label>
+    <input type="text" name="username" id="username" placeholder="sallySample" required>
+    <label for="password">Password</label>
+    <input type="text" name="password" id="password" placeholder="superSecurePassword626" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="signup.js"></script>
 
 </body>
 </html>
