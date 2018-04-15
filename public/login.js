@@ -9,7 +9,10 @@ function processLoginForm () {
       dataType: 'json',
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify({"username": $("#username").val(), "pass": $("#pass").val()}),
-      success: function() {console.log('SUCCESS')},
+      success: function(data) {
+        console.log(data);
+        localStorage.setItem("authToken", data.authToken);
+      },
       error: function(error) {console.log(error)}
     });
 

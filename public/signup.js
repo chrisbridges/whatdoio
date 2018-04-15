@@ -9,7 +9,7 @@ function processSignUpForm () {
       dataType: 'json',
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify({"name": $("#name").val(), "username": $("#username").val(), "pass": $("#pass").val()}),
-      success: function() {console.log('SUCCESS')},
+      success: function(data) {console.log(data)},
       error: function(error) {console.log(error)}
     });
 
