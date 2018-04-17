@@ -10,11 +10,13 @@ passport.use(jwtStrategy);
 
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
-router.get('/', jwtAuth, (req, res) => {
-  console.log(req.user);
+router.get('/', (req, res, next) => {
   if (req.get('Content-Type') !== 'application/json') {
-    res.sendFile('user.html', { root: path.join(__dirname, '../../public') });
-  } else {
+    return res.sendFile('user.html', { root: path.join(__dirname, '../../public') });
+  }
+  next();
+}, jwtAuth, (req, res) => {
+  //console.log(req.user);
     User.findById(req.user._id)
       .then(user => {
         res.json(user.serialize());
@@ -24,7 +26,6 @@ router.get('/', jwtAuth, (req, res) => {
 		  	res.status(500).json({message: 'Internal server error'});
       });
       //send back serialized user info and process bills client-side
-  }
   //use jwtAuth middleware, if authorized, display data
     //else, access denied
   // respond with user data
@@ -33,5 +34,13 @@ router.get('/', jwtAuth, (req, res) => {
 // determine route by content type 
   // text/html would lead to html
   // applicaiton/json would return user data
+
+router.get('/logout', (req, res) => {
+  //remove token from local storage - CLIENT-SIDE
+
+  // is this the way I do every other redirect?
+    // or can i use res.redirect now because the token is in local storage?
+  res.sendFile('logout.html', { root: path.join(__dirname, '../../public') });
+});
 
 module.exports = router;

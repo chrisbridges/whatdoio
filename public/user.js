@@ -1,64 +1,14 @@
-/*const MOCK_USER_BILL_DATA = {
-  "bills": [
-    {
-      id: 11111,
-      from: ['Connor'],
-      for: ['Chris'],
-      recurring: false,
-      interval: null,
-      title: 'KBBQ',
-      amount: 100
-    },
-    {
-      id: 22222,
-      from: ['Chris'],
-      for: ['Cas, Mom, Conner, Justin'],
-      recurring: true,
-      interval: {
-        daily: null,
-        weekly: null,
-        monthly: {
-          dueDate: 6
-        },
-        yearly: null
-      },
-      title: 'Phone Bill',
-      amount: 150
-    },
-    {
-      id: 33333,
-      from: ['Josh'],
-      for: ['Chris'],
-      recurring: true,
-      interval: {
-        daily: null,
-        weekly: null,
-        monthly: {
-          dueDate: 10
-        },
-        yearly: null
-      },
-      title: 'Rent',
-      amount: 800
-    },
-    {
-      id: 44444,
-      from: ['Saachi'],
-      for: ['Chris'],
-      recurring: true,
-      interval: {
-        daily: null,
-        weekly: {
-          dueDay: 'Wednesday'
-        },
-        monthly: null,
-        yearly: null
-      },
-      title: 'Something',
-      amount: 5
-    }
-  ]
-};*/
+function checkForAuthToken () {
+  let token = localStorage.getItem('authToken');
+  if (token) {
+    // fetch user bills
+    console.log('access allowed');
+  } else {
+    // redirect
+    window.location.href = '/login';
+  }
+}
+
 
 function getUserBills(callbackFn) {
   setTimeout(function(){ callbackFn(MOCK_USER_BILL_DATA)}, 100);
@@ -80,7 +30,9 @@ function getAndDisplayUserBills() {
 }
 
 $(function() {
-  getAndDisplayUserBills();
+  console.log('anything');
+  checkForAuthToken();
+  //getAndDisplayUserBills();
 })
 
 // sample ajax post request

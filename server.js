@@ -18,8 +18,8 @@ app.use(morgan('common'));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-// CORS
-app.use(function (req, res, next) {
+// CORS - do I need this?
+/*app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
@@ -27,7 +27,7 @@ app.use(function (req, res, next) {
     return res.send(204);
   }
   next();
-});
+});*/
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + 'public/index.html');
