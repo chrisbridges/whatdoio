@@ -11,7 +11,9 @@ function processLoginForm () {
       data: JSON.stringify({"username": $("#username").val(), "pass": $("#pass").val()}),
       success: function(data) {
         console.log(data);
+        //save JWT token that returns and redirect user to their page
         localStorage.setItem("authToken", data.authToken);
+        window.location.href = '/user';
       },
       error: function(error) {console.log(error)}
     });
@@ -19,8 +21,4 @@ function processLoginForm () {
   });
 }
 
-function documentReady () {
-  processLoginForm();
-}
-
-$(documentReady);
+$(processLoginForm());

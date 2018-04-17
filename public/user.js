@@ -1,15 +1,52 @@
+let me;
+
 function checkForAuthToken () {
   let token = localStorage.getItem('authToken');
   if (token) {
     // fetch user bills
     console.log('access allowed');
+    fetchUserBills(token);
   } else {
     // redirect
     window.location.href = '/login';
   }
 }
 
+function fetchUserBills (token) {
+  $.ajax({
+    type: 'GET',
+    headers: {Authorization: `Bearer ${token}`},
+    //url: 'user',
+    contentType: "application/json",
+    //dataType: 'json',
+    //data: token,
+    success: displayUserBills,
+    error: function(error) {console.log('ERROR', error)}
+  });
+  /*$.get('user', function (response) {
+    console.log(response);
+    for (index in response.bills) {
+      $('body').append(
+       '<p>' + response.bills[index] + '</p>');
+    }
+  });*/
+}
 
+function displayUserBills (response) {
+  console.log(response);
+  for (bill in response.bills) {
+    //if () {
+
+   // }
+    
+    /*$('body').append(
+     '<p>' + response.bills[index] + '</p>');*/
+  }
+}
+
+$(checkForAuthToken);
+
+/*
 function getUserBills(callbackFn) {
   setTimeout(function(){ callbackFn(MOCK_USER_BILL_DATA)}, 100);
 }
@@ -27,13 +64,7 @@ function displayUserBills(data) {
 // are connecting to real API
 function getAndDisplayUserBills() {
   getUserBills(displayUserBills);
-}
-
-$(function() {
-  console.log('anything');
-  checkForAuthToken();
-  //getAndDisplayUserBills();
-})
+}*/
 
 // sample ajax post request
 /*$.ajax({
