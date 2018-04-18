@@ -113,14 +113,14 @@ function listenIfBillIsRecurring () {
     // if bill is recurring, ask how often
       // hide counter-question in case user changes mind
     if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
-      console.log('Yes');
+      // console.log('Yes');
       $('.bill-recurrence-frequency').show();
       $('.when-is-bill-due').hide();
       //billRecurringFrequency();
     }
     // if bill is not recurring, ask for date due
     if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
-      console.log('No');
+      // console.log('No');
       $('.when-is-bill-due').show();
       $('.bill-recurrence-frequency').hide();
     }
@@ -155,8 +155,51 @@ function billRecurringFrequency () {
 }
 
 function postNewBill () {
+  
   // post new user bill w/ ajax
-
+  $("#new-bill-form").submit(function(event) {
+    event.preventDefault();
+    let recurring;
+    let interval;
+    const title = $('#bill-title-input').val();
+    const amount = $('#bill-amount-input').val();
+    // check if bill is recurring
+    if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
+      recurring = true;
+    }
+    if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
+      recurring = false;
+    }
+    if (recurring) {
+      const frequencyValues = {
+        daily: '1d',
+        weekly: '7d',
+        monthly: '1m',
+        yearly: '1y'
+      };
+      const frequencyValue = $("input[name='bill-recurring-value']:checked").val();
+      interval = frequencyValues[frequencyValue];
+    } else {
+      interval = null;
+    }
+    //const dueDate;
+    //const for;
+    //const from;
+/*
+    $.ajax({
+      type: "POST",
+      url: 'user',
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(),
+      success: function(data) {
+        console.log(data);
+        
+      },
+      error: function(error) {console.log(error)}
+    });
+*/
+  });
   // reset form values and hide again
 }
 
@@ -172,3 +215,4 @@ $(
 $(checkForAuthToken);
 $(listenIfBillIsRecurring);
 $(billRecurringFrequency);
+$(postNewBill);
