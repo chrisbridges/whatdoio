@@ -21,8 +21,8 @@ function fetchUserBills (token) {
 }
 
 function displayUserBills (response) {
-  //console.log(response);
-  const me = response.name;
+  // console.log(response);
+  const me = 'Me';
   for (let bill of response.bills) {
     //determine if bill is to be paid by me, or to me
       // determine if bill is recurring or not - 4 separate catergories
@@ -69,39 +69,43 @@ function formatBill (bill) {
     </div>`;
 }
 
-$(checkForAuthToken);
+/***********************************************
+* Drop Down Date select script- by JavaScriptKit.com
+* This notice MUST stay intact for use
+* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and more
+***********************************************/
 
-/*
-function getUserBills(callbackFn) {
-  setTimeout(function(){ callbackFn(MOCK_USER_BILL_DATA)}, 100);
-}
+var monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
 
-// this function stays the same when we connect
-// to real API later
-function displayUserBills(data) {
-  for (index in data.bills) {
-     $('body').append(
-      '<p>' + data.bills[index].title + '</p>');
+function populatedropdown (dayfield, monthfield, yearfield) {
+  const today = new Date();
+  var dayfield=document.getElementById(dayfield);
+  var monthfield=document.getElementById(monthfield);
+  var yearfield=document.getElementById(yearfield);
+  for (var i = 0 ; i < 31; i++) {
+    //select today's day
+    dayfield.options[i] = new Option(i, i + 1);
+    dayfield.options[today.getDate()]=new Option(today.getDate(), today.getDate(), true, true);
   }
+  for (var m = 0; m < 12; m++) {
+    //select today's month
+    monthfield.options[m]=new Option(monthtext[m], monthtext[m]);
+    monthfield.options[today.getMonth()]=new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true);
+  }
+  var thisyear = today.getFullYear();
+  for (var y = 0; y < 20; y++) {
+    yearfield.options[y]=new Option(thisyear, thisyear);
+    thisyear+=1;
+}
+  //select today's year
+  yearfield.options[0]=new Option(today.getFullYear(), today.getFullYear(), true, true);
 }
 
-// this function can stay the same even when we
-// are connecting to real API
-function getAndDisplayUserBills() {
-  getUserBills(displayUserBills);
-}*/
 
-// sample ajax post request
-/*$.ajax({
-  type: "POST",
-  url: 'localhost:8080/signup',
-  data: //data from form,
-  success: //callback function for success,
-});*/
-
-//  TODO: WRITE THE html for each page
-  //  each page has their own JS file
-
+$(
+  checkForAuthToken,
+  populatedropdown("daydropdown", "monthdropdown", "yeardropdown")
+);
 
 
 // localstorage.setItem on the front-end when you log in and the endpoint

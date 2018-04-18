@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Whatdo.io</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="user.css">
 </head>
 <body>
 
@@ -27,6 +28,52 @@
     <h1>One-Time Bills That Are Owed to Me:</h1>
     <ul id="one-time-owed-me"></ul>
   </section>
+
+  <button>+ Add New Bill</button>
+<!-- TODO: Users need to be able to add new bills -->
+  <form role="form" id="new-bill-form">
+    <legend>New Bill</legend>
+
+    <label for="bill-title">Bill Title:</label>
+    <input type="text" name="bill-title" id="bill-title" placeholder="ex. Rent, Utilities, Dinner w/ Friends">
+
+    <label for="bill-amount">Amount:</label>
+    <input type="number" min="0">
+
+    <p>Will this bill be paid <span class="underline">by you</span> or <span class="underline">to you</span>?</p>
+    <input type="radio" id="by-me" name="bill-payer" value="By Me">
+    <label for="by-me">By Me</label>
+    <input type="radio" id="to-me" name="bill-payer" value="To Me">
+    <label for="to-me">To Me</label>
+
+    <p>Is this bill recurring?</p>
+    <input type="radio" id="yes" name="bill-recurring-bool-bool" value="Yes">
+    <label for="yes">Yes</label>
+    <input type="radio" id="no" name="bill-recurring-bool" value="No">
+    <label for="no">No</label>
+
+    <!-- If bill is not recurring, when is it due? -->
+    <p>When is this bill due?</p>
+    <form action="" name="someform">
+      <select id="daydropdown"></select> 
+      <select id="monthdropdown"></select> 
+      <select id="yeardropdown"></select> 
+    </form>
+
+    <!-- If bill is recurring, how often? -->
+    <p>How often does this bill recur?</p>
+    <input type="radio" id="daily" name="bill-recurring-value" value="Daily">
+    <label for="daily">Daily</label>
+    <input type="radio" id="weekly" name="bill-recurring-value" value="Weekly">
+    <label for="weekly">Weekly</label>
+    <input type="radio" id="monthly" name="bill-recurring-value" value="Monthy">
+    <label for="monthly">Monthy</label>
+    <input type="radio" id="Yearly" name="bill-recurring-value" value="Yearly">
+    <label for="Yearly">Yearly</label>
+
+
+    <button type="submit">Submit</button>
+  </form>
   
   <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"

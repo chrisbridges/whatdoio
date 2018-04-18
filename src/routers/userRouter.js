@@ -35,6 +35,10 @@ router.get('/', (req, res, next) => {
   // text/html would lead to html
   // applicaiton/json would return user data
 
+// TODO: add endpoint for users to add bills
+// TODO: add endpoint for users to delete bills
+// TODO STRETCH: add endpoint for users to edit bills
+
 router.get('/logout', (req, res) => {
   //remove token from local storage - CLIENT-SIDE
 
