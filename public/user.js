@@ -101,7 +101,7 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
   }
 }
 
-function addNewBill () {
+function showNewBillForm () {
   console.log('addnewBill working');
   $('#add-new-bill').click(function () {
     $('#new-bill-form').show();
@@ -128,79 +128,47 @@ function listenIfBillIsRecurring () {
 }
 
 function billRecurringFrequency () {
-
   $('input:radio[name="bill-recurring-value"]').change(function() {
-
     let frequency = $("input[name='bill-recurring-value']:checked").val();
-    console.log(frequency);
-    const frequencyOptions = ['daily', 'weekly', 'monthly', 'yearly'];
 
-    /*function hideAllOthers () {
-      console.log('hide all is running');
-      for (let i = 0; i < frequencyOptions.length; i++) {
-        if (frequencyOptions[i] === frequency || frequencyOptions[i] === 'daily') {
-          continue;
-        }
-        console.log($(`.bill-recurrence-${frequencyOptions[i]}).hide()`));
-        $(`.bill-recurrence-${frequencyOptions[i]}`).hide();
-      }
-    }
-
-    $(`bill-recurrence-${frequency}`).show();
-    hideAllOthers();*/
-
-    // depending on the value of frequency, hide all other form options, in case user changes mind
     if (frequency === 'daily') {
       $('.bill-recurrence-weekly').hide();
       $('.bill-recurrence-monthly').hide();
       $('.bill-recurrence-yearly').hide();
     }
-  
     if (frequency === 'weekly') {
       $('.bill-recurrence-weekly').show();
       $('.bill-recurrence-monthly').hide();
       $('.bill-recurrence-yearly').hide();
     }
-
     if (frequency === 'monthly') {
       $('.bill-recurrence-weekly').hide();
       $('.bill-recurrence-monthly').show();
       $('.bill-recurrence-yearly').hide();
     }
-
     if (frequency === 'yearly') {
       $('.bill-recurrence-weekly').hide();
       $('.bill-recurrence-monthly').hide();
       $('.bill-recurrence-yearly').show();
     }
-
   });
+}
+
+function postNewBill () {
+  // post new user bill w/ ajax
+
+  // reset form values and hide again
 }
 
 
 // TODO: only addnewbill or checkforauthtoken is running, depending on position?
 $(
-  addNewBill,
+  showNewBillForm,
   //listenIfBillIsRecurring,
   //checkForAuthToken,
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown")
 );
 
+$(checkForAuthToken);
 $(listenIfBillIsRecurring);
 $(billRecurringFrequency);
-
-// localstorage.setItem on the front-end when you log in and the endpoint
-  // responds with token
-// import all the things with the CDNs - jQuery, JWT decoder, etc
-
-// sign-out page - removes token from localstorage and redirects to login page
-
-// user submits info on html form
-// ajax makes the call to endpoint
-    // data is like my req.body
-// runs through server
-  // depending on what that returns
-    // error
-    // assuming it's good, give them token, save it in localstorage
-  // userrouter ensures authentication
-    // show them the money

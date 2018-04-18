@@ -16,7 +16,6 @@ router.get('/', (req, res, next) => {
   }
   next();
 }, jwtAuth, (req, res) => {
-    //console.log(req.user, req.header);
     User.findById(req.user._id)
       .then(user => {
         res.json(user.serialize());
@@ -31,11 +30,23 @@ router.get('/', (req, res, next) => {
   // respond with user data
 });
 
-// determine route by content type 
-  // text/html would lead to html
-  // applicaiton/json would return user data
-
 // TODO: add endpoint for users to add bills
+router.post('/', jwtAuth, (req, res) => {
+  //console.log(req.body);
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    {$push: {bills: req.body}},
+    {safe: true, upsert: true})
+    .then(user => {
+      res.json(user.serialize());
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: 'Trouble adding bill'});
+    });
+});
+
 // TODO: add endpoint for users to delete bills
 // TODO STRETCH: add endpoint for users to edit bills
 
