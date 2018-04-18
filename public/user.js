@@ -1,5 +1,3 @@
-let me;
-
 function checkForAuthToken () {
   let token = localStorage.getItem('authToken');
   if (token) {
@@ -16,32 +14,59 @@ function fetchUserBills (token) {
   $.ajax({
     type: 'GET',
     headers: {Authorization: `Bearer ${token}`},
-    //url: 'user',
     contentType: "application/json",
-    //dataType: 'json',
-    //data: token,
     success: displayUserBills,
-    error: function(error) {console.log('ERROR', error)}
+    error: function(error) {console.error(error)}
   });
-  /*$.get('user', function (response) {
-    console.log(response);
-    for (index in response.bills) {
-      $('body').append(
-       '<p>' + response.bills[index] + '</p>');
-    }
-  });*/
 }
 
 function displayUserBills (response) {
-  console.log(response);
-  for (bill in response.bills) {
-    //if () {
+  //console.log(response);
+  const me = response.name;
+  for (let bill of response.bills) {
+    //determine if bill is to be paid by me, or to me
+      // determine if bill is recurring or not - 4 separate catergories
+    const formattedBill = formatBill(bill);
+    //bills that I owe
+    if (bill.for.length === 1 && bill.for[0] === me && bill.recurring === true) {
+      //bills that I owe and are recurring
+        //append bill to recurring bills for me
+      $('#recurring-I-owe').append(`<li>${formattedBill}</li>`);
+    } else if (bill.for.length === 1 && bill.for[0] === me && bill.recurring === false) {
+      //append bill to one-time bills for me
+      $('#one-time-I-owe').append(`<li>${formattedBill}</li>`);
+    }
 
-   // }
-    
-    /*$('body').append(
-     '<p>' + response.bills[index] + '</p>');*/
+    //bills that are due to me
+    if (bill.from.length === 1 && bill.from[0] === me && bill.recurring === true) {
+      //bills that i am owed and are recurring
+      $('#recurring-owed-me').append(`<li>${formattedBill}</li>`);
+    } else if (bill.from.length === 1 && bill.from[0] === me && bill.recurring === false) {
+      //append bill to one-time bills for others
+      $('#one-time-owed-me').append(`<li>${formattedBill}</li>`);
+    }
   }
+}
+
+function formatBill (bill) {
+  let billParties;
+  let parties;
+  if (bill.from.includes('Me')) {
+    billParties = bill.for;
+  } else {
+    billParties = bill.from;
+  }
+ // for whichever group (for or from) that doesn't contain me
+  // join those together with a comma
+  billParties = billParties.join(', ');
+
+  return `
+    <div class="bill">
+      <p class="due-date">${bill.dueDate}</p>
+      <p class="bill-title">${bill.title}</p>
+      <p class="bill-parties">from ${billParties}</p>
+      <p class="bill-amount">$${bill.amount}</p>
+    </div>`;
 }
 
 $(checkForAuthToken);
