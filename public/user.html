@@ -34,23 +34,31 @@
   <form hidden role="form" id="new-bill-form">
     <legend>New Bill</legend>
 
-    <label for="bill-title">Bill Title:</label>
-    <input type="text" name="bill-title" id="bill-title" placeholder="ex. Rent, Utilities, Dinner w/ Friends">
+    <div class="bill-title">
+      <label for="bill-title-input">Bill Title:</label>
+      <input type="text" name="bill-title" id="bill-title-input" placeholder="Rent, Utilities">
+    </div>
 
-    <label for="bill-amount">Amount:</label>
-    <input type="number" min="0">
+    <div class="bill-amount">
+      <label for="bill-amount-input">Amount:</label>
+      <input type="number" min="0" id="bill-amount-input" placeholder="$100">
+    </div>
 
-    <p>Will this bill be paid <span class="underline">by you</span> or <span class="underline">to you</span>?</p>
-    <input type="radio" id="by-me" name="bill-payer" value="By Me">
-    <label for="by-me">By Me</label>
-    <input type="radio" id="to-me" name="bill-payer" value="To Me">
-    <label for="to-me">To Me</label>
+    <div class="bill-payer">
+      <p>Will this bill be paid <span class="underline">by you</span> or <span class="underline">to you</span>?</p>
+      <input type="radio" id="by-me" name="bill-payer-input" value="By Me">
+      <label for="by-me">By Me</label>
+      <input type="radio" id="to-me" name="bill-payer-input" value="To Me">
+      <label for="to-me">To Me</label>
+    </div>
 
-    <p>Is this bill recurring?</p>
-    <input type="radio" id="yes" name="bill-recurring-bool-bool" value="Yes">
-    <label for="yes">Yes</label>
-    <input type="radio" id="no" name="bill-recurring-bool" value="No">
-    <label for="no">No</label>
+    <div class="bill-recurring">
+      <p>Is this bill recurring?</p>
+      <input type="radio" id="yes" name="bill-recurring-input" value="Yes">
+      <label for="yes">Yes</label>
+      <input type="radio" id="no" name="bill-recurring-input" value="No">
+      <label for="no">No</label>
+    </div>
 
     <!-- If bill is not recurring, when is it due? -->
     <div hidden class="when-is-bill-due">
@@ -62,40 +70,47 @@
     </div>
 
     <!-- If bill is recurring, how often? -->
-    <p>How often does this bill recur?</p>
-    <input type="radio" id="daily" name="bill-recurring-value" value="Daily">
-    <label for="daily">Daily</label>
-    <input type="radio" id="weekly" name="bill-recurring-value" value="Weekly">
-    <label for="weekly">Weekly</label>
-    <input type="radio" id="monthly" name="bill-recurring-value" value="Monthy">
-    <label for="monthly">Monthy</label>
-    <input type="radio" id="Yearly" name="bill-recurring-value" value="Yearly">
-    <label for="Yearly">Yearly</label>
+    <div hidden class="bill-recurrence-frequency">
+      <p>How often does this bill recur?</p>
+      <input type="radio" id="daily" name="bill-recurring-value" value="Daily">
+      <label for="daily">Daily</label>
+      <input type="radio" id="weekly" name="bill-recurring-value" value="Weekly">
+      <label for="weekly">Weekly</label>
+      <input type="radio" id="monthly" name="bill-recurring-value" value="Monthly">
+      <label for="monthly">Monthy</label>
+      <input type="radio" id="Yearly" name="bill-recurring-value" value="Yearly">
+      <label for="Yearly">Yearly</label>
+    </div>
 
     <!-- If bill recurs weekly -->
-    <p>What day of the week does this bill recur?</p>
-    <select>
-      <option value="Monday">Monday</option> 
-      <option value="Tuesday">Tuesday</option> 
-      <option value="Wednesday">Wednesday</option>
-      <option value="Thursday">Thursday</option> 
-      <option value="Friday">Friday</option> 
-      <option value="Saturday">Saturday</option>
-      <option value="Sunday">Sunday</option> 
-      <button type="submit">Submit</button>
-    </select>
+    <div hidden class="bill-recurrence-weekly">
+      <p>What day of the week does this bill recur?</p>
+      <select>
+        <option value="Monday">Monday</option> 
+        <option value="Tuesday">Tuesday</option> 
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option> 
+        <option value="Friday">Friday</option> 
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option> 
+        <button type="submit">Submit</button>
+      </select>
+    </div>
 
     <!-- If bill recurs monthly -->
-    <p>What day of the month does this bill recur?</p>
-    <select class="daydropdown"></select> 
-    <button type="submit">Submit</button>
+    <div hidden class="bill-recurrence-monthly">
+      <p>What day of the month does this bill recur?</p>
+      <select class="daydropdown"></select> 
+      <button type="submit">Submit</button>
+    </div>
 
      <!-- If bill recurs yearly -->
-     <p>When date does this bill recur?</p>
-     <select class="daydropdown"></select> 
-     <select class="monthdropdown"></select> 
-     <button type="submit">Submit</button>
-
+     <div hidden class="bill-recurrence-yearly">
+      <p>When date does this bill recur?</p>
+      <select class="daydropdown"></select> 
+      <select class="monthdropdown"></select> 
+      <button type="submit">Submit</button>
+    </div>
 
     <button type="submit">Submit</button>
   </form>

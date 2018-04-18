@@ -108,13 +108,70 @@ function addNewBill () {
   });
 }
 
+function listenIfBillIsRecurring () {
+  $('input:radio[name="bill-recurring-input"]').change(function(){
+    // if bill is recurring, ask how often
+      // hide counter-question in case user changes mind
+    if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
+      console.log('Yes');
+      $('.bill-recurrence-frequency').show();
+      $('.when-is-bill-due').hide();
+      //billRecurringFrequency();
+    }
+    // if bill is not recurring, ask for date due
+    if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
+      console.log('No');
+      $('.when-is-bill-due').show();
+      $('.bill-recurrence-frequency').hide();
+    }
+  });
+}
 
+function billRecurringFrequency () {
+  $('input:radio[name="bill-recurring-value"]').change(function(){
+    let frequency = $("input[name='bill-recurring-value']:checked").val();
+    console.log(frequency);
+    const frequencyOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
+
+    if (frequency === 'Daily') {
+      // do something
+    }
+
+    if (frequency === 'Weekly') {
+      $('.bill-recurrence-weekly').show();
+    }
+
+    if (frequency === 'Monthly') {
+      // do something
+    }
+
+    if (frequency === 'Yearly') {
+      // do something
+    }
+    // depending on the value of frequency, hide all other form options, in case user changes mind
+    function hideAllOthers () {
+      for (let i = 0; i < frequencyOptions.length; i++) {
+        if (frequencyOptions[i] === frequency) {
+          continue;
+        }
+
+      }
+    }
+
+  });
+}
+
+
+// TODO: only addnewbill or checkforauthtoken is running, depending on position?
 $(
   addNewBill,
-  checkForAuthToken,
+  //listenIfBillIsRecurring,
+  //checkForAuthToken,
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown")
 );
 
+$(listenIfBillIsRecurring);
+$(billRecurringFrequency);
 
 // localstorage.setItem on the front-end when you log in and the endpoint
   // responds with token
