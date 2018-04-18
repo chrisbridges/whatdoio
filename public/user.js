@@ -148,10 +148,14 @@ function billRecurringFrequency () {
 
     $(`bill-recurrence-${frequency}`).show();
     hideAllOthers();*/
-    if (frequency === 'daily') {
-      // do something
-    }
+
     // depending on the value of frequency, hide all other form options, in case user changes mind
+    if (frequency === 'daily') {
+      $('.bill-recurrence-weekly').hide();
+      $('.bill-recurrence-monthly').hide();
+      $('.bill-recurrence-yearly').hide();
+    }
+  
     if (frequency === 'weekly') {
       $('.bill-recurrence-weekly').show();
       $('.bill-recurrence-monthly').hide();
