@@ -80,37 +80,40 @@
       <label for="monthly">Monthy</label>
       <input type="radio" id="Yearly" name="bill-recurring-value" value="yearly">
       <label for="Yearly">Yearly</label>
-    </div>
 
-    <!-- If bill recurs weekly -->
-    <div hidden class="bill-recurrence-weekly">
-      <p>What day of the week does this bill recur?</p>
-      <select>
-        <option value="Monday">Monday</option> 
-        <option value="Tuesday">Tuesday</option> 
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option> 
-        <option value="Friday">Friday</option> 
-        <option value="Saturday">Saturday</option>
-        <option value="Sunday">Sunday</option> 
+      <!-- If bill recurs weekly -->
+      <div hidden class="bill-recurrence-weekly">
+        <p>What day of the week does this bill recur?</p>
+        <select>
+          <option value="Monday">Monday</option> 
+          <option value="Tuesday">Tuesday</option> 
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option> 
+          <option value="Friday">Friday</option> 
+          <option value="Saturday">Saturday</option>
+          <option value="Sunday">Sunday</option> 
+          <button type="submit">Submit</button>
+        </select>
+      </div>
+
+      <!-- If bill recurs monthly -->
+      <div hidden class="bill-recurrence-monthly">
+        <p>What day of the month does this bill recur?</p>
+        <select class="daydropdown"></select> 
         <button type="submit">Submit</button>
-      </select>
+      </div>
+
+      <!-- If bill recurs yearly -->
+      <div hidden class="bill-recurrence-yearly">
+        <p>What date does this bill recur?</p>
+        <select class="daydropdown"></select> 
+        <select class="monthdropdown"></select> 
+        <button type="submit">Submit</button>
+      </div>
+
     </div>
 
-    <!-- If bill recurs monthly -->
-    <div hidden class="bill-recurrence-monthly">
-      <p>What day of the month does this bill recur?</p>
-      <select class="daydropdown"></select> 
-      <button type="submit">Submit</button>
-    </div>
 
-     <!-- If bill recurs yearly -->
-     <div hidden class="bill-recurrence-yearly">
-      <p>What date does this bill recur?</p>
-      <select class="daydropdown"></select> 
-      <select class="monthdropdown"></select> 
-      <button type="submit">Submit</button>
-    </div>
 
     <button type="submit">Submit</button>
   </form>
