@@ -128,34 +128,46 @@ function listenIfBillIsRecurring () {
 }
 
 function billRecurringFrequency () {
-  $('input:radio[name="bill-recurring-value"]').change(function(){
+
+  $('input:radio[name="bill-recurring-value"]').change(function() {
+
     let frequency = $("input[name='bill-recurring-value']:checked").val();
     console.log(frequency);
-    const frequencyOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
+    const frequencyOptions = ['daily', 'weekly', 'monthly', 'yearly'];
 
-    if (frequency === 'Daily') {
-      // do something
+    /*function hideAllOthers () {
+      console.log('hide all is running');
+      for (let i = 0; i < frequencyOptions.length; i++) {
+        if (frequencyOptions[i] === frequency || frequencyOptions[i] === 'daily') {
+          continue;
+        }
+        console.log($(`.bill-recurrence-${frequencyOptions[i]}).hide()`));
+        $(`.bill-recurrence-${frequencyOptions[i]}`).hide();
+      }
     }
 
-    if (frequency === 'Weekly') {
-      $('.bill-recurrence-weekly').show();
-    }
-
-    if (frequency === 'Monthly') {
-      // do something
-    }
-
-    if (frequency === 'Yearly') {
+    $(`bill-recurrence-${frequency}`).show();
+    hideAllOthers();*/
+    if (frequency === 'daily') {
       // do something
     }
     // depending on the value of frequency, hide all other form options, in case user changes mind
-    function hideAllOthers () {
-      for (let i = 0; i < frequencyOptions.length; i++) {
-        if (frequencyOptions[i] === frequency) {
-          continue;
-        }
+    if (frequency === 'weekly') {
+      $('.bill-recurrence-weekly').show();
+      $('.bill-recurrence-monthly').hide();
+      $('.bill-recurrence-yearly').hide();
+    }
 
-      }
+    if (frequency === 'monthly') {
+      $('.bill-recurrence-weekly').hide();
+      $('.bill-recurrence-monthly').show();
+      $('.bill-recurrence-yearly').hide();
+    }
+
+    if (frequency === 'yearly') {
+      $('.bill-recurrence-weekly').hide();
+      $('.bill-recurrence-monthly').hide();
+      $('.bill-recurrence-yearly').show();
     }
 
   });
