@@ -54,11 +54,10 @@
 
     <!-- If bill is not recurring, when is it due? -->
     <p>When is this bill due?</p>
-    <form action="" name="someform">
-      <select id="daydropdown"></select> 
-      <select id="monthdropdown"></select> 
-      <select id="yeardropdown"></select> 
-    </form>
+    <select class="daydropdown"></select> 
+    <select class="monthdropdown"></select> 
+    <select class="yeardropdown"></select>
+    <button type="submit">Submit</button>
 
     <!-- If bill is recurring, how often? -->
     <p>How often does this bill recur?</p>
@@ -71,6 +70,30 @@
     <input type="radio" id="Yearly" name="bill-recurring-value" value="Yearly">
     <label for="Yearly">Yearly</label>
 
+    <!-- If bill recurs weekly -->
+    <p>What day of the week does this bill recur?</p>
+    <select>
+      <option value="Monday">Monday</option> 
+      <option value="Tuesday">Tuesday</option> 
+      <option value="Wednesday">Wednesday</option>
+      <option value="Thursday">Thursday</option> 
+      <option value="Friday">Friday</option> 
+      <option value="Saturday">Saturday</option>
+      <option value="Sunday">Sunday</option> 
+      <button type="submit">Submit</button>
+    </select>
+
+    <!-- If bill recurs monthly -->
+    <p>What day of the month does this bill recur?</p>
+    <select class="daydropdown"></select> 
+    <button type="submit">Submit</button>
+
+     <!-- If bill recurs yearly -->
+     <p>When date does this bill recur?</p>
+     <select class="daydropdown"></select> 
+     <select class="monthdropdown"></select> 
+     <button type="submit">Submit</button>
+     
 
     <button type="submit">Submit</button>
   </form>

@@ -69,36 +69,36 @@ function formatBill (bill) {
     </div>`;
 }
 
-/***********************************************
-* Drop Down Date select script- by JavaScriptKit.com
-* This notice MUST stay intact for use
-* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and more
-***********************************************/
-
-var monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
 
 function populatedropdown (dayfield, monthfield, yearfield) {
   const today = new Date();
-  var dayfield=document.getElementById(dayfield);
-  var monthfield=document.getElementById(monthfield);
-  var yearfield=document.getElementById(yearfield);
-  for (var i = 0 ; i < 31; i++) {
-    //select today's day
-    dayfield.options[i] = new Option(i, i + 1);
-    dayfield.options[today.getDate()]=new Option(today.getDate(), today.getDate(), true, true);
+  var dayfield = document.getElementsByClassName(dayfield);
+  var monthfield = document.getElementsByClassName(monthfield);
+  var yearfield = document.getElementsByClassName(yearfield);
+  for (let j = 0; j < dayfield.length; j++) {
+    for (var i = 1; i <= 31; i++) {
+      //select today's day
+      dayfield[j].options[i] = new Option(i, i + 1);
+      dayfield[j].options[today.getDate()]=new Option(today.getDate(), today.getDate(), true, true);
+    }
   }
-  for (var m = 0; m < 12; m++) {
-    //select today's month
-    monthfield.options[m]=new Option(monthtext[m], monthtext[m]);
-    monthfield.options[today.getMonth()]=new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true);
+  for (let j = 0; j < monthfield.length; j++) {
+    for (var m = 0; m < 12; m++) {
+      //select today's month
+      monthfield[j].options[m]=new Option(monthtext[m], monthtext[m]);
+      monthfield[j].options[today.getMonth()]=new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true);
+    }
   }
   var thisyear = today.getFullYear();
-  for (var y = 0; y < 20; y++) {
-    yearfield.options[y]=new Option(thisyear, thisyear);
-    thisyear+=1;
-}
-  //select today's year
-  yearfield.options[0]=new Option(today.getFullYear(), today.getFullYear(), true, true);
+  for (let j = 0; j < yearfield.length; j++) {
+    for (var y = 0; y < 20; y++) {
+      yearfield[j].options[y] = new Option(thisyear, thisyear);
+      thisyear+=1;
+    }
+    // select today's year
+    yearfield[j].options[0] = new Option(today.getFullYear(), today.getFullYear(), true, true);
+  }
 }
 
 
