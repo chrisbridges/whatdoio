@@ -29,9 +29,9 @@
     <ul id="one-time-owed-me"></ul>
   </section>
 
-  <button>+ Add New Bill</button>
-<!-- TODO: Users need to be able to add new bills -->
-  <form role="form" id="new-bill-form">
+  <!-- TODO: Users need to be able to add new bills -->
+  <button id="add-new-bill">+ Add New Bill</button>
+  <form hidden role="form" id="new-bill-form">
     <legend>New Bill</legend>
 
     <label for="bill-title">Bill Title:</label>
@@ -53,11 +53,13 @@
     <label for="no">No</label>
 
     <!-- If bill is not recurring, when is it due? -->
-    <p>When is this bill due?</p>
-    <select class="daydropdown"></select> 
-    <select class="monthdropdown"></select> 
-    <select class="yeardropdown"></select>
-    <button type="submit">Submit</button>
+    <div hidden class="when-is-bill-due">
+      <p>When is this bill due?</p>
+      <select class="daydropdown"></select> 
+      <select class="monthdropdown"></select> 
+      <select class="yeardropdown"></select>
+      <button type="submit">Submit</button>
+    </div>
 
     <!-- If bill is recurring, how often? -->
     <p>How often does this bill recur?</p>
@@ -93,7 +95,7 @@
      <select class="daydropdown"></select> 
      <select class="monthdropdown"></select> 
      <button type="submit">Submit</button>
-     
+
 
     <button type="submit">Submit</button>
   </form>

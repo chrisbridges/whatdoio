@@ -71,7 +71,7 @@ function formatBill (bill) {
 
 const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
 
-function populatedropdown (dayfield, monthfield, yearfield) {
+function populateDateDropdowns (dayfield, monthfield, yearfield) {
   const today = new Date();
   var dayfield = document.getElementsByClassName(dayfield);
   var monthfield = document.getElementsByClassName(monthfield);
@@ -101,10 +101,18 @@ function populatedropdown (dayfield, monthfield, yearfield) {
   }
 }
 
+function addNewBill () {
+  console.log('addnewBill working');
+  $('#add-new-bill').click(function () {
+    $('#new-bill-form').show();
+  });
+}
+
 
 $(
+  addNewBill,
   checkForAuthToken,
-  populatedropdown("daydropdown", "monthdropdown", "yeardropdown")
+  populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown")
 );
 
 
