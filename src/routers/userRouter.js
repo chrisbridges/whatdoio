@@ -37,7 +37,7 @@ router.post('/', jwtAuth, (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     {$push: {bills: req.body}},
-    {safe: true, upsert: true})
+    {safe: true, upsert: true}) // look this up
     .then(user => {
       res.json(user.serialize());
     })
@@ -48,6 +48,9 @@ router.post('/', jwtAuth, (req, res) => {
 });
 
 // TODO: add endpoint for users to delete bills
+router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
+  
+});
 // TODO STRETCH: add endpoint for users to edit bills
 
 router.get('/logout', (req, res) => {

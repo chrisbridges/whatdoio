@@ -69,6 +69,7 @@ function formatBill (bill) {
     </div>`;
 }
 
+// SOURCED FROM XYZ
 const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
 
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
@@ -79,7 +80,7 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
   for (let j = 0; j < dayfield.length; j++) {
     for (var i = 1; i <= 31; i++) {
       //select today's day
-      dayfield[j].options[i] = new Option(i, i + 1);
+      dayfield[j].options[i] = new Option(i, i);
       dayfield[j].options[today.getDate()]=new Option(today.getDate(), today.getDate(), true, true);
     }
   }
@@ -203,16 +204,28 @@ function postNewBill () {
   // reset form values and hide again
 }
 
+// how to grab id for specific bill to delete
+
+
 
 // TODO: only addnewbill or checkforauthtoken is running, depending on position?
-$(
-  showNewBillForm,
-  //listenIfBillIsRecurring,
-  //checkForAuthToken,
-  populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown")
-);
+// $(
+//   showNewBillForm,
+//   listenIfBillIsRecurring,
+//   checkForAuthToken,
+//   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown")
+// );
 
-$(checkForAuthToken);
-$(listenIfBillIsRecurring);
-$(billRecurringFrequency);
-$(postNewBill);
+// $(checkForAuthToken);
+// $(listenIfBillIsRecurring);
+// $(billRecurringFrequency);
+// $(postNewBill);
+
+$(document).ready(function() {
+  showNewBillForm();
+  listenIfBillIsRecurring();
+  checkForAuthToken();
+  populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
+  billRecurringFrequency();
+  postNewBill();
+});
