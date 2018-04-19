@@ -1,11 +1,13 @@
+let token = localStorage.getItem('authToken');
+
 function checkForAuthToken () {
-  let token = localStorage.getItem('authToken');
+
   if (token) {
-    // fetch user bills
+    // fetch user bills if authenticated
     console.log('access allowed');
     fetchUserBills(token);
   } else {
-    // redirect
+    // redirect to login
     window.location.href = '/login';
   }
 }
@@ -61,7 +63,7 @@ function formatBill (bill) {
   billParties = billParties.join(', ');
 
   return `
-    <div class="bill">
+    <div data-id=${bill._id} class="bill">
       <p class="due-date">${bill.dueDate}</p>
       <p class="bill-title">${bill.title}</p>
       <p class="bill-parties">from ${billParties}</p>
@@ -103,7 +105,7 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
 }
 
 function showNewBillForm () {
-  console.log('addnewBill working');
+  // console.log('addnewBill working');
   $('#add-new-bill').click(function () {
     $('#new-bill-form').show();
   });
@@ -155,6 +157,20 @@ function billRecurringFrequency () {
   });
 }
 
+function payingOrReceiving () {
+  // console.log('payingOrReceiving running');
+  $('input:radio[name="bill-payer-input"]').change(function() {
+    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+      $('.bill-paid-by-me').show();
+      $('.bill-paid-to-me').hide();
+    }
+    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+      $('.bill-paid-by-me').hide();
+      $('.bill-paid-to-me').show();
+    }
+  });
+}
+
 function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
@@ -193,25 +209,41 @@ function postNewBill () {
       let month = $('.when-is-bill-due .monthdropdown').val();
       let year = $('.when-is-bill-due .yeardropdown').val();
       dueDate = `${month} ${day} ${year}`;
-      console.log(dueDate);
     }
-/*
+    //define billPayer and billReceiver
+    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+      billPayer = ['Me'];
+      // These variables need to be able to accept array and accept multiple names accordingly
+      billReceiver = $("input[name='bill-paid-by-me-input']:checked").val();
+    }
+    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+      billReceiver = ['Me'];
+      // These variables need to be able to accept array and accept multiple names accordingly
+      billPayer = $("input[name='bill-paid-to-me-input']:checked").val();
+    }
+
     $.ajax({
       type: "POST",
       url: 'user',
       dataType: 'json',
       headers: {Authorization: `Bearer ${token}`},
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify(),
-      success: function(data) {
-        console.log(data);
-        
-      },
+      contentType: "application/json",
+      data: JSON.stringify({
+        for: billPayer, 
+        from: billReceiver, 
+        amount: amount, 
+        title: title, 
+        dueDate: dueDate, 
+        recurring: recurring, 
+        interval: interval
+      }),
+      success: displayUserBills,
       error: function(error) {console.log(error)}
     });
-*/
+
   });
-  // reset form values and hide again
+  // reset form values and hide form again
+  // only show submit button when all required fields are filled
 }
 
 // how to grab id for specific bill to delete
@@ -224,4 +256,5 @@ $(document).ready(function() {
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   billRecurringFrequency();
   postNewBill();
+  payingOrReceiving();
 });
