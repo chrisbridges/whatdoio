@@ -31,19 +31,19 @@ function displayUserBills (response) {
     if (bill.for.length === 1 && bill.for[0] === me && bill.recurring === true) {
       //bills that I owe and are recurring
         //append bill to recurring bills for me
-      $('#recurring-I-owe').append(`<li>${formattedBill}</li>`);
+      $('#recurring-I-owe').append(`<li><div>${formattedBill}</div></li>`);
     } else if (bill.for.length === 1 && bill.for[0] === me && bill.recurring === false) {
       //append bill to one-time bills for me
-      $('#one-time-I-owe').append(`<li>${formattedBill}</li>`);
+      $('#one-time-I-owe').append(`<li><div>${formattedBill}</div></li>`);
     }
 
     //bills that are due to me
     if (bill.from.length === 1 && bill.from[0] === me && bill.recurring === true) {
       //bills that i am owed and are recurring
-      $('#recurring-owed-me').append(`<li>${formattedBill}</li>`);
+      $('#recurring-owed-me').append(`<li><div>${formattedBill}</div></li>`);
     } else if (bill.from.length === 1 && bill.from[0] === me && bill.recurring === false) {
       //append bill to one-time bills for others
-      $('#one-time-owed-me').append(`<li>${formattedBill}</li>`);
+      $('#one-time-owed-me').append(`<li><div>${formattedBill}</div></li>`);
     }
   }
 }
@@ -69,7 +69,7 @@ function formatBill (bill) {
     </div>`;
 }
 
-// SOURCED FROM XYZ
+// INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
 const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
 
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
@@ -156,7 +156,6 @@ function billRecurringFrequency () {
 }
 
 function postNewBill () {
-  
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
     event.preventDefault();
@@ -164,6 +163,9 @@ function postNewBill () {
     let interval;
     const title = $('#bill-title-input').val();
     const amount = $('#bill-amount-input').val();
+    let dueDate;
+    let billPayer; // who is paying money ('for' in my schema)
+    let billReceiver; // who is receiving money ('from' in my schema)
     // check if bill is recurring
     if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
       recurring = true;
@@ -171,6 +173,7 @@ function postNewBill () {
     if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
       recurring = false;
     }
+    // if it is recurring, what is the frequency?
     if (recurring) {
       const frequencyValues = {
         daily: '1d',
@@ -183,14 +186,21 @@ function postNewBill () {
     } else {
       interval = null;
     }
-    //const dueDate;
-    //const for;
-    //const from;
+    // define dueDate
+    // if bill is not recurring, dueDate is specific date
+    if (!recurring) {
+      let day = $('.when-is-bill-due .daydropdown').val();
+      let month = $('.when-is-bill-due .monthdropdown').val();
+      let year = $('.when-is-bill-due .yeardropdown').val();
+      dueDate = `${month} ${day} ${year}`;
+      console.log(dueDate);
+    }
 /*
     $.ajax({
       type: "POST",
       url: 'user',
       dataType: 'json',
+      headers: {Authorization: `Bearer ${token}`},
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(),
       success: function(data) {
@@ -205,21 +215,7 @@ function postNewBill () {
 }
 
 // how to grab id for specific bill to delete
-
-
-
-// TODO: only addnewbill or checkforauthtoken is running, depending on position?
-// $(
-//   showNewBillForm,
-//   listenIfBillIsRecurring,
-//   checkForAuthToken,
-//   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown")
-// );
-
-// $(checkForAuthToken);
-// $(listenIfBillIsRecurring);
-// $(billRecurringFrequency);
-// $(postNewBill);
+  // see bottom of user.html
 
 $(document).ready(function() {
   showNewBillForm();
