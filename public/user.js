@@ -76,6 +76,14 @@ function formatBill (bill) {
     </div>`;
 }
 
+function deleteBill () {
+  $('.deleteBill').on('click', function () {
+    // 
+    const billID = $('.deleteBill').parent().data("id");
+    console.log(billID);
+  });
+}
+
 // INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
 const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
 
@@ -272,4 +280,5 @@ $(document).ready(function() {
   billRecurringFrequency();
   postNewBill();
   payingOrReceiving();
+  deleteBill();
 });

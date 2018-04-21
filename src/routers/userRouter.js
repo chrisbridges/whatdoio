@@ -49,7 +49,16 @@ router.post('/', jwtAuth, (req, res) => {
 
 // TODO: add endpoint for users to delete bills
 router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
-  
+  const {userID, billID} = req.params;
+  console.log(userID + '\n' + billID);
+  User.deleteBill(billID)
+    .then(user => {
+      res.json(user.serialize());
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: 'Trouble deleting bill'});
+    });
 });
 // TODO STRETCH: add endpoint for users to edit bills
 
