@@ -56,12 +56,16 @@
     <div hidden class="bill-paid-to-me">
       <label for="bill-paid-to-me-input">Who is paying you this bill?</label>
       <input type="text" name="bill-paid-to-me-input" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <button class="add-additional-party">Add Additional</button>
     </div>
 
     <!-- If bill is to be paid by me -->
     <div hidden class="bill-paid-by-me">
       <label for="bill-paid-by-me-input">To whom are you paying this bill?</label>
       <input type="text" name="bill-paid-by-me-input" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <!-- add this button only when more than 1 party is present
+        <button class="remove-additional-party">X</button> -->
+      <button class="add-additional-party">Add Additional</button>
     </div>
 
     <!-- Is this bill recurring? -->
@@ -79,7 +83,6 @@
       <select class="daydropdown"></select> 
       <select class="monthdropdown"></select> 
       <select class="yeardropdown"></select>
-      <!-- <button type="submit">Submit</button> -->
     </div>
 
     <!-- If bill is recurring, how often? -->
@@ -144,8 +147,3 @@
   bill
   <button class="deleteBill">Button</button>
 </div>  -->
-
-<!-- 
-  Data attribute
-  Strings and numbers?
--->

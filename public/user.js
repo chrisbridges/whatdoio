@@ -33,41 +33,46 @@ function displayUserBills (response) {
     if (bill.for.length === 1 && bill.for[0] === me && bill.recurring === true) {
       //bills that I owe and are recurring
         //append bill to recurring bills for me
-      $('#recurring-I-owe').append(`<li><div>${formattedBill}</div></li>`);
+      $('#recurring-I-owe').append(`<li>${formattedBill}</li>`);
     } else if (bill.for.length === 1 && bill.for[0] === me && bill.recurring === false) {
       //append bill to one-time bills for me
-      $('#one-time-I-owe').append(`<li><div>${formattedBill}</div></li>`);
+      $('#one-time-I-owe').append(`<li>${formattedBill}</li>`);
     }
 
     //bills that are due to me
     if (bill.from.length === 1 && bill.from[0] === me && bill.recurring === true) {
       //bills that i am owed and are recurring
-      $('#recurring-owed-me').append(`<li><div>${formattedBill}</div></li>`);
+      $('#recurring-owed-me').append(`<li>${formattedBill}</li>`);
     } else if (bill.from.length === 1 && bill.from[0] === me && bill.recurring === false) {
       //append bill to one-time bills for others
-      $('#one-time-owed-me').append(`<li><div>${formattedBill}</div></li>`);
+      $('#one-time-owed-me').append(`<li>${formattedBill}</li>`);
     }
   }
 }
 
 function formatBill (bill) {
+  console.log(bill);
   let billParties;
   let parties;
-  if (bill.from.includes('Me')) {
-    billParties = bill.for;
+  if (bill["from"].includes('Me')) {
+    billParties = bill["for"];
   } else {
-    billParties = bill.from;
+    billParties = bill["from"];
   }
+  console.log(billParties);
  // for whichever group (for or from) that doesn't contain me
-  // join those together with a comma
-  billParties = billParties.join(', ');
-
+  // join those together with a comma, if multiple parties involved
+  if (billParties.length > 1) {
+    billParties = billParties.join(', ');
+  }
+  // TODO: billParties showing as undefined
   return `
     <div data-id=${bill._id} class="bill">
       <p class="due-date">${bill.dueDate}</p>
       <p class="bill-title">${bill.title}</p>
       <p class="bill-parties">from ${billParties}</p>
       <p class="bill-amount">$${bill.amount}</p>
+      <button class="deleteBill">X</button>
     </div>`;
 }
 
@@ -157,16 +162,38 @@ function billRecurringFrequency () {
   });
 }
 
+let billPayer; // who is paying money ('for' in my schema)
+let billReceiver; // who is receiving money ('from' in my schema)
+
 function payingOrReceiving () {
   // console.log('payingOrReceiving running');
   $('input:radio[name="bill-payer-input"]').change(function() {
     if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
       $('.bill-paid-by-me').show();
       $('.bill-paid-to-me').hide();
+      billPayer = ['Me'];
+      // billReceiver = the value(s) from form
     }
     if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
       $('.bill-paid-by-me').hide();
       $('.bill-paid-to-me').show();
+      billReceiver = ['Me'];
+      // billPayer = the value(s) from form
+    }
+  });
+}
+
+function listenForBillPayer () {
+  $('input:radio[name="bill-payer-input"]').change(function() {
+    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+      billPayer = ['Me'];
+      // These variables need to be able to accept array and accept multiple names accordingly
+      billReceiver = $("input[name='bill-paid-by-me-input']:checked").val();
+    }
+    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+      billReceiver = ['Me'];
+      // These variables need to be able to accept array and accept multiple names accordingly
+      billPayer = $("input[name='bill-paid-to-me-input']:checked").val();
     }
   });
 }
@@ -180,8 +207,6 @@ function postNewBill () {
     const title = $('#bill-title-input').val();
     const amount = $('#bill-amount-input').val();
     let dueDate;
-    let billPayer; // who is paying money ('for' in my schema)
-    let billReceiver; // who is receiving money ('from' in my schema)
     // check if bill is recurring
     if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
       recurring = true;
@@ -211,16 +236,6 @@ function postNewBill () {
       dueDate = `${month} ${day} ${year}`;
     }
     //define billPayer and billReceiver
-    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
-      billPayer = ['Me'];
-      // These variables need to be able to accept array and accept multiple names accordingly
-      billReceiver = $("input[name='bill-paid-by-me-input']:checked").val();
-    }
-    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
-      billReceiver = ['Me'];
-      // These variables need to be able to accept array and accept multiple names accordingly
-      billPayer = $("input[name='bill-paid-to-me-input']:checked").val();
-    }
 
     $.ajax({
       type: "POST",
@@ -250,9 +265,9 @@ function postNewBill () {
   // see bottom of user.html
 
 $(document).ready(function() {
+  checkForAuthToken();
   showNewBillForm();
   listenIfBillIsRecurring();
-  checkForAuthToken();
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   billRecurringFrequency();
   postNewBill();
