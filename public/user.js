@@ -1,21 +1,36 @@
-let token = localStorage.getItem('authToken');
+function parseJwt (token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace('-', '+').replace('_', '/');
+  return JSON.parse(window.atob(base64));
+};
+
+function getUserIDFromToken () {
+  const result = parseJwt(getToken());
+  return result.user._id;
+}
+
+console.log(getUserIDFromToken());
+
+function getToken () {
+  return localStorage.getItem('authToken');
+}
 
 function checkForAuthToken () {
-
-  if (token) {
+  if (getToken()) {
     // fetch user bills if authenticated
     console.log('access allowed');
-    fetchUserBills(token);
+    // console.log(token);
+    fetchUserBills();
   } else {
     // redirect to login
     window.location.href = '/login';
   }
 }
 
-function fetchUserBills (token) {
+function fetchUserBills () {
   $.ajax({
     type: 'GET',
-    headers: {Authorization: `Bearer ${token}`},
+    headers: {Authorization: `Bearer ${getToken()}`},
     contentType: "application/json",
     success: displayUserBills,
     error: function(error) {console.error(error)}
@@ -80,7 +95,18 @@ function deleteBill () {
   $('.bills').on('click', '.deleteBill', function (event) {
     // need to listen on DOM element that's already there
     const billID = $(this).parent().data("id");
-    console.log(billID);
+    const userID = getUserIDFromToken();
+
+    $.ajax({
+      type: "DELETE",
+      url: `user/${userID}/bills/${billID}`,
+      dataType: 'json',
+      headers: {Authorization: `Bearer ${getToken()}`},
+      contentType: "application/json",
+      // data: JSON.stringify({}),
+      success: fetchUserBills,
+      error: function(error) {console.log(error)}
+    });
   });
 }
 
@@ -249,7 +275,7 @@ function postNewBill () {
       type: "POST",
       url: 'user',
       dataType: 'json',
-      headers: {Authorization: `Bearer ${token}`},
+      headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
       data: JSON.stringify({
         for: billPayer, 
@@ -260,7 +286,9 @@ function postNewBill () {
         recurring: recurring, 
         interval: interval
       }),
-      success: fetchUserBills,
+      success: function () {
+        fetchUserBills();
+      },
       error: function(error) {console.log(error)}
     });
 
