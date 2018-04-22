@@ -50,8 +50,10 @@ router.post('/', jwtAuth, (req, res) => {
 // TODO: add endpoint for users to delete bills
 router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
+  const user = req.user;
+  console.log(user);
   console.log(userID + '\n' + billID);
-  User.deleteBill(billID)
+  user.deleteBill(billID)
     .then(user => {
       res.json(user.serialize());
     })

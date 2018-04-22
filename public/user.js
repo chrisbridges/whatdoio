@@ -77,9 +77,9 @@ function formatBill (bill) {
 }
 
 function deleteBill () {
-  $('.deleteBill').on('click', function () {
-    // 
-    const billID = $('.deleteBill').parent().data("id");
+  $('.bills').on('click', '.deleteBill', function (event) {
+    // need to listen on DOM element that's already there
+    const billID = $(this).parent().data("id");
     console.log(billID);
   });
 }
@@ -212,8 +212,8 @@ function postNewBill () {
     event.preventDefault();
     let recurring;
     let interval;
-    const title = $('#bill-title-input').val();
-    const amount = $('#bill-amount-input').val();
+    let title = $('#bill-title-input').val();
+    let amount = $('#bill-amount-input').val();
     let dueDate;
     // check if bill is recurring
     if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
@@ -260,7 +260,7 @@ function postNewBill () {
         recurring: recurring, 
         interval: interval
       }),
-      success: displayUserBills,
+      success: fetchUserBills,
       error: function(error) {console.log(error)}
     });
 
@@ -278,7 +278,10 @@ $(document).ready(function() {
   listenIfBillIsRecurring();
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   billRecurringFrequency();
-  postNewBill();
   payingOrReceiving();
+  postNewBill();
   deleteBill();
 });
+
+// 
+// TODO: if bill amount is over 4 digits, add commas
