@@ -38,8 +38,8 @@ function fetchUserBills () {
 }
 
 function displayUserBills (response) {
-  // console.log(response);
-  // TODO: clear out previously shown bills before appending new ones
+  // clear out previously shown bills before appending new ones
+  $('ul').empty();
   const me = 'Me';
   for (let bill of response.bills) {
     //determine if bill is to be paid by me, or to me
@@ -150,7 +150,7 @@ function showNewBillForm () {
     $('#new-bill-form').show();
   });
 }
-
+// TODO: fix this
 let billPayer; // who is paying money ('for' in my schema)
 let billReceiver; // who is receiving money ('from' in my schema)
 
@@ -294,8 +294,8 @@ function postNewBill () {
     });
 
   });
-  // reset form values and hide form again
-  // only show submit button when all required fields are filled
+  // TODO: reset form values and hide form again
+  // STRETCH: only show submit button when all required fields are filled
 }
 
 // how to grab id for specific bill to delete
