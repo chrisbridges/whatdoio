@@ -348,11 +348,29 @@ function postNewBill () {
         fetchUserBills();
         // clear and hide form
         $('#new-bill-form').trigger("reset").hide();
-        // $('#new-bill-form').find("div:hidden").hide();
+        hideFormDivs();
       },
       error: function(error) {console.log(error)}
     });
 
+  });
+}
+
+function hideFormDivs () {
+  const divsToRemainVisible = [
+    'bill-title',
+    'bill-amount',
+    'bill-payer',
+    'bill-recurring'
+  ];
+
+  $('#new-bill-form *').filter('div').each(function (div) {
+    $(this).hide();
+    for (let i = 0; i < divsToRemainVisible.length; i++) {
+      if ($(this).hasClass(divsToRemainVisible[i])) {
+        $(this).show();
+      }
+    }
   });
 }
 
