@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
     recurring: {type: Boolean, required: true},
     title: {type: String, required: true},
     amount: {type: Number},
-    dueDate: {type: Date},
+    dueDate: {type: String},
     interval: {
       type: String,
       enum: [null, '1d', '7d', '1m', '1y']

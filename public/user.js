@@ -1,3 +1,5 @@
+// function to parseJWT (used to retrieve userID without making another call to back-end)
+  // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript
 function parseJwt (token) {
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace('-', '+').replace('_', '/');
@@ -8,8 +10,6 @@ function getUserIDFromToken () {
   const result = parseJwt(getToken());
   return result.user._id;
 }
-
-console.log(getUserIDFromToken());
 
 function getToken () {
   return localStorage.getItem('authToken');
@@ -39,6 +39,7 @@ function fetchUserBills () {
 
 function displayUserBills (response) {
   // clear out previously shown bills before appending new ones
+  // STRETCH: display bills by which is due soonest
   $('ul').empty();
   const me = 'Me';
   for (let bill of response.bills) {
@@ -67,7 +68,7 @@ function displayUserBills (response) {
 }
 
 function formatBill (bill) {
-  console.log(bill);
+  // console.log(bill);
   let billParties;
   let parties;
   if (bill["from"].includes('Me')) {
@@ -75,7 +76,7 @@ function formatBill (bill) {
   } else {
     billParties = bill["from"];
   }
-  console.log(billParties);
+  console.log(bill.dueDate);
  // for whichever group (for or from) that doesn't contain me
   // join those together with a comma, if multiple parties involved
   if (billParties.length > 1) {
@@ -84,7 +85,7 @@ function formatBill (bill) {
   // TODO: billParties showing as undefined
   return `
     <div data-id=${bill._id} class="bill">
-      <p class="due-date">${bill.dueDate}</p>
+      <p class="due-date">Due: ${bill.dueDate}</p>
       <p class="bill-title">${bill.title}</p>
       <p class="bill-parties">from ${billParties}</p>
       <p class="bill-amount">$${bill.amount}</p>
@@ -151,8 +152,10 @@ function showNewBillForm () {
   });
 }
 // TODO: fix this
-let billPayer; // who is paying money ('for' in my schema)
-let billReceiver; // who is receiving money ('from' in my schema)
+//let billPayer; // who is paying money ('for' in my schema)
+//let billReceiver; // who is receiving money ('from' in my schema)
+// collect values upon form submission
+  // for whichever variable has no value, that one is equal to 'Me'
 
 function payingOrReceiving () {
   $('input:radio[name="bill-payer-input"]').change(function() {
@@ -161,14 +164,14 @@ function payingOrReceiving () {
     if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
       $('.bill-paid-by-me').show().find(':input').attr('required', true);
       $('.bill-paid-to-me').hide().find(':input').attr('required', false);
-      billPayer = ['Me'];
+      //billPayer = ['Me'];
       // billReceiver = the value(s) from form
     }
     // if bill is to be paid TO me
     if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
       $('.bill-paid-by-me').hide().find(':input').attr('required', false);
       $('.bill-paid-to-me').show().find(':input').attr('required', true);
-      billReceiver = ['Me'];
+      //billReceiver = ['Me'];
       // billPayer = the value(s) from form
     }
   });
@@ -184,9 +187,24 @@ function listenIfBillIsRecurring () {
       //billRecurringFrequency();
     }
     // if bill is not recurring, ask for date due
-    if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
+    else if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
       $('.when-is-bill-due').show().find(':input').attr('required', true);
       $('.bill-recurrence-frequency').hide().find(':input').attr('required', false);
+    }
+  });
+}
+
+function listenForBillPayer () {
+  $('input:radio[name="bill-payer-input"]').change(function() {
+    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+      billPayer = ['Me'];
+      // These variables need to be able to accept array and accept multiple names accordingly
+      billReceiver = $("input[name='bill-paid-by-me-input']:checked").val();
+    }
+    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+      billReceiver = ['Me'];
+      // These variables need to be able to accept array and accept multiple names accordingly
+      billPayer = $("input[name='bill-paid-to-me-input']:checked").val();
     }
   });
 }
@@ -218,21 +236,6 @@ function billRecurringFrequency () {
   });
 }
 
-function listenForBillPayer () {
-  $('input:radio[name="bill-payer-input"]').change(function() {
-    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
-      billPayer = ['Me'];
-      // These variables need to be able to accept array and accept multiple names accordingly
-      billReceiver = $("input[name='bill-paid-by-me-input']:checked").val();
-    }
-    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
-      billReceiver = ['Me'];
-      // These variables need to be able to accept array and accept multiple names accordingly
-      billPayer = $("input[name='bill-paid-to-me-input']:checked").val();
-    }
-  });
-}
-
 function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
@@ -259,18 +262,72 @@ function postNewBill () {
       };
       const frequencyValue = $("input[name='bill-recurring-value']:checked").val();
       interval = frequencyValues[frequencyValue];
+
+      (function defineDueDate () {
+
+        function addNumberSuffix (num) {
+          let j = num % 10;
+          let k = num % 100;
+          if (j === 1 && k !== 11) {
+            return num + "st";
+          }
+          if (j === 2 && k !== 12) {
+            return num + "nd";
+          }
+          if (j === 3 && k !== 13) {
+            return num + "rd";
+          }
+          return num + "th";
+        }
+
+        if (interval === '1d') {
+          dueDate = `Every day`;
+        }
+        if (interval === '7d') {
+          const weekday = $('.bill-recurrence-weekly select').val();
+          dueDate = `Every ${weekday}`;
+        }
+        if (interval === '1m') {
+          let date = $('.bill-recurrence-monthly select').val();
+          dueDate = `${addNumberSuffix(date)} of every month`;
+        }
+        if (interval === '1y') {
+          const day = $('.bill-recurrence-yearly .daydropdown').val();
+          const month = $('.bill-recurrence-yearly .monthdropdown').val();
+          dueDate = `${month} ${addNumberSuffix(day)} of every year`;
+        }
+      })();
+
     } else {
       interval = null;
-    }
-    // define dueDate
-    // if bill is not recurring, dueDate is specific date
-    if (!recurring) {
       let day = $('.when-is-bill-due .daydropdown').val();
       let month = $('.when-is-bill-due .monthdropdown').val();
       let year = $('.when-is-bill-due .yeardropdown').val();
-      dueDate = `${month} ${day} ${year}`;
+      dueDate = `${month} ${day}, ${year}`;
     }
+    // define dueDate
+    // if bill is not recurring, dueDate is specific date
+    // if (!recurring) {
+    //   let day = $('.when-is-bill-due .daydropdown').val();
+    //   let month = $('.when-is-bill-due .monthdropdown').val();
+    //   let year = $('.when-is-bill-due .yeardropdown').val();
+    //   dueDate = `${month} ${day} ${year}`;
+    // }
     //define billPayer and billReceiver
+    let billPayer;
+    let billReceiver;
+    (function defineBillParties () {
+      if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+        billPayer = ['Me'];
+        billReceiver = [$('#bill-paid-by-me-input').val()];
+        console.log(billPayer, billReceiver);
+      }
+      if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+        billPayer = [$('#bill-paid-to-me-input').val()];
+        billReceiver = ['Me'];
+        console.log(billPayer, billReceiver);
+      }
+    })();
 
     $.ajax({
       type: "POST",
@@ -289,17 +346,16 @@ function postNewBill () {
       }),
       success: function () {
         fetchUserBills();
+        // clear and hide form
+        $('#new-bill-form').trigger("reset").hide();
+        // $('#new-bill-form').find("div:hidden").hide();
       },
       error: function(error) {console.log(error)}
     });
 
   });
-  // TODO: reset form values and hide form again
-  // STRETCH: only show submit button when all required fields are filled
 }
 
-// how to grab id for specific bill to delete
-  // see bottom of user.html
 
 $(document).ready(function() {
   checkForAuthToken();

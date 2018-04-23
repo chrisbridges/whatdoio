@@ -35,12 +35,12 @@
 
     <div class="bill-title">
       <label for="bill-title-input">Bill Title:</label>
-      <input type="text" name="bill-title" id="bill-title-input" placeholder="Rent, Utilities">
+      <input type="text" name="bill-title" id="bill-title-input" placeholder="Rent, Utilities" required>
     </div>
 
     <div class="bill-amount">
       <label for="bill-amount-input">Amount:</label>
-      <input type="number" min="0" id="bill-amount-input" placeholder="$100">
+      <input type="number" min="0" id="bill-amount-input" placeholder="$100" required>
     </div>
 
     <!-- Am I paying or receiving this bill? -->
@@ -96,7 +96,7 @@
       <label for="monthly">Monthly</label>
       <input type="radio" id="Yearly" name="bill-recurring-value" value="yearly">
       <label for="Yearly">Yearly</label>
-    </div>
+    
 
       <!-- If bill recurs weekly -->
       <div hidden class="bill-recurrence-weekly">
@@ -127,6 +127,7 @@
         <select class="monthdropdown"></select> 
         <!-- <button type="submit">Submit</button> -->
       </div>
+    </div>
 
     <button type="submit">Submit</button>
   </form>
