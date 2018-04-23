@@ -18,8 +18,6 @@ function getToken () {
 function checkForAuthToken () {
   if (getToken()) {
     // fetch user bills if authenticated
-    console.log('access allowed');
-    // console.log(token);
     fetchUserBills();
   } else {
     // redirect to login
@@ -68,7 +66,6 @@ function displayUserBills (response) {
 }
 
 function formatBill (bill) {
-  // console.log(bill);
   let billParties;
   let parties;
   if (bill["from"].includes('Me')) {
@@ -76,19 +73,22 @@ function formatBill (bill) {
   } else {
     billParties = bill["from"];
   }
-  console.log(bill.dueDate);
  // for whichever group (for or from) that doesn't contain me
   // join those together with a comma, if multiple parties involved
   if (billParties.length > 1) {
     billParties = billParties.join(', ');
   }
-  // TODO: billParties showing as undefined
+  function amountWithCommas (x) {
+    let parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  }
   return `
     <div data-id=${bill._id} class="bill">
       <p class="due-date">Due: ${bill.dueDate}</p>
       <p class="bill-title">${bill.title}</p>
       <p class="bill-parties">from ${billParties}</p>
-      <p class="bill-amount">$${bill.amount}</p>
+      <p class="bill-amount">$${amountWithCommas(bill.amount)}</p>
       <button class="deleteBill">X</button>
     </div>`;
 }
@@ -106,7 +106,7 @@ function deleteBill () {
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
       success: fetchUserBills,
-      error: function(error) {console.log(error)}
+      error: function(error) {console.error(error)}
     });
   });
 }
@@ -213,6 +213,24 @@ function billRecurringFrequency () {
   });
 }
 
+function addAdditionalParty () {
+  $('.add-additional-party').on('click', function (event) {
+    event.preventDefault();
+    if ($(this).parent().hasClass('bill-paid-to-me')) {
+      const billPaidToMeHTML = `
+        <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+        <button class="add-additional-party">Add Additional</button>`;
+      $(this).parent().append(billPaidToMeHTML);
+    }
+    else if ($(this).parent().hasClass('bill-paid-by-me')) {
+      const billPaidByMeHTML = `
+      <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <button class="add-additional-party">Add Additional</button>`;
+      $(this).parent().append(billPaidByMeHTML);
+    }
+  });
+}
+
 function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
@@ -282,25 +300,21 @@ function postNewBill () {
       let year = $('.when-is-bill-due .yeardropdown').val();
       dueDate = `${month} ${day}, ${year}`;
     }
-    // define dueDate
-    // if bill is not recurring, dueDate is specific date
-    // if (!recurring) {
-    //   let day = $('.when-is-bill-due .daydropdown').val();
-    //   let month = $('.when-is-bill-due .monthdropdown').val();
-    //   let year = $('.when-is-bill-due .yeardropdown').val();
-    //   dueDate = `${month} ${day} ${year}`;
-    // }
     //define billPayer and billReceiver
     let billPayer;
     let billReceiver;
     (function defineBillParties () {
       if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
         billPayer = ['Me'];
-        billReceiver = [$('#bill-paid-by-me-input').val()];
+        billReceiver = $("input[name='bill-paid-by-me-input[]']").map(function() {
+          return $(this).val();
+        }).get();
         console.log(billPayer, billReceiver);
       }
       if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
-        billPayer = [$('#bill-paid-to-me-input').val()];
+        billPayer = $("input[name='bill-paid-to-me-input[]']").map(function() {
+          return $(this).val();
+        }).get();
         billReceiver = ['Me'];
         console.log(billPayer, billReceiver);
       }
@@ -327,7 +341,7 @@ function postNewBill () {
         $('#new-bill-form').trigger("reset").hide();
         hideFormDivs();
       },
-      error: function(error) {console.log(error)}
+      error: function(error) {console.error(error)}
     });
 
   });
@@ -359,9 +373,7 @@ $(document).ready(function() {
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   billRecurringFrequency();
   payingOrReceiving();
+  addAdditionalParty();
   postNewBill();
   deleteBill();
 });
-
-// 
-// TODO: if bill amount is over 4 digits, add commas
