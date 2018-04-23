@@ -105,17 +105,15 @@ function deleteBill () {
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
-      // data: JSON.stringify({}),
       success: fetchUserBills,
       error: function(error) {console.log(error)}
     });
   });
 }
 
-// INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
-const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
+  // INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
+  const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
   const today = new Date();
   var dayfield = document.getElementsByClassName(dayfield);
   var monthfield = document.getElementsByClassName(monthfield);
@@ -146,16 +144,10 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
 }
 
 function showNewBillForm () {
-  // console.log('addnewBill working');
   $('#add-new-bill').click(function () {
     $('#new-bill-form').show();
   });
 }
-// TODO: fix this
-//let billPayer; // who is paying money ('for' in my schema)
-//let billReceiver; // who is receiving money ('from' in my schema)
-// collect values upon form submission
-  // for whichever variable has no value, that one is equal to 'Me'
 
 function payingOrReceiving () {
   $('input:radio[name="bill-payer-input"]').change(function() {
@@ -190,21 +182,6 @@ function listenIfBillIsRecurring () {
     else if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
       $('.when-is-bill-due').show().find(':input').attr('required', true);
       $('.bill-recurrence-frequency').hide().find(':input').attr('required', false);
-    }
-  });
-}
-
-function listenForBillPayer () {
-  $('input:radio[name="bill-payer-input"]').change(function() {
-    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
-      billPayer = ['Me'];
-      // These variables need to be able to accept array and accept multiple names accordingly
-      billReceiver = $("input[name='bill-paid-by-me-input']:checked").val();
-    }
-    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
-      billReceiver = ['Me'];
-      // These variables need to be able to accept array and accept multiple names accordingly
-      billPayer = $("input[name='bill-paid-to-me-input']:checked").val();
     }
   });
 }
@@ -355,7 +332,7 @@ function postNewBill () {
 
   });
 }
-
+// reset hidden divs back to hidden upon form submit
 function hideFormDivs () {
   const divsToRemainVisible = [
     'bill-title',
