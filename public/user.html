@@ -46,9 +46,9 @@
     <!-- Am I paying or receiving this bill? -->
     <div class="bill-payer">
       <p>Will this bill be paid <span class="underline">by you</span> or <span class="underline">to you</span>?</p>
-      <input type="radio" id="by-me" name="bill-payer-input" value="By Me">
+      <input type="radio" id="by-me" name="bill-payer-input" value="By Me" required>
       <label for="by-me">By Me</label>
-      <input type="radio" id="to-me" name="bill-payer-input" value="To Me">
+      <input type="radio" id="to-me" name="bill-payer-input" value="To Me" required>
       <label for="to-me">To Me</label>
     </div>
     
@@ -71,9 +71,9 @@
     <!-- Is this bill recurring? -->
     <div class="bill-recurring">
       <p>Is this bill recurring?</p>
-      <input type="radio" id="yes" name="bill-recurring-input" value="Yes">
+      <input type="radio" id="yes" name="bill-recurring-input" value="Yes" required>
       <label for="yes">Yes</label>
-      <input type="radio" id="no" name="bill-recurring-input" value="No">
+      <input type="radio" id="no" name="bill-recurring-input" value="No" required>
       <label for="no">No</label>
     </div>
 
@@ -96,6 +96,7 @@
       <label for="monthly">Monthly</label>
       <input type="radio" id="Yearly" name="bill-recurring-value" value="yearly">
       <label for="Yearly">Yearly</label>
+    </div>
 
       <!-- If bill recurs weekly -->
       <div hidden class="bill-recurrence-weekly">
@@ -126,8 +127,6 @@
         <select class="monthdropdown"></select> 
         <!-- <button type="submit">Submit</button> -->
       </div>
-
-    </div>
 
     <button type="submit">Submit</button>
   </form>

@@ -39,6 +39,7 @@ function fetchUserBills () {
 
 function displayUserBills (response) {
   // console.log(response);
+  // TODO: clear out previously shown bills before appending new ones
   const me = 'Me';
   for (let bill of response.bills) {
     //determine if bill is to be paid by me, or to me
@@ -150,21 +151,42 @@ function showNewBillForm () {
   });
 }
 
+let billPayer; // who is paying money ('for' in my schema)
+let billReceiver; // who is receiving money ('from' in my schema)
+
+function payingOrReceiving () {
+  $('input:radio[name="bill-payer-input"]').change(function() {
+    // if bill is to be paid BY me
+      // for whichever part of form is hidden, no longer require that question
+    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+      $('.bill-paid-by-me').show().find(':input').attr('required', true);
+      $('.bill-paid-to-me').hide().find(':input').attr('required', false);
+      billPayer = ['Me'];
+      // billReceiver = the value(s) from form
+    }
+    // if bill is to be paid TO me
+    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+      $('.bill-paid-by-me').hide().find(':input').attr('required', false);
+      $('.bill-paid-to-me').show().find(':input').attr('required', true);
+      billReceiver = ['Me'];
+      // billPayer = the value(s) from form
+    }
+  });
+}
+
 function listenIfBillIsRecurring () {
   $('input:radio[name="bill-recurring-input"]').change(function(){
     // if bill is recurring, ask how often
       // hide counter-question in case user changes mind
     if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
-      // console.log('Yes');
-      $('.bill-recurrence-frequency').show();
-      $('.when-is-bill-due').hide();
+      $('.bill-recurrence-frequency').show().find(':input').attr('required', true);
+      $('.when-is-bill-due').hide().find(':input').attr('required', false);
       //billRecurringFrequency();
     }
     // if bill is not recurring, ask for date due
     if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
-      // console.log('No');
-      $('.when-is-bill-due').show();
-      $('.bill-recurrence-frequency').hide();
+      $('.when-is-bill-due').show().find(':input').attr('required', true);
+      $('.bill-recurrence-frequency').hide().find(':input').attr('required', false);
     }
   });
 }
@@ -192,27 +214,6 @@ function billRecurringFrequency () {
       $('.bill-recurrence-weekly').hide();
       $('.bill-recurrence-monthly').hide();
       $('.bill-recurrence-yearly').show();
-    }
-  });
-}
-
-let billPayer; // who is paying money ('for' in my schema)
-let billReceiver; // who is receiving money ('from' in my schema)
-
-function payingOrReceiving () {
-  // console.log('payingOrReceiving running');
-  $('input:radio[name="bill-payer-input"]').change(function() {
-    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
-      $('.bill-paid-by-me').show();
-      $('.bill-paid-to-me').hide();
-      billPayer = ['Me'];
-      // billReceiver = the value(s) from form
-    }
-    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
-      $('.bill-paid-by-me').hide();
-      $('.bill-paid-to-me').show();
-      billReceiver = ['Me'];
-      // billPayer = the value(s) from form
     }
   });
 }
