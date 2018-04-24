@@ -235,8 +235,19 @@ function addAdditionalParty () {
 }
 
 function removeAdditionalParty () {
-  // listen on existing element of DOM
-  
+  $('.bill-paid-to-me').on('click', '.remove-additional-party', function (event) {
+    event.preventDefault();
+    const parties = $('.bill-paid-to-me *').filter('input');
+    parties[parties.length - 1].remove();
+    $(this).remove();
+  });
+
+  $('.bill-paid-by-me').on('click', '.remove-additional-party', function (event) {
+    event.preventDefault();
+    const parties = $('.bill-paid-by-me *').filter('input');
+    parties[parties.length - 1].remove();
+    $(this).remove();
+  });
 }
 
 function postNewBill () {
@@ -404,6 +415,10 @@ function removeExtraBillPayerInputs () {
   $('.remove-additional-party').remove();
 }
 
+function editBill () {
+
+}
+
 $(document).ready(function() {
   checkForAuthToken();
   showNewBillForm();
@@ -415,6 +430,5 @@ $(document).ready(function() {
   removeAdditionalParty();
   postNewBill();
   deleteBill();
+  editBill();
 });
-
-// TODO: create edit bill endpoint
