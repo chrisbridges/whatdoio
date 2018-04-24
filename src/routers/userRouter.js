@@ -24,15 +24,10 @@ router.get('/', (req, res, next) => {
         console.error(err);
 		  	res.status(500).json({message: 'Internal server error'});
       });
-      //send back serialized user info and process bills client-side
-  //use jwtAuth middleware, if authorized, display data
-    //else, access denied
-  // respond with user data
 });
 
 // TODO: add endpoint for users to add bills
 router.post('/', jwtAuth, (req, res) => {
-  //console.log(req.body);
 
   User.findByIdAndUpdate(
     req.user._id,
@@ -63,7 +58,6 @@ router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
     });
 });
 
-// TODO STRETCH: add endpoint for users to edit bills
 router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
   const updated = {};
@@ -77,8 +71,6 @@ router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
   User.update({'bills._id': billID}, {$set: updated})
     .then(updatedBill => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'Trouble editing bill' }));
-
-
 
 });
 

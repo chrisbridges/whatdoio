@@ -92,6 +92,7 @@ function formatBill (bill) {
       <p class="bill-title">${bill.title}</p>
       <p class="bill-parties">from ${billParties}</p>
       <p class="bill-amount">$${amountWithCommas(limitNumbersAfterDecimal(bill.amount))}</p>
+      <button class="editBill">Edit</button>
       <button class="deleteBill">X</button>
     </div>`;
 }
@@ -416,7 +417,117 @@ function removeExtraBillPayerInputs () {
 }
 
 function editBill () {
-  
+  // show form with current bill values prepopulated
+  // fetchUserBills on success
+  $('.bills').on('click', '.editBill', function (event) {
+    event.preventDefault();
+    const parentDiv = $(this).parent().html();
+    const billTitle = parentDiv.$('.bill-title').val();
+    console.log(billTitle);
+
+    const editBillFormHTML = `
+    <form role="form" id="edit-bill-form">
+
+    <div class="bill-title">
+      <label for="bill-title-input">Bill Title:</label>
+      <input type="text" name="bill-title" id="bill-title-input" placeholder="Rent, Utilities" required>
+    </div>
+
+    <div class="bill-amount">
+      <label for="bill-amount-input">Amount:</label>
+      <input type="number" min="0" step="0.01" id="bill-amount-input" placeholder="$100" required>
+    </div>
+
+    <!-- Am I paying or receiving this bill? -->
+    <div class="bill-payer">
+      <p>Will this bill be paid <span class="underline">by you</span> or <span class="underline">to you</span>?</p>
+      <input type="radio" id="by-me" name="bill-payer-input" value="By Me" required>
+      <label for="by-me">By Me</label>
+      <input type="radio" id="to-me" name="bill-payer-input" value="To Me" required>
+      <label for="to-me">To Me</label>
+    </div>
+    
+    <!-- If bill is to be paid to me -->
+    <div hidden class="bill-paid-to-me">
+      <label for="bill-paid-to-me-input[]">Who is paying you this bill?</label>
+      <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <button class="add-additional-party">Add Additional</button>
+    </div>
+
+    <!-- If bill is to be paid by me -->
+    <div hidden class="bill-paid-by-me">
+      <label for="bill-paid-by-me-input[]">To whom are you paying this bill?</label>
+      <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <button class="add-additional-party">Add Additional</button>
+    </div>
+
+    <!-- Is this bill recurring? -->
+    <div class="bill-recurring">
+      <p>Is this bill recurring?</p>
+      <input type="radio" id="yes" name="bill-recurring-input" value="Yes" required>
+      <label for="yes">Yes</label>
+      <input type="radio" id="no" name="bill-recurring-input" value="No" required>
+      <label for="no">No</label>
+    </div>
+
+    <!-- If bill is not recurring, when is it due? -->
+    <div hidden class="when-is-bill-due">
+      <p>When is this bill due?</p>
+      <select class="daydropdown"></select> 
+      <select class="monthdropdown"></select> 
+      <select class="yeardropdown"></select>
+    </div>
+
+    <!-- If bill is recurring, how often? -->
+    <div hidden class="bill-recurrence-frequency">
+      <p>How often does this bill recur?</p>
+      <input type="radio" id="daily" name="bill-recurring-value" value="daily">
+      <label for="daily">Daily</label>
+      <input type="radio" id="weekly" name="bill-recurring-value" value="weekly">
+      <label for="weekly">Weekly</label>
+      <input type="radio" id="monthly" name="bill-recurring-value" value="monthly">
+      <label for="monthly">Monthly</label>
+      <input type="radio" id="Yearly" name="bill-recurring-value" value="yearly">
+      <label for="Yearly">Yearly</label>
+    
+
+      <!-- If bill recurs weekly -->
+      <div hidden class="bill-recurrence-weekly">
+        <p>What day of the week does this bill recur?</p>
+        <select>
+          <option value="Monday">Monday</option> 
+          <option value="Tuesday">Tuesday</option> 
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option> 
+          <option value="Friday">Friday</option> 
+          <option value="Saturday">Saturday</option>
+          <option value="Sunday">Sunday</option> 
+          <!-- <button type="submit">Submit</button> -->
+        </select>
+      </div>
+
+      <!-- If bill recurs monthly -->
+      <div hidden class="bill-recurrence-monthly">
+        <p>What day of the month does this bill recur?</p>
+        <select class="daydropdown"></select> 
+        <!-- <button type="submit">Submit</button> -->
+      </div>
+
+      <!-- If bill recurs yearly -->
+      <div hidden class="bill-recurrence-yearly">
+        <p>What date does this bill recur?</p>
+        <select class="daydropdown"></select> 
+        <select class="monthdropdown"></select> 
+        <!-- <button type="submit">Submit</button> -->
+      </div>
+    </div>
+
+    <button type="submit">Save</button>
+  </form>`;
+
+  $(this).closest('li').html(editBillFormHTML);
+    
+  });
 }
 
 $(document).ready(function() {
