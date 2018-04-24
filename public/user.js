@@ -78,6 +78,9 @@ function formatBill (bill) {
   if (billParties.length > 1) {
     billParties = billParties.join(', ');
   }
+  function limitNumbersAfterDecimal (num) {
+    return num.toFixed(2);
+  }
   function amountWithCommas (x) {
     let parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -88,7 +91,7 @@ function formatBill (bill) {
       <p class="due-date">Due: ${bill.dueDate}</p>
       <p class="bill-title">${bill.title}</p>
       <p class="bill-parties">from ${billParties}</p>
-      <p class="bill-amount">$${amountWithCommas(bill.amount)}</p>
+      <p class="bill-amount">$${amountWithCommas(limitNumbersAfterDecimal(bill.amount))}</p>
       <button class="deleteBill">X</button>
     </div>`;
 }
@@ -212,7 +215,7 @@ function billRecurringFrequency () {
     }
   });
 }
-
+// remove additional add party buttons from new inputs
 function addAdditionalParty () {
   $('.add-additional-party').on('click', function (event) {
     event.preventDefault();
