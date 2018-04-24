@@ -215,27 +215,44 @@ function billRecurringFrequency () {
     }
   });
 }
-// TODO: remove additional add party buttons from new inputs
+
 function addAdditionalParty () {
   $('.add-additional-party').on('click', function (event) {
     event.preventDefault();
     if ($(this).parent().hasClass('bill-paid-to-me')) {
       const billPaidToMeHTML = `
-        <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">`;
+        <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+        <button class="remove-additional-party">X</button>`;
       $(billPaidToMeHTML).insertBefore(this);
     }
     else if ($(this).parent().hasClass('bill-paid-by-me')) {
       const billPaidByMeHTML = `
-        <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">`;
+        <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+        <button class="remove-additional-party">X</button>`;
       $(billPaidByMeHTML).insertBefore(this);
     }
   });
+}
+
+function removeAdditionalParty () {
+  // listen on existing element of DOM
+  
 }
 
 function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
     event.preventDefault();
+
+    (function trimTextInputs () {
+      
+      const title = $('#bill-title-input').val();
+      console.log(title);
+      $('#bill-title-input').val($.trim(title));
+      console.log($('#bill-title-input').val());
+      
+    })();
+
     let recurring;
     let interval;
     let title = $('#bill-title-input').val();
@@ -310,14 +327,14 @@ function postNewBill () {
         billReceiver = $("input[name='bill-paid-by-me-input[]']").map(function() {
           return $(this).val();
         }).get();
-        console.log(billPayer, billReceiver);
+        // console.log(billPayer, billReceiver);
       }
       if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
         billPayer = $("input[name='bill-paid-to-me-input[]']").map(function() {
           return $(this).val();
         }).get();
         billReceiver = ['Me'];
-        console.log(billPayer, billReceiver);
+        // console.log(billPayer, billReceiver);
       }
     })();
 
@@ -341,6 +358,9 @@ function postNewBill () {
         // clear and hide form
         $('#new-bill-form').trigger("reset").hide();
         hideFormDivs();
+        removeExtraBillPayerInputs();
+        // temp fix to remove added bill parties inputs
+        // location.reload();
       },
       error: function(error) {console.error(error)}
     });
@@ -366,6 +386,23 @@ function hideFormDivs () {
   });
 }
 
+// removes all additional bill party inputs and buttons on submit
+function removeExtraBillPayerInputs () {
+  const billPayerDivs = [
+    '.bill-paid-to-me',
+    '.bill-paid-by-me'
+  ];
+
+  for (let i = 0; i < billPayerDivs.length; i++) {
+    $(`${billPayerDivs[i]} *`).filter('input').each(function (input) {
+      if (input === 0) {
+        return;
+      }
+      $(this).remove();
+    });
+  }
+  $('.remove-additional-party').remove();
+}
 
 $(document).ready(function() {
   checkForAuthToken();
@@ -375,6 +412,7 @@ $(document).ready(function() {
   billRecurringFrequency();
   payingOrReceiving();
   addAdditionalParty();
+  removeAdditionalParty();
   postNewBill();
   deleteBill();
 });
