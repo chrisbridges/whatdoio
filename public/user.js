@@ -215,21 +215,19 @@ function billRecurringFrequency () {
     }
   });
 }
-// remove additional add party buttons from new inputs
+// TODO: remove additional add party buttons from new inputs
 function addAdditionalParty () {
   $('.add-additional-party').on('click', function (event) {
     event.preventDefault();
     if ($(this).parent().hasClass('bill-paid-to-me')) {
       const billPaidToMeHTML = `
-        <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
-        <button class="add-additional-party">Add Additional</button>`;
-      $(this).parent().append(billPaidToMeHTML);
+        <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">`;
+      $(billPaidToMeHTML).insertBefore(this);
     }
     else if ($(this).parent().hasClass('bill-paid-by-me')) {
       const billPaidByMeHTML = `
-      <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
-      <button class="add-additional-party">Add Additional</button>`;
-      $(this).parent().append(billPaidByMeHTML);
+        <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">`;
+      $(billPaidByMeHTML).insertBefore(this);
     }
   });
 }
@@ -380,3 +378,5 @@ $(document).ready(function() {
   postNewBill();
   deleteBill();
 });
+
+// TODO: create edit bill endpoint
