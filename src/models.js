@@ -44,9 +44,7 @@ userSchema.statics.hashPassword = function(password) {
 
 userSchema.methods.deleteBill = function(billID) {
   var user = this;
-
   user.bills.pull({_id: billID});
-  // Returns a promise in Mongoose 4.X
   return user.save();
 };
 

@@ -416,7 +416,7 @@ function removeExtraBillPayerInputs () {
 }
 
 function editBill () {
-
+  
 }
 
 $(document).ready(function() {

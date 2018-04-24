@@ -50,9 +50,6 @@ router.post('/', jwtAuth, (req, res) => {
 // TODO: add endpoint for users to delete bills
 router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
-  // const user = req.user;
-  // console.log(user);
-  console.log(userID + '\n' + billID);
   let user;
   User.findById(userID)
     .then(_user => {
@@ -65,7 +62,25 @@ router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
       res.status(500).json({message: 'Trouble deleting bill'});
     });
 });
+
 // TODO STRETCH: add endpoint for users to edit bills
+router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
+  const {userID, billID} = req.params;
+  const updated = {};
+  const updateableFields = ['title', 'from', 'for', 'amount', 'recurring', 'dueDate', 'interval'];
+  updateableFields.forEach(field => {
+    if (field in req.body) {
+      updated[`bills.$.${field}`] = req.body[field];
+    }
+  });
+
+  User.update({'bills._id': billID}, {$set: updated})
+    .then(updatedBill => res.status(204).end())
+    .catch(err => res.status(500).json({ message: 'Trouble editing bill' }));
+
+
+
+});
 
 router.get('/logout', (req, res) => {
   //remove token from local storage - CLIENT-SIDE
