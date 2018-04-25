@@ -1,3 +1,35 @@
+// substitute for global variables?
+// let global = (function() {
+//   let bills = [];
+
+//   return {
+//     editBills: function (arg) {
+//       bills = arg;
+//     },
+//     getBills: function () {
+//       return bills;
+//     }
+//   }
+// })();
+
+// console.log(global.getBills());
+// global.editBills(['test'])
+// console.log(global.getBills());
+
+  // if you have to declare a global var, just declare one
+// var MyApp = {
+//   globals: {
+//     foo: "bar",
+//     fizz: "buzz"
+//   }
+// };
+
+// console.log(MyApp.globals.foo);
+// MyApp.globals.foo = 'foo';
+// console.log(MyApp.globals.foo);
+
+let bills = [];
+
 // function to parseJWT (used to retrieve userID without making another call to back-end)
   // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript
 function parseJwt (token) {
@@ -18,19 +50,19 @@ function getToken () {
 function checkForAuthToken () {
   if (getToken()) {
     // fetch user bills if authenticated
-    fetchUserBills();
+    fetchUserBills(displayUserBills);
   } else {
     // redirect to login
     window.location.href = '/login';
   }
 }
 
-function fetchUserBills () {
+function fetchUserBills (callback) {
   $.ajax({
     type: 'GET',
     headers: {Authorization: `Bearer ${getToken()}`},
     contentType: "application/json",
-    success: displayUserBills,
+    success: callback,
     error: function(error) {console.error(error)}
   });
 }
@@ -109,7 +141,7 @@ function deleteBill () {
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
-      success: fetchUserBills,
+      success: fetchUserBills(displayUserBills),
       error: function(error) {console.error(error)}
     });
   });
@@ -250,7 +282,7 @@ function removeAdditionalParty () {
     $(this).remove();
   });
 }
-
+// DOES (and should)
 function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
@@ -366,7 +398,7 @@ function postNewBill () {
         interval: interval
       }),
       success: function () {
-        fetchUserBills();
+        fetchUserBills(displayUserBills);
         // clear and hide form
         $('#new-bill-form').trigger("reset").hide();
         hideFormDivs();
@@ -380,6 +412,7 @@ function postNewBill () {
   });
 }
 // reset hidden divs back to hidden upon form submit
+  // DOES
 function hideFormDivs () {
   const divsToRemainVisible = [
     'bill-title',
@@ -399,6 +432,7 @@ function hideFormDivs () {
 }
 
 // removes all additional bill party inputs and buttons on submit
+  // DOESN'T
 function removeExtraBillPayerInputs () {
   const billPayerDivs = [
     '.bill-paid-to-me',
@@ -421,9 +455,16 @@ function editBill () {
   // fetchUserBills on success
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
-    const parentDiv = $(this).parent().html();
-    const billTitle = parentDiv.$('.bill-title').val();
-    console.log(billTitle);
+
+    // fetchUserBills
+      // write new func to display form values as success callback
+
+    const $billID = $(this).parent().data('id');
+    const $billTitle = $(this).parent().find('.bill-title').text();
+    const $billAmount = $(this).parent().find('.bill-amount').text();
+    const $billDueDate = $(this).parent().find('.due-date').text();
+    const $billParties = $(this).parent().find('.bill-parties').text();
+    console.log($billAmount);
 
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
@@ -526,6 +567,9 @@ function editBill () {
   </form>`;
 
   $(this).closest('li').html(editBillFormHTML);
+  $('#edit-bill-form #bill-title-input').val($billTitle);
+  $('#edit-bill-form #bill-amount-input').val($billAmount);
+  
     
   });
 }
