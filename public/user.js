@@ -150,8 +150,8 @@ function deleteBill () {
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
-      success: function () {
-        fetchUserBills(displayUserBills);
+      success: function (response) {
+        storeBillsLocally(response);
       },
       error: function(error) {console.error(error)}
     });
