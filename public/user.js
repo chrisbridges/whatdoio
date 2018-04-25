@@ -466,17 +466,7 @@ function editBill () {
   // fetchUserBills on success
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
-
-    // fetchUserBills
-      // write new func to display form values as success callback
-
     const $billID = $(this).parent().data('id');
-    const $billTitle = $(this).parent().find('.bill-title').text();
-    const $billAmount = $(this).parent().find('.bill-amount').text();
-    const $billDueDate = $(this).parent().find('.due-date').text();
-    const $billParties = $(this).parent().find('.bill-parties').text();
-    console.log($billAmount);
-
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
 
@@ -578,10 +568,21 @@ function editBill () {
   </form>`;
 
   $(this).closest('li').html(editBillFormHTML);
-  $('#edit-bill-form #bill-title-input').val($billTitle);
-  $('#edit-bill-form #bill-amount-input').val($billAmount);
-  
+  // $('#edit-bill-form #bill-title-input').val($billTitle);
+  // // billAmount needs to be raw integer with no $$$
+  // $('#edit-bill-form #bill-amount-input').val($billAmount);
+  const bill = bills.find(function (element) {
+    return element._id === $billID;
+  });
+  // capture bill values, display them appropriately on form
     
+
+  payingOrReceiving();
+  addAdditionalParty();
+  removeAdditionalParty();
+  listenIfBillIsRecurring();
+  billRecurringFrequency();
+  populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   });
 }
 
