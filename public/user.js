@@ -62,7 +62,10 @@ function fetchUserBills (callback) {
     type: 'GET',
     headers: {Authorization: `Bearer ${getToken()}`},
     contentType: "application/json",
-    success: callback,
+    success: function (response) {
+      callback(response);
+      storeBillsLocally(response);
+    },
     error: function(error) {console.error(error)}
   });
 }
@@ -127,6 +130,11 @@ function formatBill (bill) {
       <button class="editBill">Edit</button>
       <button class="deleteBill">X</button>
     </div>`;
+}
+
+function storeBillsLocally (response) {
+  bills = response.bills;
+  console.log(bills);
 }
 
 function deleteBill () {
