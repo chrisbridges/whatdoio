@@ -63,19 +63,24 @@ function fetchUserBills (callback) {
     headers: {Authorization: `Bearer ${getToken()}`},
     contentType: "application/json",
     success: function (response) {
-      callback(response);
       storeBillsLocally(response);
     },
     error: function(error) {console.error(error)}
   });
 }
 
-function displayUserBills (response) {
+function storeBillsLocally (response) {
+  bills = response.bills;
+  console.log(bills);
+  displayUserBills(bills);
+}
+
+function displayUserBills (bills) {
   // clear out previously shown bills before appending new ones
   // STRETCH: display bills by which is due soonest
   $('ul').empty();
   const me = 'Me';
-  for (let bill of response.bills) {
+  bills.forEach(function (bill) {
     //determine if bill is to be paid by me, or to me
       // determine if bill is recurring or not - 4 separate catergories
     const formattedBill = formatBill(bill);
@@ -97,7 +102,7 @@ function displayUserBills (response) {
       //append bill to one-time bills for others
       $('#one-time-owed-me').append(`<li>${formattedBill}</li>`);
     }
-  }
+  });
 }
 
 function formatBill (bill) {
@@ -132,12 +137,8 @@ function formatBill (bill) {
     </div>`;
 }
 
-function storeBillsLocally (response) {
-  bills = response.bills;
-  console.log(bills);
-}
-
 function deleteBill () {
+  // TODO: bills don't delete every time upon button press
   $('.bills').on('click', '.deleteBill', function (event) {
     // need to listen on DOM element that's already there
     const billID = $(this).parent().data("id");
@@ -149,7 +150,9 @@ function deleteBill () {
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
-      success: fetchUserBills(displayUserBills),
+      success: function () {
+        fetchUserBills(displayUserBills);
+      },
       error: function(error) {console.error(error)}
     });
   });
