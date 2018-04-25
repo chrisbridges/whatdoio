@@ -50,32 +50,39 @@ function getToken () {
 function checkForAuthToken () {
   if (getToken()) {
     // fetch user bills if authenticated
-    fetchUserBills(displayUserBills);
+    fetchUserBills();
   } else {
     // redirect to login
     window.location.href = '/login';
   }
 }
 
-function fetchUserBills (callback) {
+function fetchUserBills () {
+  console.log('fetch bills running');
   $.ajax({
     type: 'GET',
     headers: {Authorization: `Bearer ${getToken()}`},
     contentType: "application/json",
     success: function (response) {
+      console.log('store');
       storeBillsLocally(response);
     },
     error: function(error) {console.error(error)}
+  }).done(function () {
+    console.log('display');
+    displayUserBills(bills);
   });
 }
 
 function storeBillsLocally (response) {
+  console.log('store bills running');
   bills = response.bills;
   console.log(bills);
-  displayUserBills(bills);
+  // displayUserBills(bills);
 }
 
 function displayUserBills (bills) {
+  console.log('display bills running');
   // clear out previously shown bills before appending new ones
   // STRETCH: display bills by which is due soonest
   $('ul').empty();
@@ -137,27 +144,6 @@ function formatBill (bill) {
     </div>`;
 }
 
-function deleteBill () {
-  // TODO: bills don't delete every time upon button press
-  $('.bills').on('click', '.deleteBill', function (event) {
-    // need to listen on DOM element that's already there
-    const billID = $(this).parent().data("id");
-    const userID = getUserIDFromToken();
-
-    $.ajax({
-      type: "DELETE",
-      url: `user/${userID}/bills/${billID}`,
-      dataType: 'json',
-      headers: {Authorization: `Bearer ${getToken()}`},
-      contentType: "application/json",
-      success: function (response) {
-        storeBillsLocally(response);
-      },
-      error: function(error) {console.error(error)}
-    });
-  });
-}
-
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
   // INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
   const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
@@ -196,7 +182,7 @@ function showNewBillForm () {
   });
 }
 
-function payingOrReceiving () {
+function listenForPayingOrReceiving () {
   $('input:radio[name="bill-payer-input"]').change(function() {
     // if bill is to be paid BY me
       // for whichever part of form is hidden, no longer require that question
@@ -233,7 +219,7 @@ function listenIfBillIsRecurring () {
   });
 }
 
-function billRecurringFrequency () {
+function listenForBillRecurrenceFrequency () {
   $('input:radio[name="bill-recurring-value"]').change(function() {
     let frequency = $("input[name='bill-recurring-value']:checked").val();
 
@@ -293,90 +279,11 @@ function removeAdditionalParty () {
     $(this).remove();
   });
 }
-// DOES (and should)
+
 function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
     event.preventDefault();
-
-    (function trimTextInputs () {
-      
-      const title = $('#bill-title-input').val();
-      // console.log(title);
-      $('#bill-title-input').val($.trim(title));
-      // console.log($('#bill-title-input').val());
-      
-    })();
-
-    let recurring;
-    let interval;
-    let title = $('#bill-title-input').val();
-    let amount = $('#bill-amount-input').val();
-    let dueDate;
-    // check if bill is recurring
-    if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
-      recurring = true;
-    }
-    if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
-      recurring = false;
-    }
-    // if it is recurring, what is the frequency?
-    if (recurring) {
-      const frequencyValues = {
-        daily: '1d',
-        weekly: '7d',
-        monthly: '1m',
-        yearly: '1y'
-      };
-      const frequencyValue = $("input[name='bill-recurring-value']:checked").val();
-      interval = frequencyValues[frequencyValue];
-
-      (function defineDueDate () {
-
-        function addNumberSuffix (num) {
-          let j = num % 10;
-          let k = num % 100;
-          if (j === 1 && k !== 11) {
-            return num + "st";
-          }
-          if (j === 2 && k !== 12) {
-            return num + "nd";
-          }
-          if (j === 3 && k !== 13) {
-            return num + "rd";
-          }
-          return num + "th";
-        }
-
-        if (interval === '1d') {
-          dueDate = `Every day`;
-        }
-        if (interval === '7d') {
-          const weekday = $('.bill-recurrence-weekly select').val();
-          dueDate = `Every ${weekday}`;
-        }
-        if (interval === '1m') {
-          let date = $('.bill-recurrence-monthly select').val();
-          dueDate = `${addNumberSuffix(date)} of every month`;
-        }
-        if (interval === '1y') {
-          const day = $('.bill-recurrence-yearly .daydropdown').val();
-          const month = $('.bill-recurrence-yearly .monthdropdown').val();
-          dueDate = `${month} ${addNumberSuffix(day)} of every year`;
-        }
-      })();
-
-    } else {
-      interval = null;
-      let day = $('.when-is-bill-due .daydropdown').val();
-      let month = $('.when-is-bill-due .monthdropdown').val();
-      let year = $('.when-is-bill-due .yeardropdown').val();
-      dueDate = `${month} ${day}, ${year}`;
-    }
-    //define billPayer and billReceiver
-    let billParties = defineBillParties();
-    let billPayer = billParties.billPayer;
-    let billReceiver = billParties.billReceiver
 
     $.ajax({
       type: "POST",
@@ -384,48 +291,156 @@ function postNewBill () {
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
-      data: JSON.stringify({
-        for: billPayer, 
-        from: billReceiver, 
-        amount: amount, 
-        title: title, 
-        dueDate: dueDate, 
-        recurring: recurring, 
-        interval: interval
-      }),
-      success: function () {
-        fetchUserBills(displayUserBills);
+      data: JSON.stringify(defineBillData()),
+      success: function (response) {
+        console.log(response);
+        storeBillsLocally(response);
         // clear and hide form
         $('#new-bill-form').trigger("reset").hide();
         hideFormDivs();
         removeExtraBillPayerInputs();
-        // temp fix to remove added bill parties inputs
-        // location.reload();
       },
       error: function(error) {console.error(error)}
     });
-
   });
 }
 
-function defineBillParties () {
-  let billPayer, billReceiver;
-  if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
-    billPayer = ['Me'];
-    billReceiver = $("input[name='bill-paid-by-me-input[]']").map(function() {
-      return $(this).val();
-    }).get();
-    // console.log(billPayer, billReceiver);
-  }
-  if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
-    billPayer = $("input[name='bill-paid-to-me-input[]']").map(function() {
-      return $(this).val();
-    }).get();
-    billReceiver = ['Me'];
-    // console.log(billPayer, billReceiver);
-  }
-  return {billPayer: billPayer, billReceiver: billReceiver};
+function deleteBill () {
+  console.log('delete bills running');
+  // TODO: bills don't delete every time upon button press
+  $('.bills').on('click', '.deleteBill', function (event) {
+    // need to listen on DOM element that's already there
+    const billID = $(this).parent().data("id");
+    const userID = getUserIDFromToken();
+
+    $.ajax({
+      type: "DELETE",
+      url: `user/${userID}/bills/${billID}`,
+      dataType: 'json',
+      headers: {Authorization: `Bearer ${getToken()}`},
+      contentType: "application/json",
+      success: function (response) {
+        storeBillsLocally(response);
+      },
+      error: function(error) {console.error(error)}
+    }).done(function () {
+      displayUserBills(bills);
+    });
+  });
 }
+
+function defineBillData () {
+  let recurring = defineRecurring();
+  let interval;
+  let title = $('#bill-title-input').val();
+  let amount = $('#bill-amount-input').val();
+  let dueDate;
+  // check if bill is recurring
+  function defineRecurring (value) {
+    if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
+      value = true;
+    }
+    if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
+      value = false;
+    }
+    return value;
+  };
+  // if it is recurring, what is the frequency?
+  if (recurring) {
+    const frequencyValues = {
+      daily: '1d',
+      weekly: '7d',
+      monthly: '1m',
+      yearly: '1y'
+    };
+    const frequencyValue = $("input[name='bill-recurring-value']:checked").val();
+    interval = frequencyValues[frequencyValue];
+
+    (function defineDueDate () {
+
+      function addNumberSuffix (num) {
+        let j = num % 10;
+        let k = num % 100;
+        if (j === 1 && k !== 11) {
+          return num + "st";
+        }
+        if (j === 2 && k !== 12) {
+          return num + "nd";
+        }
+        if (j === 3 && k !== 13) {
+          return num + "rd";
+        }
+        return num + "th";
+      }
+
+      if (interval === '1d') {
+        dueDate = `Every day`;
+      }
+      if (interval === '7d') {
+        const weekday = $('.bill-recurrence-weekly select').val();
+        dueDate = `Every ${weekday}`;
+      }
+      if (interval === '1m') {
+        let date = $('.bill-recurrence-monthly select').val();
+        dueDate = `${addNumberSuffix(date)} of every month`;
+      }
+      if (interval === '1y') {
+        const day = $('.bill-recurrence-yearly .daydropdown').val();
+        const month = $('.bill-recurrence-yearly .monthdropdown').val();
+        dueDate = `${month} ${addNumberSuffix(day)} of every year`;
+      }
+    })();
+
+  } else {
+    interval = null;
+    let day = $('.when-is-bill-due .daydropdown').val();
+    let month = $('.when-is-bill-due .monthdropdown').val();
+    let year = $('.when-is-bill-due .yeardropdown').val();
+    dueDate = `${month} ${day}, ${year}`;
+  }
+
+  function defineBillParties () {
+    let billPayer, billReceiver;
+    if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+      billPayer = ['Me'];
+      billReceiver = $("input[name='bill-paid-by-me-input[]']").map(function() {
+        return $(this).val();
+      }).get();
+      // console.log(billPayer, billReceiver);
+    }
+    if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+      billPayer = $("input[name='bill-paid-to-me-input[]']").map(function() {
+        return $(this).val();
+      }).get();
+      billReceiver = ['Me'];
+      // console.log(billPayer, billReceiver);
+    }
+    return {billPayer: billPayer, billReceiver: billReceiver};
+  };
+  let billParties = defineBillParties();
+  let billPayer = billParties.billPayer;
+  let billReceiver = billParties.billReceiver
+
+
+  const data = {
+    for: billPayer, 
+    from: billReceiver, 
+    amount: amount, 
+    title: title, 
+    dueDate: dueDate, 
+    recurring: recurring, 
+    interval: interval
+  };
+
+  return data;
+}
+
+// function trimTextInputs (inputs) {
+//   let trimmedValues = inputs.forEach(function (input) {
+//     input.trim();
+//   });
+//   return trimmedValues;
+// }
 // reset hidden divs back to hidden upon form submit
   // DOES
 function hideFormDivs () {
@@ -446,8 +461,6 @@ function hideFormDivs () {
   });
 }
 
-// removes all additional bill party inputs and buttons on submit
-  // DOESN'T
 function removeExtraBillPayerInputs () {
   const billPayerDivs = [
     '.bill-paid-to-me',
@@ -581,22 +594,23 @@ function editBill () {
   // capture bill values, display them appropriately on form
     
 
-  payingOrReceiving();
   addAdditionalParty();
   removeAdditionalParty();
   listenIfBillIsRecurring();
-  billRecurringFrequency();
+  listenForBillRecurrenceFrequency();
+  listenForPayingOrReceiving();
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   });
 }
 
+// TODO: ensure that only one form (edit or new) is shown at any given time
 $(document).ready(function() {
   checkForAuthToken();
   showNewBillForm();
   listenIfBillIsRecurring();
+  listenForBillRecurrenceFrequency();
+  listenForPayingOrReceiving();
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
-  billRecurringFrequency();
-  payingOrReceiving();
   addAdditionalParty();
   removeAdditionalParty();
   postNewBill();
