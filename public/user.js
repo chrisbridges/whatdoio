@@ -302,9 +302,9 @@ function postNewBill () {
     (function trimTextInputs () {
       
       const title = $('#bill-title-input').val();
-      console.log(title);
+      // console.log(title);
       $('#bill-title-input').val($.trim(title));
-      console.log($('#bill-title-input').val());
+      // console.log($('#bill-title-input').val());
       
     })();
 
@@ -374,24 +374,9 @@ function postNewBill () {
       dueDate = `${month} ${day}, ${year}`;
     }
     //define billPayer and billReceiver
-    let billPayer;
-    let billReceiver;
-    (function defineBillParties () {
-      if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
-        billPayer = ['Me'];
-        billReceiver = $("input[name='bill-paid-by-me-input[]']").map(function() {
-          return $(this).val();
-        }).get();
-        // console.log(billPayer, billReceiver);
-      }
-      if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
-        billPayer = $("input[name='bill-paid-to-me-input[]']").map(function() {
-          return $(this).val();
-        }).get();
-        billReceiver = ['Me'];
-        // console.log(billPayer, billReceiver);
-      }
-    })();
+    let billParties = defineBillParties();
+    let billPayer = billParties.billPayer;
+    let billReceiver = billParties.billReceiver
 
     $.ajax({
       type: "POST",
@@ -421,6 +406,25 @@ function postNewBill () {
     });
 
   });
+}
+
+function defineBillParties () {
+  let billPayer, billReceiver;
+  if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
+    billPayer = ['Me'];
+    billReceiver = $("input[name='bill-paid-by-me-input[]']").map(function() {
+      return $(this).val();
+    }).get();
+    // console.log(billPayer, billReceiver);
+  }
+  if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
+    billPayer = $("input[name='bill-paid-to-me-input[]']").map(function() {
+      return $(this).val();
+    }).get();
+    billReceiver = ['Me'];
+    // console.log(billPayer, billReceiver);
+  }
+  return {billPayer: billPayer, billReceiver: billReceiver};
 }
 // reset hidden divs back to hidden upon form submit
   // DOES
