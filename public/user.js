@@ -68,9 +68,6 @@ function fetchUserBills () {
       storeBillsLocally(response);
     },
     error: function(error) {console.error(error)}
-  }).done(function () {
-    console.log('display');
-    displayUserBills(bills);
   });
 }
 
@@ -78,7 +75,7 @@ function storeBillsLocally (response) {
   console.log('store bills running');
   bills = response.bills;
   console.log(bills);
-  // displayUserBills(bills);
+  displayUserBills(bills);
 }
 
 function displayUserBills (bills) {
@@ -284,6 +281,8 @@ function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
     event.preventDefault();
+    const data = defineBillData();
+    console.log(data);
 
     $.ajax({
       type: "POST",
@@ -291,10 +290,10 @@ function postNewBill () {
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
-      data: JSON.stringify(defineBillData()),
+      data: JSON.stringify(data),
       success: function (response) {
         console.log(response);
-        storeBillsLocally(response);
+        fetchUserBills();
         // clear and hide form
         $('#new-bill-form').trigger("reset").hide();
         hideFormDivs();
