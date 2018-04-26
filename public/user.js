@@ -145,22 +145,25 @@ function showNewBillForm () {
 }
 
 function listenForPayingOrReceiving () {
-  $('input:radio[name="bill-payer-input"]').change(function() {
-    // if bill is to be paid BY me
-      // for whichever part of form is hidden, no longer require that question
+  // func is immediately invoked when called to auto-populate edit bill form
+    // listener is set for when user inputs value on add bill form
+  function showProperInputs () {
+  // if bill is to be paid BY me
+    // for whichever part of form is hidden, no longer require that question
     if ($("input[name='bill-payer-input']:checked").val() === 'By Me') {
       $('.bill-paid-by-me').show().find(':input').attr('required', true);
       $('.bill-paid-to-me').hide().find(':input').attr('required', false);
-      //billPayer = ['Me'];
-      // billReceiver = the value(s) from form
     }
     // if bill is to be paid TO me
     if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
       $('.bill-paid-by-me').hide().find(':input').attr('required', false);
       $('.bill-paid-to-me').show().find(':input').attr('required', true);
-      //billReceiver = ['Me'];
-      // billPayer = the value(s) from form
     }
+  }
+  showProperInputs();
+
+  $('input:radio[name="bill-payer-input"]').change(function() {
+    showProperInputs();
   });
 }
 
@@ -442,6 +445,7 @@ function editBill () {
   // fetchUserBills on success
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
+
     const $billID = $(this).parent().data('id');
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
@@ -543,27 +547,47 @@ function editBill () {
     <button type="submit">Save</button>
   </form>`;
 
+  $(this).closest('li').html(editBillFormHTML);
+  const bill = bills.find(function (element) {
+    return element._id === $billID;
+  });
+  console.log(bill);
+  let {amount, dueDate, interval, recurring, title} = bill;
+  let billPayer = bill.for;
+  let billReceiver = bill.from;
+  // capture bill values, display them appropriately on form
+  (function displayBillDataOnForm () {
+    // bill title
+    $('#edit-bill-form #bill-title-input').val(title);
+    // bill amount
+    $('#edit-bill-form #bill-amount-input').val(amount);
+    // Paid: By Me or To Me?
+    (function payingOrReceiving () {
+      if (billPayer[0] === 'Me' && billPayer.length === 1) {
+        $(`#edit-bill-form input[name="bill-payer-input"][value="By Me"]`).prop("checked", true);
+      }
+      else if (billReceiver[0] === 'Me' && billReceiver.length === 1) {
+        $(`#edit-bill-form input[name="bill-payer-input"][value="To Me"]`).prop("checked", true);
+      }
+    })();
+
+  })();
+  
+
+
+
+
   // save old values in vars
     // if new values !== old values
     // only send new values
       // if newValues.length === 0, don't do anything
 
-  $(this).closest('li').html(editBillFormHTML);
-  // $('#edit-bill-form #bill-title-input').val($billTitle);
-  // // billAmount needs to be raw integer with no $$$
-  // $('#edit-bill-form #bill-amount-input').val($billAmount);
-  const bill = bills.find(function (element) {
-    return element._id === $billID;
-  });
-  // capture bill values, display them appropriately on form
-    
-
-  addAdditionalParty();
-  removeAdditionalParty();
-  listenIfBillIsRecurring();
-  listenForBillRecurrenceFrequency();
-  listenForPayingOrReceiving();
-  populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
+    addAdditionalParty();
+    removeAdditionalParty();
+    listenIfBillIsRecurring();
+    listenForBillRecurrenceFrequency();
+    listenForPayingOrReceiving();
+    populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   });
 }
 
