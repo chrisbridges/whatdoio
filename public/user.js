@@ -1,41 +1,3 @@
-// substitute for global variables?
-(function() {
-  let bills = [];
-
-  return {
-    editBills: function (arg) {
-      bills = arg;
-    },
-    getBills: function () {
-      return bills;
-    }
-  }
-
-  // the rest of the file
-})();
-
-
-// IIFE?
-
-// jQuery substitute
-// document.querySelector('.classes-like-jquery-etc');
-
-// console.log(global.getBills());
-// global.editBills(['test'])
-// console.log(global.getBills());
-
-  // if you have to declare a global var, just declare one
-// var MyApp = {
-//   globals: {
-//     foo: "bar",
-//     fizz: "buzz"
-//   }
-// };
-
-// console.log(MyApp.globals.foo);
-// MyApp.globals.foo = 'foo';
-// console.log(MyApp.globals.foo);
-
 let bills = [];
 
 // function to parseJWT (used to retrieve userID without making another call to back-end)
@@ -66,13 +28,11 @@ function checkForAuthToken () {
 }
 
 function fetchUserBills () {
-  console.log('fetch bills running');
   $.ajax({
     type: 'GET',
     headers: {Authorization: `Bearer ${getToken()}`},
     contentType: "application/json",
     success: function (response) {
-      console.log('store');
       storeBillsLocally(response);
     },
     error: function(error) {console.error(error)}
@@ -80,14 +40,11 @@ function fetchUserBills () {
 }
 
 function storeBillsLocally (response) {
-  console.log('store bills running');
   bills = response.bills;
-  console.log(bills);
   displayUserBills(bills);
 }
 
 function displayUserBills (bills) {
-  console.log('display bills running');
   // clear out previously shown bills before appending new ones
   // STRETCH: display bills by which is due soonest
   $('ul').empty();
@@ -290,7 +247,6 @@ function postNewBill () {
   $("#new-bill-form").submit(function(event) {
     event.preventDefault();
     const data = defineBillData();
-    // console.log(data);
 
     $.ajax({
       type: "POST",
@@ -300,8 +256,6 @@ function postNewBill () {
       contentType: "application/json",
       data: JSON.stringify(data),
       success: function (response) {
-        // console.log(response);
-        // fetchUserBills();
         storeBillsLocally(response);
         // clear and hide form
         $('#new-bill-form').trigger("reset").hide();
@@ -314,7 +268,6 @@ function postNewBill () {
 }
 
 function deleteBill () {
-  console.log('delete bills running');
   // TODO: bills don't delete every time upon button press
   $('.bills').on('click', '.deleteBill', function (event) {
     // need to listen on DOM element that's already there
@@ -414,14 +367,12 @@ function defineBillData () {
       billReceiver = $("input[name='bill-paid-by-me-input[]']").map(function() {
         return $(this).val();
       }).get();
-      // console.log(billPayer, billReceiver);
     }
     if ($("input[name='bill-payer-input']:checked").val() === 'To Me') {
       billPayer = $("input[name='bill-paid-to-me-input[]']").map(function() {
         return $(this).val();
       }).get();
       billReceiver = ['Me'];
-      // console.log(billPayer, billReceiver);
     }
     return {billPayer: billPayer, billReceiver: billReceiver};
   };
