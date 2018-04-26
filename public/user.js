@@ -168,19 +168,24 @@ function listenForPayingOrReceiving () {
 }
 
 function listenIfBillIsRecurring () {
-  $('input:radio[name="bill-recurring-input"]').change(function(){
-    // if bill is recurring, ask how often
-      // hide counter-question in case user changes mind
+
+  function showProperInputs () {
+  // if bill is recurring, ask how often
+    // hide counter-question in case user changes mind
     if ($("input[name='bill-recurring-input']:checked").val() === 'Yes') {
       $('.bill-recurrence-frequency').show().find(':input').attr('required', true);
       $('.when-is-bill-due').hide().find(':input').attr('required', false);
-      //billRecurringFrequency();
     }
     // if bill is not recurring, ask for date due
     else if ($("input[name='bill-recurring-input']:checked").val() === 'No') {
       $('.when-is-bill-due').show().find(':input').attr('required', true);
       $('.bill-recurrence-frequency').hide().find(':input').attr('required', false);
     }
+  }
+  showProperInputs();
+  
+  $('input:radio[name="bill-recurring-input"]').change(function(){
+    showProperInputs();
   });
 }
 
@@ -564,11 +569,33 @@ function editBill () {
     // Paid: By Me or To Me?
     (function payingOrReceiving () {
       if (billPayer[0] === 'Me' && billPayer.length === 1) {
+        const input = `
+          <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+          <button class="add-additional-party">Add Additional</button>`;
         $(`#edit-bill-form input[name="bill-payer-input"][value="By Me"]`).prop("checked", true);
+        addAdditionalParty();
+        for (let i = 0; i < billReceiver.length; i ++) {
+          if (i === 0) {
+            $($('#edit-bill-form input[name="bill-paid-by-me-input[]"]')[i]).val(billReceiver[i]);
+            continue;
+          }
+          $('.add-additional-party').trigger('click');
+          $($('#edit-bill-form input[name="bill-paid-by-me-input[]"]')[i]).val(billReceiver[i]);
+        }
       }
       else if (billReceiver[0] === 'Me' && billReceiver.length === 1) {
         $(`#edit-bill-form input[name="bill-payer-input"][value="To Me"]`).prop("checked", true);
       }
+    })();
+    // bill recurring
+    (function isBillRecurring () {
+      // listenIfBillIsRecurring();
+      if (bill.recurring) {
+        $(`#edit-bill-form input[name="bill-recurring-input"][value="Yes"]`).prop("checked", true);
+      } else {
+        $(`#edit-bill-form input[name="bill-recurring-input"][value="No"]`).prop("checked", true);
+      }
+      listenIfBillIsRecurring();
     })();
 
   })();
@@ -582,7 +609,7 @@ function editBill () {
     // only send new values
       // if newValues.length === 0, don't do anything
 
-    addAdditionalParty();
+    // addAdditionalParty();
     removeAdditionalParty();
     listenIfBillIsRecurring();
     listenForBillRecurrenceFrequency();
@@ -604,6 +631,7 @@ $(document).ready(function() {
   postNewBill();
   deleteBill();
   editBill();
+  testClick();
 });
 
 // Notes for making new bill cover page - this is called a "MODAL"
@@ -617,3 +645,9 @@ $(document).ready(function() {
 // margin: 0 auto;
 
 // look into flexbox (bookmarked) to center horizontally and vertically
+
+function testClick () {
+  $('.test').on('click', function () {
+    $('.add-additional-party').trigger('click');
+  });
+}
