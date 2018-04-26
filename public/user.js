@@ -1,16 +1,24 @@
 // substitute for global variables?
-// let global = (function() {
-//   let bills = [];
+(function() {
+  let bills = [];
 
-//   return {
-//     editBills: function (arg) {
-//       bills = arg;
-//     },
-//     getBills: function () {
-//       return bills;
-//     }
-//   }
-// })();
+  return {
+    editBills: function (arg) {
+      bills = arg;
+    },
+    getBills: function () {
+      return bills;
+    }
+  }
+
+  // the rest of the file
+})();
+
+
+// IIFE?
+
+// jQuery substitute
+// document.querySelector('.classes-like-jquery-etc');
 
 // console.log(global.getBills());
 // global.editBills(['test'])
@@ -282,7 +290,7 @@ function postNewBill () {
   $("#new-bill-form").submit(function(event) {
     event.preventDefault();
     const data = defineBillData();
-    console.log(data);
+    // console.log(data);
 
     $.ajax({
       type: "POST",
@@ -292,8 +300,9 @@ function postNewBill () {
       contentType: "application/json",
       data: JSON.stringify(data),
       success: function (response) {
-        console.log(response);
-        fetchUserBills();
+        // console.log(response);
+        // fetchUserBills();
+        storeBillsLocally(response);
         // clear and hide form
         $('#new-bill-form').trigger("reset").hide();
         hideFormDivs();
@@ -583,6 +592,11 @@ function editBill () {
     <button type="submit">Save</button>
   </form>`;
 
+  // save old values in vars
+    // if new values !== old values
+    // only send new values
+      // if newValues.length === 0, don't do anything
+
   $(this).closest('li').html(editBillFormHTML);
   // $('#edit-bill-form #bill-title-input').val($billTitle);
   // // billAmount needs to be raw integer with no $$$
@@ -616,3 +630,15 @@ $(document).ready(function() {
   deleteBill();
   editBill();
 });
+
+// Notes for making new bill cover page - this is called a "MODAL"
+// display: block;
+// background-color: green;
+// position: fixed;
+// left: 0;
+// top: 0;
+// width: 600px;
+// height: 400;
+// margin: 0 auto;
+
+// look into flexbox (bookmarked) to center horizontally and vertically

@@ -27,12 +27,14 @@ router.get('/', (req, res, next) => {
 });
 
 // TODO: add endpoint for users to add bills
+// endpoint name is ambiguous - creating new user?
+  // "/:userID/bills"
 router.post('/', jwtAuth, (req, res) => {
 
   User.findByIdAndUpdate(
     req.user._id,
     {$push: {bills: req.body}},
-    {safe: true, upsert: true}) // look this up
+    {safe: true, upsert: true, new: true}) // new makes the promise return the user with the new bill
     .then(user => {
       res.json(user.serialize());
     })
@@ -60,6 +62,7 @@ router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
 
 router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
+  // cleansing the data, only using the updated object
   const updated = {};
   const updateableFields = ['title', 'from', 'for', 'amount', 'recurring', 'dueDate', 'interval'];
   updateableFields.forEach(field => {
@@ -68,7 +71,7 @@ router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
     }
   });
 
-  User.update({'bills._id': billID}, {$set: updated})
+  User.update({'bills._id': billID}, {$set: updated}, {new: true})
     .then(updatedBill => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'Trouble editing bill' }));
 
