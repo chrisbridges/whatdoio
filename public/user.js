@@ -183,14 +183,15 @@ function listenIfBillIsRecurring () {
     }
   }
   showProperInputs();
-  
+
   $('input:radio[name="bill-recurring-input"]').change(function(){
     showProperInputs();
   });
 }
 
 function listenForBillRecurrenceFrequency () {
-  $('input:radio[name="bill-recurring-value"]').change(function() {
+
+  function showProperInputs () {
     let frequency = $("input[name='bill-recurring-value']:checked").val();
 
     if (frequency === 'daily') {
@@ -213,6 +214,11 @@ function listenForBillRecurrenceFrequency () {
       $('.bill-recurrence-monthly').hide();
       $('.bill-recurrence-yearly').show();
     }
+  }
+  showProperInputs();
+
+  $('input:radio[name="bill-recurring-value"]').change(function() {
+    showProperInputs();
   });
 }
 
@@ -589,9 +595,15 @@ function editBill () {
     })();
     // bill recurring
     (function isBillRecurring () {
-      // listenIfBillIsRecurring();
-      if (bill.recurring) {
+      if (recurring) {
         $(`#edit-bill-form input[name="bill-recurring-input"][value="Yes"]`).prop("checked", true);
+        // TODO: check appropriate interval button
+        $('#edit-bill-form input:radio[name="bill-recurring-value"]').each(function () {
+          if ($(this).val() === interval) {
+            $(this).prop("checked", true);
+          }
+        });
+        listenForBillRecurrenceFrequency();
       } else {
         $(`#edit-bill-form input[name="bill-recurring-input"][value="No"]`).prop("checked", true);
       }
