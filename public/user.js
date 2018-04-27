@@ -323,10 +323,10 @@ function defineBillData () {
   // if it is recurring, what is the frequency?
   if (recurring) {
     const frequencyValues = {
-      daily: '1d',
-      weekly: '7d',
-      monthly: '1m',
-      yearly: '1y'
+      daily: 'daily',
+      weekly: 'weekly',
+      monthly: 'monthly',
+      yearly: 'yearly'
     };
     const frequencyValue = $("input[name='bill-recurring-value']:checked").val();
     interval = frequencyValues[frequencyValue];
@@ -348,18 +348,18 @@ function defineBillData () {
         return num + "th";
       }
 
-      if (interval === '1d') {
+      if (interval === 'daily') {
         dueDate = `Every day`;
       }
-      if (interval === '7d') {
+      if (interval === 'weekly') {
         const weekday = $('.bill-recurrence-weekly select').val();
         dueDate = `Every ${weekday}`;
       }
-      if (interval === '1m') {
+      if (interval === 'monthly') {
         let date = $('.bill-recurrence-monthly select').val();
         dueDate = `${addNumberSuffix(date)} of every month`;
       }
-      if (interval === '1y') {
+      if (interval === 'yearly') {
         const day = $('.bill-recurrence-yearly .daydropdown').val();
         const month = $('.bill-recurrence-yearly .monthdropdown').val();
         dueDate = `${month} ${addNumberSuffix(day)} of every year`;
@@ -599,6 +599,7 @@ function editBill () {
         $(`#edit-bill-form input[name="bill-recurring-input"][value="Yes"]`).prop("checked", true);
         // TODO: check appropriate interval button
         $('#edit-bill-form input:radio[name="bill-recurring-value"]').each(function () {
+          $(this);
           if ($(this).val() === interval) {
             $(this).prop("checked", true);
           }

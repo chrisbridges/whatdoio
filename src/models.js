@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema({
     dueDate: {type: String},
     interval: {
       type: String,
-      enum: [null, '1d', '7d', '1m', '1y']
+      enum: [null, 'daily', 'weekly', 'monthly', 'yearly']
     }
   }]
 });
