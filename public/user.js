@@ -623,6 +623,13 @@ function editBill () {
       if (interval === 'monthly') {
         $('.daydropdown').val(parseInt(dueDate));
       }
+      if (interval === 'yearly') {
+        const dueDateSplit = dueDate.split(' ');
+        const month = dueDateSplit[0]
+        const date = dueDateSplit[1];
+        $('.daydropdown').val(parseInt(date));
+        $('.monthdropdown').val(month);
+      }
     })();
 
   })();
