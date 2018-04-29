@@ -527,7 +527,7 @@ function editBill () {
       <!-- If bill recurs weekly -->
       <div hidden class="bill-recurrence-weekly">
         <p>What day of the week does this bill recur?</p>
-        <select>
+        <select class="day-of-the-week-dropdown">
           <option value="Monday">Monday</option> 
           <option value="Tuesday">Tuesday</option> 
           <option value="Wednesday">Wednesday</option>
@@ -598,7 +598,6 @@ function editBill () {
     (function isBillRecurring () {
       if (recurring) {
         $(`#edit-bill-form input[name="bill-recurring-input"][value="Yes"]`).prop("checked", true);
-        // TODO: check appropriate interval button
         $('#edit-bill-form input:radio[name="bill-recurring-value"]').each(function () {
           $(this);
           if ($(this).val() === interval) {
@@ -612,7 +611,16 @@ function editBill () {
       listenIfBillIsRecurring();
     })();
 
-    $('.daydropdown').val('5');
+    (function displayCurrentBillDateInDropdown () {
+      // I should have only stored the value that I wanted to display in these dropdowns
+        // in my database, but too much front-end code now depends on my original architecture
+        // live and learn - this function is a less than ideal solution I'm aware
+      if (interval === 'weekly') {
+        const weekday = dueDate.split(' ')[1];  // grabbing the value, eliminating the "Every"
+        console.log(weekday);
+        $('.day-of-the-week-dropdown').val(weekday);
+      }
+    })();
 
   })();
   // for auto-populating date dropdowns with current value
