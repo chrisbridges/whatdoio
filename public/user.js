@@ -620,6 +620,9 @@ function editBill () {
         console.log(weekday);
         $('.day-of-the-week-dropdown').val(weekday);
       }
+      if (interval === 'monthly') {
+        $('.daydropdown').val(parseInt(dueDate));
+      }
     })();
 
   })();
