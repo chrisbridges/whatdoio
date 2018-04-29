@@ -559,6 +559,7 @@ function editBill () {
   </form>`;
 
   $(this).closest('li').html(editBillFormHTML);
+  populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   const bill = bills.find(function (element) {
     return element._id === $billID;
   });
@@ -611,8 +612,12 @@ function editBill () {
       listenIfBillIsRecurring();
     })();
 
+    $('.daydropdown').val('5');
+
   })();
-  
+  // for auto-populating date dropdowns with current value
+    // maybe i can call that func at the beginning and override it's val with data val
+    // or just remove the feature where it auto-selects today's date
 
 
 
@@ -627,7 +632,7 @@ function editBill () {
     listenIfBillIsRecurring();
     listenForBillRecurrenceFrequency();
     listenForPayingOrReceiving();
-    populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
+    // populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   });
 }
 
