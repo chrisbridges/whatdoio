@@ -242,17 +242,19 @@ function addAdditionalParty () {
   });
 }
 
-function removeAdditionalParty () {
+function removeAdditionalParty (form = '#new-bill-form') {
   $('.bill-paid-to-me').on('click', '.remove-additional-party', function (event) {
     event.preventDefault();
-    const parties = $('.bill-paid-to-me *').filter('input');
+    const parties = $(`${form} .bill-paid-to-me *`).filter('input');
+    console.log(parties);
     parties[parties.length - 1].remove();
     $(this).remove();
   });
 
   $('.bill-paid-by-me').on('click', '.remove-additional-party', function (event) {
     event.preventDefault();
-    const parties = $('.bill-paid-by-me *').filter('input');
+    const parties = $(`${form} .bill-paid-by-me *`).filter('input');
+    console.log(parties);
     parties[parties.length - 1].remove();
     $(this).remove();
   });
@@ -671,6 +673,9 @@ function editBill () {
         data: JSON.stringify(changedValues),
         success: function (response) {
           storeBillsLocally(response);
+          $('#new-bill-form').trigger("reset").hide();
+          hideFormDivs();
+          removeExtraBillPayerInputs();
         },
         error: function(error) {console.error(error)}
       });
@@ -682,12 +687,10 @@ function editBill () {
     // only send new values
       // if newValues.length === 0, don't do anything
 
-    // addAdditionalParty();
-    removeAdditionalParty();
+    removeAdditionalParty('#edit-bill-form');
     listenIfBillIsRecurring();
     listenForBillRecurrenceFrequency();
     listenForPayingOrReceiving();
-    // populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   });
 }
 
