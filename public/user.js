@@ -394,6 +394,8 @@ function defineBillData () {
   };
   let billParties = defineBillParties();
   let {billPayer, billReceiver} = billParties;
+  billPayer = removeEmptyInputs(billPayer);
+  billReceiver = removeEmptyInputs(billReceiver);
 
   const data = {
     for: billPayer, 
@@ -409,9 +411,13 @@ function defineBillData () {
 }
 
 function removeEmptyInputs (inputs) {
-  return inputs.filter(function (input) {
-    return input.trim() !== '';
+  let trimmedInputs = inputs.map(function (input) {
+    return input.trim();
   });
+  let filteredInputs = trimmedInputs.filter(function (input) {
+    return input !== '';
+  });
+  return filteredInputs;
 }
 
 // reset hidden divs back to hidden upon form submit
