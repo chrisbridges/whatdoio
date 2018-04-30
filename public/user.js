@@ -30,6 +30,7 @@ function checkForAuthToken () {
 function fetchUserBills () {
   $.ajax({
     type: 'GET',
+    url: 'user?noCache=true', // differentiated url with query to prevent Chrome from caching page
     headers: {Authorization: `Bearer ${getToken()}`},
     contentType: "application/json",
     success: function (response) {
@@ -45,6 +46,7 @@ function storeBillsLocally (response) {
 }
 
 function displayUserBills (bills) {
+  console.log(bills);
   // clear out previously shown bills before appending new ones
   // STRETCH: display bills by which is due soonest
   $('ul').empty();
@@ -456,7 +458,6 @@ function editBill () {
   // fetchUserBills on success
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
-
     const $billID = $(this).parent().data('id');
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
@@ -555,7 +556,7 @@ function editBill () {
       </div>
     </div>
 
-    <button type="submit">Save</button>
+    <button class="save-bill-edits">Save</button>
   </form>`;
 
   $(this).closest('li').html(editBillFormHTML);
@@ -563,7 +564,7 @@ function editBill () {
   const bill = bills.find(function (element) {
     return element._id === $billID;
   });
-  console.log(bill);
+  // console.log(bill);
   let {amount, dueDate, interval, recurring, title} = bill;
   let billPayer = bill.for;
   let billReceiver = bill.from;
@@ -633,12 +634,34 @@ function editBill () {
     })();
 
   })();
-  // for auto-populating date dropdowns with current value
-    // maybe i can call that func at the beginning and override it's val with data val
-    // or just remove the feature where it auto-selects today's date
 
-
-
+  (function submitEdits () {
+    $('.bills').on('click', '.save-bill-edits', function (event) {
+      event.preventDefault();
+      const newBillValues = defineBillData();
+      console.log(bill, newBillValues);
+      const changedValues = {};
+      for (let field in newBillValues) {
+        if (newBillValues[field] !== bill[field]) {
+          changedValues[field] = newBillValues[field];
+        }
+      }
+      console.log(changedValues);
+      const userID = getUserIDFromToken();
+      $.ajax({
+        type: "PUT",
+        url: `user/${userID}/bills/${bill._id}`,
+        dataType: 'json',
+        headers: {Authorization: `Bearer ${getToken()}`},
+        contentType: "application/json",
+        data: JSON.stringify(changedValues),
+        success: function (response) {
+          storeBillsLocally(response);
+        },
+        error: function(error) {console.error(error)}
+      });
+    });
+  })();
 
   // save old values in vars
     // if new values !== old values
@@ -653,6 +676,18 @@ function editBill () {
     // populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   });
 }
+// set to item currently on DOM
+// function submitEdits () {
+//   $('.bills').on('click', '.save-bill-edits', function (event) {
+//     event.preventDefault();
+//     console.log($(this).closest('.bill'));
+//     const newBillValues = defineBillData();
+//     const bill = bills.find(function (element) {
+//       return element._id === newBillValues._id;
+//     });
+//     console.log(bill, newBillValues);
+//   });
+// }
 
 // TODO: ensure that only one form (edit or new) is shown at any given time
 $(document).ready(function() {
@@ -667,7 +702,7 @@ $(document).ready(function() {
   postNewBill();
   deleteBill();
   editBill();
-  testClick();
+  // submitEdits();
 });
 
 // Notes for making new bill cover page - this is called a "MODAL"
@@ -681,9 +716,3 @@ $(document).ready(function() {
 // margin: 0 auto;
 
 // look into flexbox (bookmarked) to center horizontally and vertically
-
-function testClick () {
-  $('.test').on('click', function () {
-    $('.add-additional-party').trigger('click');
-  });
-}
