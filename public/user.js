@@ -409,7 +409,7 @@ function defineBillData () {
 
   return data;
 }
-
+// remove empty bill party values before committing to database
 function removeEmptyInputs (inputs) {
   let trimmedInputs = inputs.map(function (input) {
     return input.trim();
@@ -458,7 +458,6 @@ function removeExtraBillPayerInputs () {
 
 function editBill () {
   // show form with current bill values prepopulated
-  // fetchUserBills on success
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
     const $billID = $(this).parent().data('id');
@@ -581,7 +580,7 @@ function editBill () {
     (function payingOrReceiving () {
       if (billPayer[0] === 'Me' && billPayer.length === 1) {
         const input = `
-          <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+          <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
           <button class="add-additional-party">Add Additional</button>`;
         $(`#edit-bill-form input[name="bill-payer-input"][value="By Me"]`).prop("checked", true);
         addAdditionalParty();
@@ -595,7 +594,19 @@ function editBill () {
         }
       }
       else if (billReceiver[0] === 'Me' && billReceiver.length === 1) {
+        const input = `
+          <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+          <button class="add-additional-party">Add Additional</button>`;
         $(`#edit-bill-form input[name="bill-payer-input"][value="To Me"]`).prop("checked", true);
+        addAdditionalParty();
+        for (let i = 0; i < billPayer.length; i ++) {
+          if (i === 0) {
+            $($('#edit-bill-form input[name="bill-paid-to-me-input[]"]')[i]).val(billPayer[i]);
+            continue;
+          }
+          $('.add-additional-party').trigger('click');
+          $($('#edit-bill-form input[name="bill-paid-to-me-input[]"]')[i]).val(billPayer[i]);
+        }
       }
     })();
     // bill recurring
@@ -693,7 +704,6 @@ $(document).ready(function() {
   postNewBill();
   deleteBill();
   editBill();
-  // submitEdits();
 });
 
 // Notes for making new bill cover page - this is called a "MODAL"
