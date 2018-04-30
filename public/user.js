@@ -245,17 +245,19 @@ function addAdditionalParty () {
 function removeAdditionalParty (form = '#new-bill-form') {
   $('.bill-paid-to-me').on('click', '.remove-additional-party', function (event) {
     event.preventDefault();
-    const parties = $(`${form} .bill-paid-to-me *`).filter('input');
-    console.log(parties);
-    parties[parties.length - 1].remove();
+    // const parties = $(`${form} .bill-paid-to-me *`).filter('input');
+    // console.log(parties);
+    // parties[parties.length - 1].remove();
+    $(this).prev('input').remove();
     $(this).remove();
   });
 
   $('.bill-paid-by-me').on('click', '.remove-additional-party', function (event) {
     event.preventDefault();
-    const parties = $(`${form} .bill-paid-by-me *`).filter('input');
-    console.log(parties);
-    parties[parties.length - 1].remove();
+    // const parties = $(`${form} .bill-paid-by-me *`).filter('input');
+    // console.log(parties);
+    // parties[parties.length - 1].remove();
+    $(this).prev('input').remove();
     $(this).remove();
   });
 }
