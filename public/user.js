@@ -393,9 +393,7 @@ function defineBillData () {
     return {billPayer: billPayer, billReceiver: billReceiver};
   };
   let billParties = defineBillParties();
-  let billPayer = billParties.billPayer;
-  let billReceiver = billParties.billReceiver
-
+  let {billPayer, billReceiver} = billParties;
 
   const data = {
     for: billPayer, 
@@ -410,14 +408,13 @@ function defineBillData () {
   return data;
 }
 
-// function trimTextInputs (inputs) {
-//   let trimmedValues = inputs.forEach(function (input) {
-//     input.trim();
-//   });
-//   return trimmedValues;
-// }
+function removeEmptyInputs (inputs) {
+  return inputs.filter(function (input) {
+    return input.trim() !== '';
+  });
+}
+
 // reset hidden divs back to hidden upon form submit
-  // DOES
 function hideFormDivs () {
   const divsToRemainVisible = [
     'bill-title',
@@ -676,18 +673,6 @@ function editBill () {
     // populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   });
 }
-// set to item currently on DOM
-// function submitEdits () {
-//   $('.bills').on('click', '.save-bill-edits', function (event) {
-//     event.preventDefault();
-//     console.log($(this).closest('.bill'));
-//     const newBillValues = defineBillData();
-//     const bill = bills.find(function (element) {
-//       return element._id === newBillValues._id;
-//     });
-//     console.log(bill, newBillValues);
-//   });
-// }
 
 // TODO: ensure that only one form (edit or new) is shown at any given time
 $(document).ready(function() {
