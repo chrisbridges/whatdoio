@@ -11,6 +11,7 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
 router.get('/', (req, res, next) => {
+  console.log(req.get('Content-Type'));
   if (req.get('Content-Type') !== 'application/json') {
     return res.sendFile('user.html', { root: path.join(__dirname, '../../public') });
   }
@@ -18,7 +19,7 @@ router.get('/', (req, res, next) => {
 }, jwtAuth, (req, res) => {
     User.findById(req.user._id)
       .then(user => {
-        res.json(user.serialize());
+        res.status(200).json(user.serialize());
       })
       .catch(err => {
         console.error(err);
@@ -27,12 +28,14 @@ router.get('/', (req, res, next) => {
 });
 
 // TODO: add endpoint for users to add bills
+// endpoint name is ambiguous - creating new user?
+  // "/:userID/bills"
 router.post('/', jwtAuth, (req, res) => {
 
   User.findByIdAndUpdate(
     req.user._id,
     {$push: {bills: req.body}},
-    {safe: true, upsert: true}) // look this up
+    {safe: true, upsert: true, new: true}) // new makes the promise return the user with the new bill
     .then(user => {
       res.json(user.serialize());
     })
@@ -60,6 +63,7 @@ router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
 
 router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
+  // cleansing the data, only using the updated object
   const updated = {};
   const updateableFields = ['title', 'from', 'for', 'amount', 'recurring', 'dueDate', 'interval'];
   updateableFields.forEach(field => {
@@ -68,10 +72,40 @@ router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
     }
   });
 
-  User.update({'bills._id': billID}, {$set: updated})
-    .then(updatedBill => res.status(204).end())
-    .catch(err => res.status(500).json({ message: 'Trouble editing bill' }));
-
+  User.update({'bills._id': billID}, {$set: updated}, {new: true})
+    // .then(updatedBill => res.status(204).end())
+    // // .catch(err => res.status(500).json({ message: 'Trouble editing bill' }));
+    .then(() => {
+      return User.findById(userID);
+    })
+    .then(user => {
+      res.json(user.serialize());
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: 'Trouble deleting bill'});
+    });
+  // let user;
+  // User.findById(userID)
+  //   .then(_user => {
+  //     user = _user;
+  //     let bill = user.bills.find(function (bill) {
+  //       return bill._id === billID;
+  //     });
+  //     console.log(bill);
+  //     const billIndex = user.bills.indexOf(bill);
+  //     user.bills[billIndex] = Object.assign(updated, bill);
+  //     console.log(user.bills[billIndex]);
+  //     return user.save();
+  //     res.json(user.serialize());
+  //   })
+  //   .catch(err => {
+  //     console.error(err);
+  //     res.status(500).json({message: 'Trouble deleting bill'});
+  //   });
+    // find user by ID,
+    // then iterate over bills to find bill I want
+    // rmemebre ot bill.save && user.save()
 });
 
 router.get('/logout', (req, res) => {

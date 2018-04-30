@@ -40,7 +40,7 @@
 
     <div class="bill-amount">
       <label for="bill-amount-input">Amount:</label>
-      <input type="number" min="0" step="0.01" id="bill-amount-input" placeholder="$100" required>
+      <input type="number" min="0" step="0.01" id="bill-amount-input" placeholder="100" required>
     </div>
 
     <!-- Am I paying or receiving this bill? -->
@@ -99,7 +99,7 @@
       <!-- If bill recurs weekly -->
       <div hidden class="bill-recurrence-weekly">
         <p>What day of the week does this bill recur?</p>
-        <select>
+        <select class="day-of-the-week-dropdown">
           <option value="Monday">Monday</option> 
           <option value="Tuesday">Tuesday</option> 
           <option value="Wednesday">Wednesday</option>
@@ -137,11 +137,3 @@
   <script src="/user.js"></script>
 </body>
 </html>
-
-
-<!-- 
-  Generate this through jQuery
-  <div data-id="123"> 
-  bill
-  <button class="deleteBill">Button</button>
-</div>  -->
