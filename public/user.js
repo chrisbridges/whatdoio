@@ -46,7 +46,6 @@ function storeBillsLocally (response) {
 }
 
 function displayUserBills (bills) {
-  console.log(bills);
   // clear out previously shown bills before appending new ones
   // STRETCH: display bills by which is due soonest
   $('ul').empty();
@@ -245,18 +244,12 @@ function addAdditionalParty () {
 function removeAdditionalParty (form = '#new-bill-form') {
   $('.bill-paid-to-me').on('click', '.remove-additional-party', function (event) {
     event.preventDefault();
-    // const parties = $(`${form} .bill-paid-to-me *`).filter('input');
-    // console.log(parties);
-    // parties[parties.length - 1].remove();
     $(this).prev('input').remove();
     $(this).remove();
   });
 
   $('.bill-paid-by-me').on('click', '.remove-additional-party', function (event) {
     event.preventDefault();
-    // const parties = $(`${form} .bill-paid-by-me *`).filter('input');
-    // console.log(parties);
-    // parties[parties.length - 1].remove();
     $(this).prev('input').remove();
     $(this).remove();
   });
@@ -570,7 +563,6 @@ function editBill () {
   const bill = bills.find(function (element) {
     return element._id === $billID;
   });
-  // console.log(bill);
   let {amount, dueDate, interval, recurring, title} = bill;
   let billPayer = bill.for;
   let billReceiver = bill.from;
@@ -636,7 +628,6 @@ function editBill () {
         // live and learn - this function is a less than ideal solution I'm aware
       if (interval === 'weekly') {
         const weekday = dueDate.split(' ')[1];  // grabbing the value, eliminating the "Every"
-        console.log(weekday);
         $('.day-of-the-week-dropdown').val(weekday);
       }
       if (interval === 'monthly') {
@@ -657,14 +648,12 @@ function editBill () {
     $('.bills').on('click', '.save-bill-edits', function (event) {
       event.preventDefault();
       const newBillValues = defineBillData();
-      console.log(bill, newBillValues);
       const changedValues = {};
       for (let field in newBillValues) {
         if (newBillValues[field] !== bill[field]) {
           changedValues[field] = newBillValues[field];
         }
       }
-      console.log(changedValues);
       const userID = getUserIDFromToken();
       $.ajax({
         type: "PUT",
