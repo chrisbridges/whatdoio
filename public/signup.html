@@ -5,26 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Whatdo.io</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="signup.css">
 </head>
 <body>
+  <div class="container">
+    <form role="form" id="signup-form">
+      <legend>Sign Up</legend>
+      <!-- <label for="name">Your Name</label> -->
+      <input type="text" name="name" id="name" placeholder="Your Name" required>
+      <!-- <label for="username">Username</label> -->
+      <input type="text" name="username" id="username" placeholder="username" required>
+      <!-- <label for="pass">Password</label> -->
+      <input type="password" name="pass" id="pass" placeholder="password" required>
+      <button type="submit">Submit</button>
+    </form>
 
-  <form role="form" id="signup-form">
-    <legend>Sign Up</legend>
-    <label for="name">Your Name</label>
-    <input type="text" name="name" id="name" placeholder="Sally" required>
-    <label for="username">Username</label>
-    <input type="text" name="username" id="username" placeholder="sallySample" required>
-    <label for="pass">Password</label>
-    <input type="password" name="pass" id="pass" placeholder="superSecurePassword626" required>
-    <button type="submit">Submit</button>
-  </form>
-
-  <div>
-    Already have an account? <a href="http://localhost:8080/login">Log In</a>
+    <p>Already have an account? <a href="http://localhost:8080/login">Log In</a></p>
   </div>
-
-  <!-- TODO: automatic redirect to user page upon signup and login-->
-
   <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

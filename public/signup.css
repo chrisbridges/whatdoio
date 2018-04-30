@@ -9,31 +9,36 @@ body {
   color: black;
 }
 
-.container {
+/* .container {
   background-color: #e5e5e5;
   height: 100vh;
   margin: 15px 25px;
   padding: 5px 0px;
+} */
+
+form {
+  display: inline-block;
+  text-align: center;
 }
 
-header h1 {
-  display: flex;
-  justify-content: center;
-  font-size: 50px;
-  font-weight: 500;
+legend, label, input {
+  display: block;
+  /* text-align: center; */
 }
 
-header h2 {
-  display: flex;
-  justify-content: space-around;
-  font-size: 35px;
-  font-weight: normal;
-  padding-bottom: 15px;
+legend {
+  font-size: 30px;
 }
 
-nav {
-  display: flex;
-  justify-content: center;
+input {
+  width: 250px;
+  height: 30px;
+  background-color: #e5e5e5;
+  color: #939393;
+  margin: 20px;
+  border-radius: 5px;
+  border: transparent;
+  padding-left: 5px;
 }
 
 button {
@@ -43,10 +48,4 @@ button {
   border-radius: 5px;
   background-color: rgb(111,181,54);
   color: white;
-}
-
-ul {
-  display: inline;
-  text-align: center;
-  list-style: none;
 }
