@@ -644,10 +644,34 @@ function editBill () {
 
   })();
 
+  function billHasNoEmptyFields (newBill) {
+    // return false if bill has no empty fields
+      // true, elsewise
+    console.log(newBill);
+    for (let field in newBill) {
+      if (typeof newBill[field] === typeof 'string') {
+        newBill[field] = newBill[field].trim();
+      }
+      if (Array.isArray(newBill[field]) && newBill[field].length === 0) {
+        newBill[field] = '';
+      }
+    }
+    console.log(newBill);
+
+    return Object.values(newBill).every(field => {
+      return field !== '';
+    });
+  }
+
   (function submitEdits () {
     $('.bills').on('click', '.save-bill-edits', function (event) {
       event.preventDefault();
       const newBillValues = defineBillData();
+      console.log(newBillValues);
+      if (!billHasNoEmptyFields(newBillValues)) {
+        alert('Bills cannot have empty fields. Please confirm all fields are filled.');
+        return;
+      }
       const changedValues = {};
       for (let field in newBillValues) {
         if (newBillValues[field] !== bill[field]) {
