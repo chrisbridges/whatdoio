@@ -466,6 +466,7 @@ function editBill () {
     $('#new-bill-form').trigger("reset").hide();
     hideFormDivs();
     removeExtraBillPayerInputs();
+
     const $billID = $(this).parent().data('id');
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
@@ -563,11 +564,21 @@ function editBill () {
         <!-- <button type="submit">Submit</button> -->
       </div>
     </div>
-
+    
     <button class="save-bill-edits">Save</button>
+    <button class="cancel-bill-edits">Cancel</button>
   </form>`;
 
   $(this).closest('li').html(editBillFormHTML);
+
+  // users can cancel if they decide they don't want to edit bill
+  (function cancelBillEdits () {
+    $('.cancel-bill-edits').on('click', function (event) {
+      event.preventDefault();
+      displayUserBills(bills);
+    });
+  })();
+
   populateDateDropdowns("daydropdown", "monthdropdown", "yeardropdown");
   const bill = bills.find(function (element) {
     return element._id === $billID;
@@ -718,7 +729,6 @@ function editBill () {
   });
 }
 
-// TODO: ensure that only one form (edit or new) is shown at any given time
 $(document).ready(function() {
   checkForAuthToken();
   showNewBillForm();
