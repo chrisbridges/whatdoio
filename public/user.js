@@ -12,11 +12,11 @@ function getUserIDFromToken () {
   const result = parseJwt(getToken());
   return result.user._id;
 }
-
+// get authorization token from local storage
 function getToken () {
   return localStorage.getItem('authToken');
 }
-
+// ensure that user is allowed to view this page, else redirect
 function checkForAuthToken () {
   if (getToken()) {
     // fetch user bills if authenticated
@@ -26,7 +26,7 @@ function checkForAuthToken () {
     window.location.href = '/login';
   }
 }
-
+// fetch user's bills upon initial page load
 function fetchUserBills () {
   $.ajax({
     type: 'GET',
@@ -39,12 +39,12 @@ function fetchUserBills () {
     error: function(error) {console.error(error)}
   });
 }
-
+// bills are stored locally to prevent excessive API calls
 function storeBillsLocally (response) {
   bills = response.bills;
   displayUserBills(bills);
 }
-
+// display bills client-side
 function displayUserBills (bills) {
   // clear out previously shown bills before appending new ones
   // STRETCH: display bills by which is due soonest
@@ -74,7 +74,7 @@ function displayUserBills (bills) {
     }
   });
 }
-
+// format bill for displaying client-side
 function formatBill (bill) {
   let billParties;
   let parties;
@@ -106,7 +106,7 @@ function formatBill (bill) {
       <button class="deleteBill">X</button>
     </div>`;
 }
-
+// populates 'select' dropdowns with dates and auto-selects with today's date
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
   // INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
   const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
@@ -138,9 +138,12 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
     yearfield[j].options[0] = new Option(today.getFullYear(), today.getFullYear(), true, true);
   }
 }
-
+// display form for user to add new bill
 function showNewBillForm () {
   $('#add-new-bill').click(function () {
+    // run this function to clear the page of any 'edit bill forms'
+      // ensuring that only one form is displayed at once
+    displayUserBills(bills); 
     $('#new-bill-form').show();
   });
 }
@@ -222,7 +225,7 @@ function listenForBillRecurrenceFrequency () {
     showProperInputs();
   });
 }
-
+// add additional bill party if bill involves more than 1 person
 function addAdditionalParty () {
   $('.add-additional-party').on('click', function (event) {
     event.preventDefault();
@@ -240,8 +243,8 @@ function addAdditionalParty () {
     }
   });
 }
-
-function removeAdditionalParty (form = '#new-bill-form') {
+// remove additional bill party 
+function removeAdditionalParty () {
   $('.bill-paid-to-me').on('click', '.remove-additional-party', function (event) {
     event.preventDefault();
     $(this).prev('input').remove();
@@ -254,7 +257,7 @@ function removeAdditionalParty (form = '#new-bill-form') {
     $(this).remove();
   });
 }
-
+// post new bill to database
 function postNewBill () {
   // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
@@ -279,7 +282,7 @@ function postNewBill () {
     });
   });
 }
-
+// removes bill from database
 function deleteBill () {
   // TODO: bills don't delete every time upon button press
   $('.bills').on('click', '.deleteBill', function (event) {
@@ -302,7 +305,7 @@ function deleteBill () {
     });
   });
 }
-
+// defining bill data from form for submission to API
 function defineBillData () {
   let recurring = defineRecurring();
   let interval;
@@ -435,7 +438,7 @@ function hideFormDivs () {
     }
   });
 }
-
+// remove any dynamically added bill party inputs upon form submission
 function removeExtraBillPayerInputs () {
   const billPayerDivs = [
     '.bill-paid-to-me',
@@ -452,11 +455,17 @@ function removeExtraBillPayerInputs () {
   }
   $('.remove-additional-party').remove();
 }
-
+// displays edit bill form with current bill values pre-populated
+  // verifies appropriate values entered
+  // submits edits to database and displays
 function editBill () {
   // show form with current bill values prepopulated
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
+    // clear and hide form
+    $('#new-bill-form').trigger("reset").hide();
+    hideFormDivs();
+    removeExtraBillPayerInputs();
     const $billID = $(this).parent().data('id');
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
