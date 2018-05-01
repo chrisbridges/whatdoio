@@ -5,31 +5,51 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Whatdo.io</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="grid.css">
   <link rel="stylesheet" href="user.css">
 </head>
 <body>
 
-  <section class="bills">
-    <h1>Recurring Bills That I Owe:</h1>
-    <ul id ="recurring-I-owe"></ul>
-  </section>
-  
-  <section class="bills">
-    <h1>One-Time Bills That I Owe:</h1>
-    <ul id="one-time-I-owe"></ul>
-  </section>
+  <header>
+    <div class="row">
+      <div class="col-12">
+        <h1>Whatdo.io</h1>
+        <h2>Welcome <span id="welcome-user"></span></h2>
+        <!-- <button id="add-new-bill">Add New Bill</button> -->
+      </div>
+      <button id="add-new-bill">Add New Bill</button>
+    </div>
+  </header>
 
-  <section class="bills">
-    <h1>Recurring Bills That Are Owed to Me:</h1>
-    <ul id="recurring-owed-me"></ul>
-  </section>
+  <div class="row">
+    <div class="col-6">
+      <section class="bills">
+        <h1>Recurring Bills That I Owe:</h1>
+        <ul id ="recurring-I-owe"></ul>
+      </section>
+    </div>
+    <div class="col-6">
+      <section class="bills">
+        <h1>One-Time Bills That I Owe:</h1>
+        <ul id="one-time-I-owe"></ul>
+      </section>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <section class="bills">
+        <h1>Recurring Bills That Are Owed to Me:</h1>
+        <ul id="recurring-owed-me"></ul>
+      </section>
+    </div>
+    <div class="col-6">
+      <section class="bills">
+        <h1>One-Time Bills That Are Owed to Me:</h1>
+        <ul id="one-time-owed-me"></ul>
+      </section>
+    </div>
+  </div>
 
-  <section class="bills">
-    <h1>One-Time Bills That Are Owed to Me:</h1>
-    <ul id="one-time-owed-me"></ul>
-  </section>
-
-  <button id="add-new-bill">+ Add New Bill</button>
   <form hidden role="form" id="new-bill-form">
     <legend>New Bill</legend>
 

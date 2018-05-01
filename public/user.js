@@ -12,6 +12,11 @@ function getUserIDFromToken () {
   const result = parseJwt(getToken());
   return result.user._id;
 }
+
+function getUserNameFromToken () {
+  const result = parseJwt(getToken());
+  return result.user.name;
+}
 // get authorization token from local storage
 function getToken () {
   return localStorage.getItem('authToken');
@@ -25,6 +30,10 @@ function checkForAuthToken () {
     // redirect to login
     window.location.href = '/login';
   }
+}
+// display's user name
+function displayUserName () {
+  $('#welcome-user').text(getUserNameFromToken());
 }
 // fetch user's bills upon initial page load
 function fetchUserBills () {
@@ -731,6 +740,7 @@ function editBill () {
 
 $(document).ready(function() {
   checkForAuthToken();
+  displayUserName();
   showNewBillForm();
   listenIfBillIsRecurring();
   listenForBillRecurrenceFrequency();
