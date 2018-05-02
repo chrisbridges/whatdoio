@@ -106,15 +106,25 @@ function formatBill (bill) {
     return parts.join(".");
   }
   return `
+  <div class="row">
     <div data-id=${bill._id} class="bill">
-      <p class="due-date">Due: ${bill.dueDate}</p>
-      <p class="bill-title">${bill.title}</p>
-      <p class="bill-parties">from ${billParties}</p>
-      <p class="bill-amount">$${amountWithCommas(limitNumbersAfterDecimal(bill.amount))}</p>
-      <button class="editBill">Edit</button>
-      <button class="deleteBill">X</button>
-    </div>`;
-}
+      <div class="due-date-box col-3">
+        <p class="due-date"><span class="due-date-due">Due:</span><br>${bill.dueDate}</p>
+      </div>
+      <div class="bill-title-and-parties col-6">
+        <p class="bill-title">${bill.title}</p>
+        <p class="bill-parties">from ${billParties}</p>
+      </div>
+      <div class="col-3">
+        <p class="bill-amount">$${amountWithCommas(limitNumbersAfterDecimal(bill.amount))}</p>
+        <button class="editBill">Edit</button>
+        <button class="deleteBill">X</button>
+      </div>
+    </div>
+  </div>`;
+} //pyiwqqayyypqaqaqrr
+
+
 // populates 'select' dropdowns with dates and auto-selects with today's date
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
   // INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
@@ -476,7 +486,8 @@ function editBill () {
     hideFormDivs();
     removeExtraBillPayerInputs();
 
-    const $billID = $(this).parent().data('id');
+    const $billID = $(this).closest('.bill').data('id');
+    console.log($billID);
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
 
