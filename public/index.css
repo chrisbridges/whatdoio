@@ -45,6 +45,11 @@ button {
   color: white;
 }
 
+button:hover {
+  color: rgb(111,181,54);
+  background-color: white;
+}
+
 ul {
   display: inline;
   text-align: center;

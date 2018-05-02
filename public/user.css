@@ -5,8 +5,13 @@ body {
   color: black;
 }
 
-h1, h2 {
-  /* clear: none !important; */
+header {
+  /* background-color: rgb(163,217,228); */
+  /* color: white; */
+}
+
+h2 {
+  border-bottom: solid 2px rgb(163,217,228);
 }
 
 #add-new-bill {
@@ -17,6 +22,7 @@ h1, h2 {
   min-width: 150px;
   font-size: 18px;
   border-radius: 5px;
+  margin-bottom: 25px;
 }
 
 #add-new-bill:hover {
@@ -42,6 +48,10 @@ h1, h2 {
   font-size: 18px;
 }
 
+.bill-line-break {
+  border-top: solid 1px rgb(163,217,228);
+}
+
 ul {
   padding-left: 0;
   margin: 0;
@@ -58,6 +68,7 @@ li {
   /* background-color: black; */
   /* color: white; */
   /* text-align: left; */
+  /* padding: 1px; */
 }
 
 .due-date-due {
@@ -69,8 +80,8 @@ li {
   margin-bottom: 0;
 }
 
-.bill-title {
-  /* text-align: center; */
+.bill .bill-title {
+  font-size: 22px;
 }
 
 .bill .bill-amount {

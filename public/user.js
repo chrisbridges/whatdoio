@@ -116,7 +116,7 @@ function formatBill (bill) {
       </div>
       <div class="bill-title-and-parties col-6">
         <p class="bill-title">${bill.title}</p>
-        <p class="bill-parties">from ${billParties}</p>
+        <p class="bill-parties">from: ${billParties}</p>
       </div>
       <div class="col-3">
         <p class="bill-amount">$${amountWithCommas(limitNumbersAfterDecimal(bill.amount))}</p>
@@ -124,8 +124,9 @@ function formatBill (bill) {
         <input type="image" class="editBill" src="https://i.imgur.com/Itkb5gf.png" alt="Edit Bill Icon" />
       </div>
     </div>
-  </div>`;
-} //pyiwqqayyypqaqaqrrfaq
+  </div>
+  <hr class="bill-line-break">`;
+} // TODO: delete this - pyiwqqayyypqaqaqrrfaqqqqq
 
 
 // populates 'select' dropdowns with dates and auto-selects with today's date
@@ -682,6 +683,16 @@ function editBill () {
         const date = dueDateSplit[1];
         $('.daydropdown').val(parseInt(date));
         $('.monthdropdown').val(month);
+      }
+      if (!recurring) {
+        let dueDateSplit = dueDate.split(' ');
+        let month = dueDateSplit[0];
+        let date = parseInt(dueDateSplit[1]);
+        let year = parseInt(dueDateSplit[2]);
+        console.log(month, date, year);
+        $('.daydropdown').val(date);
+        $('.monthdropdown').val(month);
+        $('.yeardropdown').val(year);
       }
     })();
 
