@@ -126,9 +126,7 @@ function formatBill (bill) {
     </div>
   </div>
   <hr class="bill-line-break">`;
-} // TODO: delete this - pyiwqqayyypqaqaqrrfaqqqqq
-
-
+}
 // populates 'select' dropdowns with dates and auto-selects with today's date
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
   // INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
@@ -166,7 +164,8 @@ function showNewBillForm () {
   $('#add-new-bill').click(function () {
     // run this function to clear the page of any 'edit bill forms'
       // ensuring that only one form is displayed at once
-    displayUserBills(bills); 
+    displayUserBills(bills);
+    blurBackground();
     $('#new-bill-form').show();
   });
 }
@@ -763,6 +762,10 @@ function editBill () {
   });
 }
 
+function blurBackground () {
+  $('.bills, header').toggleClass('blur-it');
+}
+
 $(document).ready(function() {
   checkForAuthToken();
   displayUserName();
@@ -782,10 +785,10 @@ $(document).ready(function() {
 // display: block;
 // background-color: green;
 // position: fixed;
-// left: 0;
-// top: 0;
-// width: 600px;
-// height: 400;
+// left: 50%;
+// top: 50%;
+// width: 600px;sq
+// height: 400px;aaaqq
 // margin: 0 auto;
 
 // look into flexbox (bookmarked) to center horizontally and vertically
