@@ -98,6 +98,9 @@ function formatBill (bill) {
     billParties = billParties.join(', ');
   }
   function limitNumbersAfterDecimal (num) {
+    if (num.toString() === num.toFixed(0)) {
+      return num;
+    }
     return num.toFixed(2);
   }
   function amountWithCommas (x) {
@@ -117,12 +120,12 @@ function formatBill (bill) {
       </div>
       <div class="col-3">
         <p class="bill-amount">$${amountWithCommas(limitNumbersAfterDecimal(bill.amount))}</p>
-        <button class="editBill">Edit</button>
-        <button class="deleteBill">X</button>
+        <input type="image" class="deleteBill" src="https://i.imgur.com/KCPL1FN.png" alt="Delete Bill Icon" />
+        <input type="image" class="editBill" src="https://i.imgur.com/Itkb5gf.png" alt="Edit Bill Icon" />
       </div>
     </div>
   </div>`;
-} //pyiwqqayyypqaqaqrr
+} //pyiwqqayyypqaqaqrrfaq
 
 
 // populates 'select' dropdowns with dates and auto-selects with today's date
@@ -306,12 +309,12 @@ function deleteBill () {
   // TODO: bills don't delete every time upon button press
   $('.bills').on('click', '.deleteBill', function (event) {
     // need to listen on DOM element that's already there
-    const billID = $(this).parent().data("id");
+    const $billID = $(this).closest('.bill').data('id');
     const userID = getUserIDFromToken();
 
     $.ajax({
       type: "DELETE",
-      url: `user/${userID}/bills/${billID}`,
+      url: `user/${userID}/bills/${$billID}`,
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
