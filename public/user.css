@@ -100,15 +100,22 @@ li {
 }
 
 #new-bill-form {
-  background-color: green;
+  background-color: white;
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
+  max-width: 600px;
   height: 90%;
+  max-height: 700px;
   padding: 20px 25px;
   margin: 0 auto;
+  border: 2px solid rgb(111,181,54);
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+  overflow-y: auto;
 }
 
 .blur-it {
@@ -118,7 +125,27 @@ li {
 legend {
   text-align: center;
   margin-bottom: 10px;
+  font-size: 18px;
 }
+
+label, input {
+  margin-bottom: 5px;
+}
+
+#new-bill-form input:focus {
+  border: 2px solid rgb(163,217,228);
+  outline: none;
+}
+
+#new-bill-form input[type=text], #new-bill-form input[type="number"] {
+  width: 80%;
+  max-width: 200px;
+  height: 20px;
+  background-color: #e5e5e5;
+  border-radius: 5px;
+  
+}
+
 
 .underline {
   text-decoration: underline;
@@ -126,5 +153,7 @@ legend {
 
 /* Non-mobile, grid */
 @media only screen and (min-width: 640px) {
-  
+  #new-bill-form {
+    font-size: 14px;
+  }
 }

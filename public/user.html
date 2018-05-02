@@ -54,13 +54,13 @@
     <legend class="underline">New Bill</legend>
 
     <div class="bill-title">
-      <label for="bill-title-input">Bill Title:</label>
-      <input type="text" name="bill-title" id="bill-title-input" placeholder="Rent, Utilities" required>
+      <!-- <label for="bill-title-input">Bill Title:</label><br> -->
+      <input type="text" name="bill-title" id="bill-title-input" placeholder="bill title" required>
     </div>
 
     <div class="bill-amount">
-      <label for="bill-amount-input">Amount:</label>
-      <input type="number" min="0" step="0.01" id="bill-amount-input" placeholder="100" required>
+      <!-- <label for="bill-amount-input">Amount:</label><br> -->
+      <input type="number" min="0" step="0.01" id="bill-amount-input" placeholder="bill amount" required>
     </div>
 
     <!-- Am I paying or receiving this bill? -->
@@ -74,15 +74,15 @@
     
     <!-- If bill is to be paid to me -->
     <div hidden class="bill-paid-to-me">
-      <label for="bill-paid-to-me-input[]">Who is paying you this bill?</label>
-      <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <label for="bill-paid-to-me-input[]">Who is paying you this bill?</label><br>
+      <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc."><br>
       <button class="add-additional-party">Add Additional</button>
     </div>
 
     <!-- If bill is to be paid by me -->
     <div hidden class="bill-paid-by-me">
-      <label for="bill-paid-by-me-input[]">To whom are you paying this bill?</label>
-      <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <label for="bill-paid-by-me-input[]">To whom are you paying this bill?</label><br>
+      <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc."><br>
       <button class="add-additional-party">Add Additional</button>
     </div>
 
