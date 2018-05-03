@@ -133,7 +133,7 @@ label, input {
   margin-bottom: 5px;
 }
 
-#new-bill-form input:focus {
+#new-bill-form input[type=text]:focus, #new-bill-form input[type=number]:focus {
   border: 2px solid rgb(163,217,228);
   outline: none;
 }

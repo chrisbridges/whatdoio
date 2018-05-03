@@ -355,7 +355,6 @@ function postNewBill () {
 }
 // removes bill from database
 function deleteBill () {
-  // TODO: bills don't delete every time upon button press
   $('.bills').on('click', '.deleteBill', function (event) {
     // need to listen on DOM element that's already there
     const $billID = $(this).closest('.bill').data('id');
