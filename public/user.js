@@ -347,6 +347,7 @@ function postNewBill () {
       data: JSON.stringify(data),
       success: function (response) {
         storeBillsLocally(response);
+        blurBackground();
         resetAddNewBillForm();
       },
       error: function(error) {console.error(error)}
