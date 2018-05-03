@@ -371,8 +371,6 @@ function deleteBill () {
         storeBillsLocally(response);
       },
       error: function(error) {console.error(error)}
-    }).done(function () {
-      displayUserBills(bills);
     });
   });
 }
