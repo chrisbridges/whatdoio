@@ -25,7 +25,7 @@ h2 {
   margin-bottom: 25px;
 }
 
-#add-new-bill:hover {
+#add-new-bill:hover, .submit-new-bill:hover {
   color: rgb(111,181,54);
   background-color: white;
 }
@@ -162,7 +162,29 @@ label, input {
   height: 20px;
   background-color: #e5e5e5;
   border-radius: 5px;
-  
+}
+
+.submit-new-bill, .cancel-new-bill {
+  margin-top: 15px;
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.submit-new-bill {
+  background-color: rgb(111,181,54);
+  color: white;
+}
+
+.cancel-new-bill {
+  color: white;
+  background-color: rgb(163,217,228);
+}
+
+.cancel-new-bill:hover {
+  background-color: white;
+  color: rgb(163,217,228);
 }
 
 .underline {
