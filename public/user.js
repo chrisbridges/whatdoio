@@ -171,6 +171,17 @@ function showNewBillForm () {
   });
 }
 
+function cancelNewBill () {
+  $('.cancel-new-bill').on('click', function (event) {
+    event.preventDefault();
+    displayUserBills(bills);
+    $('#new-bill-form').trigger("reset").hide();
+    hideFormDivs();
+    removeExtraBillPayerInputs();
+    blurBackground();
+  });
+}
+
 function listenForPayingOrReceiving () {
   // func is immediately invoked when called to auto-populate edit bill form
     // listener is set for when user inputs value on add bill form
@@ -772,6 +783,7 @@ $(document).ready(function() {
   checkForAuthToken();
   displayUserName();
   showNewBillForm();
+  cancelNewBill();
   listenIfBillIsRecurring();
   listenForBillRecurrenceFrequency();
   listenForPayingOrReceiving();
