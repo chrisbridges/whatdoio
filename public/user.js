@@ -120,11 +120,12 @@ function formatBill (bill) {
       </div>
       <div class="col-3">
         <p class="bill-amount">$${amountWithCommas(limitNumbersAfterDecimal(bill.amount))}</p>
-        <input type="image" class="deleteBill" src="https://i.imgur.com/KCPL1FN.png" alt="Delete Bill Icon" />
-        <input type="image" class="editBill" src="https://i.imgur.com/Itkb5gf.png" alt="Edit Bill Icon" />
       </div>
+      <input type="image" class="deleteBill" src="https://i.imgur.com/KCPL1FN.png" alt="Delete Bill Icon" />
+      <input type="image" class="editBill" src="https://i.imgur.com/Itkb5gf.png" alt="Edit Bill Icon" />
     </div>
   </div>
+  
   <hr class="bill-line-break">`;
 }
 // populates 'select' dropdowns with dates and auto-selects with today's date
@@ -249,6 +250,7 @@ function listenForBillRecurrenceFrequency () {
 }
 // add additional bill party if bill involves more than 1 person
 function addAdditionalParty () {
+  $('.add-additional-party').unbind('click');
   $('.add-additional-party').on('click', function (event) {
     event.preventDefault();
     if ($(this).parent().hasClass('bill-paid-to-me')) {
