@@ -15,7 +15,10 @@ function processSignUpForm () {
         console.log(data);
         loginNewUser(username, pass);
       },
-      error: function(error) {console.log(error)}
+      error: function(error) {
+        console.log(error);
+        alert(`${error.responseJSON.location}: ${error.responseJSON.message}`);
+      }
     });
 
   });

@@ -15,7 +15,10 @@ function processLoginForm () {
         localStorage.setItem("authToken", data.authToken);
         window.location.href = '/user';
       },
-      error: function(error) {console.log(error)}
+      error: function(error) {
+        console.log(error);
+        alert(error.responseJSON.message);
+      }
     });
 
   });
