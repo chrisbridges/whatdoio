@@ -1,5 +1,3 @@
-// import isEqual from 'lodash/isEqual';
-
 let bills = [];
 
 // function to parseJWT (used to retrieve userID without making another call to back-end)
@@ -173,54 +171,6 @@ function showNewBillForm () {
   });
 }
 
-function cancelNewBill () {
-  $('.cancel-new-bill').on('click', function (event) {
-    event.preventDefault();
-    displayUserBills(bills);
-    resetAddNewBillForm();
-    blurBackground();
-  });
-}
-
-function resetAddNewBillForm () {
-  $('#new-bill-form').trigger("reset").hide();
-  // reset hidden divs back to hidden upon form submit
-  (function hideFormDivs () {
-    const divsToRemainVisible = [
-      'bill-title',
-      'bill-amount',
-      'bill-payer',
-      'bill-recurring'
-    ];
-
-    $('#new-bill-form *').filter('div').each(function (div) {
-      $(this).hide();
-      for (let i = 0; i < divsToRemainVisible.length; i++) {
-        if ($(this).hasClass(divsToRemainVisible[i])) {
-          $(this).show();
-        }
-      }
-    });
-  })();
-  // remove any dynamically added bill party inputs upon form submission
-  (function removeExtraBillPayerInputs () {
-    const billPayerDivs = [
-      '.bill-paid-to-me',
-      '.bill-paid-by-me'
-    ];
-
-    for (let i = 0; i < billPayerDivs.length; i++) {
-      $(`${billPayerDivs[i]} *`).filter('input').each(function (input) {
-        if (input === 0) {
-          return;
-        }
-        $(this).remove();
-      });
-    }
-    $('.remove-additional-party').remove();
-  })();
-}
-
 function listenForPayingOrReceiving () {
   // func is immediately invoked when called to auto-populate edit bill form
     // listener is set for when user inputs value on add bill form
@@ -347,8 +297,11 @@ function postNewBill () {
       data: JSON.stringify(data),
       success: function (response) {
         storeBillsLocally(response);
+        // clear and hide form
+        $('#new-bill-form').trigger("reset").hide();
+        hideFormDivs();
+        removeExtraBillPayerInputs();
         blurBackground();
-        resetAddNewBillForm();
       },
       error: function(error) {console.error(error)}
     });
@@ -371,6 +324,8 @@ function deleteBill () {
         storeBillsLocally(response);
       },
       error: function(error) {console.error(error)}
+    }).done(function () {
+      displayUserBills(bills);
     });
   });
 }
@@ -379,7 +334,7 @@ function defineBillData () {
   let recurring = defineRecurring();
   let interval;
   let title = $('#bill-title-input').val();
-  let amount = parseInt($('#bill-amount-input').val());
+  let amount = $('#bill-amount-input').val();
   let dueDate;
   // check if bill is recurring
   function defineRecurring (value) {
@@ -488,6 +443,42 @@ function removeEmptyInputs (inputs) {
   });
   return filteredInputs;
 }
+
+// reset hidden divs back to hidden upon form submit
+function hideFormDivs () {
+  const divsToRemainVisible = [
+    'bill-title',
+    'bill-amount',
+    'bill-payer',
+    'bill-recurring'
+  ];
+
+  $('#new-bill-form *').filter('div').each(function (div) {
+    $(this).hide();
+    for (let i = 0; i < divsToRemainVisible.length; i++) {
+      if ($(this).hasClass(divsToRemainVisible[i])) {
+        $(this).show();
+      }
+    }
+  });
+}
+// remove any dynamically added bill party inputs upon form submission
+function removeExtraBillPayerInputs () {
+  const billPayerDivs = [
+    '.bill-paid-to-me',
+    '.bill-paid-by-me'
+  ];
+
+  for (let i = 0; i < billPayerDivs.length; i++) {
+    $(`${billPayerDivs[i]} *`).filter('input').each(function (input) {
+      if (input === 0) {
+        return;
+      }
+      $(this).remove();
+    });
+  }
+  $('.remove-additional-party').remove();
+}
 // displays edit bill form with current bill values pre-populated
   // verifies appropriate values entered
   // submits edits to database and displays
@@ -496,9 +487,12 @@ function editBill () {
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
     // clear and hide form
-    resetAddNewBillForm();
+    $('#new-bill-form').trigger("reset").hide();
+    hideFormDivs();
+    removeExtraBillPayerInputs();
 
     const $billID = $(this).closest('.bill').data('id');
+    // console.log($billID);
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
 
@@ -607,6 +601,7 @@ function editBill () {
     $('.cancel-bill-edits').on('click', function (event) {
       event.preventDefault();
       displayUserBills(bills);
+      return false;
     });
   })();
 
@@ -696,6 +691,7 @@ function editBill () {
         let month = dueDateSplit[0];
         let date = parseInt(dueDateSplit[1]);
         let year = parseInt(dueDateSplit[2]);
+        // console.log(month, date, year);
         $('.daydropdown').val(date);
         $('.monthdropdown').val(month);
         $('.yeardropdown').val(year);
@@ -707,6 +703,7 @@ function editBill () {
   function billHasNoEmptyFields (newBill) {
     // return false if bill has no empty fields
       // true, elsewise
+    // console.log(newBill);
     for (let field in newBill) {
       if (typeof newBill[field] === typeof 'string') {
         newBill[field] = newBill[field].trim();
@@ -715,19 +712,29 @@ function editBill () {
         newBill[field] = '';
       }
     }
-
+    // 
+    if (newBill.recurring === true && newBill.interval === undefined || newBill.interval === null) {
+      newBill.interval = '';
+    }
+    if (newBill.recurring === false) {
+      newBill.interval = null;
+    }
+    console.log(newBill);
     return Object.values(newBill).every(field => {
       return field !== '';
     });
   }
-
+// TODO: ensure that is a bill is recurring, an interval is chosen for it before submission
+  // bug where enough edits seem to overwrite other bills SEEMS to have been worked out...knock on all the wood
   (function submitEdits () {
-    $('.bills').on('click', '.save-bill-edits', function (event) {
+    $('.save-bill-edits').on('click', function (event) {
       event.preventDefault();
+      console.log('submit firing');
       const newBillValues = defineBillData();
+      // console.log(newBillValues);
       if (!billHasNoEmptyFields(newBillValues)) {
         alert('Bills cannot have empty fields. Please confirm all fields are filled.');
-        return;
+        return false;
       }
       const changedValues = {};
       for (let field in newBillValues) {
@@ -735,27 +742,22 @@ function editBill () {
           changedValues[field] = newBillValues[field];
         }
       }
-
-      if (jQuery.isEmptyObject(changedValues)) {
-        return;
-      } else {
-        console.log(changedValues);
-        const userID = getUserIDFromToken();
-        $.ajax({
-          type: "PUT",
-          url: `user/${userID}/bills/${bill._id}`,
-          dataType: 'json',
-          headers: {Authorization: `Bearer ${getToken()}`},
-          contentType: "application/json",
-          data: JSON.stringify(changedValues),
-          success: function (response) {
-            storeBillsLocally(response);
-            resetAddNewBillForm();
-          },
-          error: function(error) {console.error(error)}
-        });
-      }
-
+      const userID = getUserIDFromToken();
+      $.ajax({
+        type: "PUT",
+        url: `user/${userID}/bills/${bill._id}`,
+        dataType: 'json',
+        headers: {Authorization: `Bearer ${getToken()}`},
+        contentType: "application/json",
+        data: JSON.stringify(changedValues),
+        success: function (response) {
+          storeBillsLocally(response);
+          $('#new-bill-form').trigger("reset").hide();
+          hideFormDivs();
+          removeExtraBillPayerInputs();
+        },
+        error: function(error) {console.error(error)}
+      });
     });
   })();
 
@@ -770,7 +772,7 @@ function editBill () {
     listenForPayingOrReceiving();
   });
 }
-// blur everything but new bill form
+
 function blurBackground () {
   $('.bills, header').toggleClass('blur-it');
 }
@@ -779,7 +781,6 @@ $(document).ready(function() {
   checkForAuthToken();
   displayUserName();
   showNewBillForm();
-  cancelNewBill();
   listenIfBillIsRecurring();
   listenForBillRecurrenceFrequency();
   listenForPayingOrReceiving();

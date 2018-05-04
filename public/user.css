@@ -5,6 +5,11 @@ body {
   color: black;
 }
 
+header {
+  /* background-color: rgb(163,217,228); */
+  /* color: white; */
+}
+
 h2 {
   border-bottom: solid 2px rgb(163,217,228);
 }
@@ -20,12 +25,15 @@ h2 {
   margin-bottom: 25px;
 }
 
-#add-new-bill:hover, .submit-new-bill:hover, .save-bill-edits:hover {
+#add-new-bill:hover {
   color: rgb(111,181,54);
   background-color: white;
 }
 
 .bills {
+  /* background-color: #e5e5e5; */
+  /* min-height: 200px; */
+  /* border-top: 2px solid #e5e5e5; */
   border-left: 2px solid #e5e5e5;
   border-right: 2px solid #e5e5e5;
 }
@@ -35,8 +43,10 @@ h2 {
 }
 
 .bill {
+  /* border-bottom: 1px solid rgb(111,181,54); */
   position: relative;
   min-height: 100px;
+  /* clear: both; */
   width: 100%;
   display: flex;
   justify-content: center;
@@ -45,6 +55,7 @@ h2 {
 
 .bills h1 {
   text-align: center;
+  /* clear: both; */
   font-size: 18px;
 }
 
@@ -55,6 +66,8 @@ h2 {
 ul {
   padding-left: 0;
   margin: 0;
+  /* list-style-position: inside; */
+  /* list-style-type: none; */
 }
 
 li {
@@ -64,6 +77,10 @@ li {
 .due-date-box {
   border: 2px rgb(111,181,54) solid;
   overflow-x: auto;
+  /* background-color: black; */
+  /* color: white; */
+  /* text-align: left; */
+  /* padding: 1px; */
 }
 
 .due-date-due {
@@ -85,6 +102,7 @@ li {
 }
 
 .editBill, .deleteBill {
+  /* float: right; */
   position: absolute;
   bottom: 0;
   right: 0;
@@ -133,7 +151,7 @@ label, input {
   margin-bottom: 5px;
 }
 
-#new-bill-form input[type=text]:focus, #new-bill-form input[type=number]:focus {
+#new-bill-form input[type=text]:focus, #new-bill-form input[type="number"]:focus {
   border: 2px solid rgb(163,217,228);
   outline: none;
 }
@@ -144,39 +162,7 @@ label, input {
   height: 20px;
   background-color: #e5e5e5;
   border-radius: 5px;
-}
-
-.submit-new-bill, .cancel-new-bill, .save-bill-edits, .cancel-bill-edits {
-  margin-top: 15px;
-  width: 100px;
-  height: 30px;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-.submit-new-bill, .save-bill-edits {
-  background-color: rgb(111,181,54);
-  color: white;
-}
-
-.cancel-new-bill, .cancel-bill-edits {
-  color: white;
-  background-color: rgb(163,217,228);
-}
-
-.cancel-new-bill:hover, .cancel-bill-edits:hover {
-  background-color: white;
-  color: rgb(163,217,228);
-}
-
-#edit-bill-form {
-  padding: 20px 25px;
-  margin: 0 auto;
-  border: 2px solid rgb(111,181,54);
-  border-radius: 10px;
-  font-size: 12px;
-  text-align: center;
-  overflow-y: auto;
+  
 }
 
 .underline {
