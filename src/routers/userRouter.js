@@ -113,7 +113,7 @@ router.get('/logout', (req, res) => {
 
   // is this the way I do every other redirect?
     // or can i use res.redirect now because the token is in local storage?
-  res.sendFile('logout.html', { root: path.join(__dirname, '../../public') });
+  return res.sendFile('logout.html', { root: path.join(__dirname, '../../public') });
 });
 
 module.exports = router;

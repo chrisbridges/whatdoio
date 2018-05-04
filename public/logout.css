@@ -1,6 +1,18 @@
 body {
   font-family: 'Gothic A1', sans-serif;
+  font-size: 14px;
   text-align: center;
   background-color: white;
   color: black;
+}
+
+a {
+  color: rgb(163,217,228);
+}
+
+/* Non-mobile, grid */
+@media only screen and (min-width: 640px) {
+  body {
+    font-size: 18px;
+  }
 }
