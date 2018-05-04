@@ -10,23 +10,28 @@ body {
 }
 
 .container {
-  background-color: #e5e5e5;
-  height: 100vh;
+  border: 2px solid #e5e5e5;
+  /* height: 100vh; */
   margin: 15px 25px;
   padding: 5px 0px;
+}
+
+header {
+  border-bottom: 2px solid rgb(163,217,228);
+  margin-bottom: 40px;
 }
 
 header h1 {
   display: flex;
   justify-content: center;
-  font-size: 50px;
+  font-size: 40px;
   font-weight: 500;
 }
 
 header h2 {
   display: flex;
   justify-content: space-around;
-  font-size: 35px;
+  font-size: 25px;
   font-weight: normal;
   padding-bottom: 15px;
 }
@@ -37,8 +42,8 @@ nav {
 }
 
 button {
-  font-size: 27px;
-  margin: 0px 25px 20px 25px;
+  font-size: 20px;
+  margin: 0px 15px 20px 15px;
   padding: 5px 10px 5px 10px;
   border-radius: 5px;
   background-color: rgb(111,181,54);
@@ -54,4 +59,28 @@ ul {
   display: inline;
   text-align: center;
   list-style: none;
+}
+
+img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  filter: blur(1px);
+}
+
+/* Non-mobile, grid */
+@media only screen and (min-width: 640px) {
+  header h1 {
+    font-size: 50px;
+  }
+
+  header h2 {
+    font-size: 30px;
+  }
+
+  button {
+    font-size: 25px;
+    margin: 0px 25px 20px 25px;
+  }
 }
