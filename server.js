@@ -27,7 +27,7 @@ app.use('/login', loginRouter);
 app.use('/user', userRouter);
 
 app.use('*', function (req, res) {
-  res.status(404).json({ message: 'Not Found' });
+  res.status(404).sendFile(__dirname + '/public/page-not-found.html');
 });
 
 let server;
