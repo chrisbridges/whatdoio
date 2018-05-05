@@ -62,9 +62,8 @@ ul {
 }
 
 img {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
+  margin: 0 auto;
   width: 90%;
   filter: blur(1px);
 }
