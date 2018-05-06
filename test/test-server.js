@@ -68,13 +68,38 @@ function seedUserData () {
     return `${randomMonth} ${randomNumberWithinRange(1, 31)}, ${randomYear}`;
   }
 
-  function generateBills () { 
+  function generateBills () {
+    // for every bill, either "for" or "from" === ['Me'], the other can be anyone else
+    function randomlyDecideMe () {
+      const billParties = [];
+      const randomMe = randomNumberWithinRange(0,1);
+      billParties[randomMe] = ['Me'];
+
+      function generateBillParties () {
+        const parties = [];
+        for (let i = 0; i < randomNumberWithinRange(1, 5); i++) {
+          parties.push(faker.name.firstName());
+        }
+        return parties;
+      }
+
+      if (billParties[0]) {
+        billParties[1] = generateBillParties();
+      } else {
+        billParties[0] = generateBillParties();
+        billParties[1] = ['Me'];
+      }
+
+      return billParties;
+    }
+
     const bills = [];
     const randomNum = randomNumberWithinRange(1, 10);
     for (let i = 0; i < randomNum; i++) {
+      const billParties = randomlyDecideMe();
       const bill = {
-        from: [faker.name.firstName()], // either from or for needs to equal ['Me'] in every bill
-        for: [faker.name.firstName()],
+        from: billParties[0],
+        for: billParties[1],
         recurring: faker.random.boolean(),
         title: faker.lorem.words(),
         amount: faker.random.number()
