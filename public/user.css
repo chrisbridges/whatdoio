@@ -127,6 +127,7 @@ legend {
   text-align: center;
   margin-bottom: 10px;
   font-size: 18px;
+  text-decoration: underline;
 }
 
 label, input {
@@ -177,10 +178,6 @@ label, input {
   font-size: 12px;
   text-align: center;
   overflow-y: auto;
-}
-
-.underline {
-  text-decoration: underline;
 }
 
 /* Non-mobile, grid */

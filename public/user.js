@@ -140,14 +140,14 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
     for (var i = 1; i <= 31; i++) {
       //select today's day
       dayfield[j].options[i] = new Option(i, i);
-      dayfield[j].options[today.getDate()]=new Option(today.getDate(), today.getDate(), true, true);
+      dayfield[j].options[today.getDate()] = new Option(today.getDate(), today.getDate(), true, true);
     }
   }
   for (let j = 0; j < monthfield.length; j++) {
     for (var m = 0; m < 12; m++) {
       //select today's month
-      monthfield[j].options[m]=new Option(monthtext[m], monthtext[m]);
-      monthfield[j].options[today.getMonth()]=new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true);
+      monthfield[j].options[m] = new Option(monthtext[m], monthtext[m]);
+      monthfield[j].options[today.getMonth()] = new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true);
     }
   }
   var thisyear = today.getFullYear();
@@ -165,6 +165,7 @@ function showNewBillForm () {
   $('#add-new-bill').click(function () {
     // run this function to clear the page of any 'edit bill forms'
       // ensuring that only one form is displayed at once
+    resetAddNewBillForm();
     displayUserBills(bills);
     blurBackground();
     $('#new-bill-form').show();
@@ -218,7 +219,7 @@ function resetAddNewBillForm () {
     $('.remove-additional-party').remove();
   })();
 }
-
+// listen for if the user is paying or receiving this particular bill
 function listenForPayingOrReceiving () {
   // func is immediately invoked when called to auto-populate edit bill form
     // listener is set for when user inputs value on add bill form
@@ -241,7 +242,7 @@ function listenForPayingOrReceiving () {
     showProperInputs();
   });
 }
-
+// listen for is this particular bill is recurring
 function listenIfBillIsRecurring () {
 
   function showProperInputs () {
@@ -263,7 +264,7 @@ function listenIfBillIsRecurring () {
     showProperInputs();
   });
 }
-
+// if bill is recurring, how often?
 function listenForBillRecurrenceFrequency () {
 
   function showProperInputs () {
@@ -303,13 +304,13 @@ function addAdditionalParty () {
     event.preventDefault();
     if ($(this).parent().hasClass('bill-paid-to-me')) {
       const billPaidToMeHTML = `
-        <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+        <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Friend, company, co-worker, etc.">
         <button class="remove-additional-party">X</button>`;
       $(billPaidToMeHTML).insertBefore(this);
     }
     else if ($(this).parent().hasClass('bill-paid-by-me')) {
       const billPaidByMeHTML = `
-        <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+        <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Friend, company, co-worker, etc.">
         <button class="remove-additional-party">X</button>`;
       $(billPaidByMeHTML).insertBefore(this);
     }
@@ -331,14 +332,14 @@ function removeAdditionalParty () {
 }
 // post new bill to database
 function postNewBill () {
-  // post new user bill w/ ajax
   $("#new-bill-form").submit(function(event) {
     event.preventDefault();
     const data = defineBillData();
+    const userID = getUserIDFromToken();
 
     $.ajax({
       type: "POST",
-      url: 'user',
+      url: `user/${userID}/bills`,
       dataType: 'json',
       headers: {Authorization: `Bearer ${getToken()}`},
       contentType: "application/json",
@@ -493,13 +494,9 @@ function editBill () {
   // show form with current bill values prepopulated
   $('.bills').on('click', '.editBill', function (event) {
     event.preventDefault();
-    // clear and hide form
-    $('#new-bill-form').trigger("reset").hide();
-    hideFormDivs();
-    removeExtraBillPayerInputs();
+    resetAddNewBillForm();
 
     const $billID = $(this).closest('.bill').data('id');
-    // console.log($billID);
     const editBillFormHTML = `
     <form role="form" id="edit-bill-form">
 
@@ -525,14 +522,14 @@ function editBill () {
     <!-- If bill is to be paid to me -->
     <div hidden class="bill-paid-to-me">
       <label for="bill-paid-to-me-input[]">Who is paying you this bill?</label>
-      <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Friend, company, co-worker, etc.">
       <button class="add-additional-party">Add Additional</button>
     </div>
 
     <!-- If bill is to be paid by me -->
     <div hidden class="bill-paid-by-me">
       <label for="bill-paid-by-me-input[]">To whom are you paying this bill?</label>
-      <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
+      <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Friend, company, co-worker, etc.">
       <button class="add-additional-party">Add Additional</button>
     </div>
 
@@ -698,7 +695,6 @@ function editBill () {
         let month = dueDateSplit[0];
         let date = parseInt(dueDateSplit[1]);
         let year = parseInt(dueDateSplit[2]);
-        // console.log(month, date, year);
         $('.daydropdown').val(date);
         $('.monthdropdown').val(month);
         $('.yeardropdown').val(year);
@@ -710,7 +706,6 @@ function editBill () {
   function billHasNoEmptyFields (newBill) {
     // return false if bill has no empty fields
       // true, elsewise
-    // console.log(newBill);
     for (let field in newBill) {
       if (typeof newBill[field] === typeof 'string') {
         newBill[field] = newBill[field].trim();
@@ -726,7 +721,6 @@ function editBill () {
     if (newBill.recurring === false) {
       newBill.interval = null;
     }
-    // console.log(newBill);
     return Object.values(newBill).every(field => {
       return field !== '';
     });
@@ -735,9 +729,7 @@ function editBill () {
   (function submitEdits () {
     $('.save-bill-edits').on('click', function (event) {
       event.preventDefault();
-      console.log('submit firing');
       const newBillValues = defineBillData();
-      // console.log(newBillValues);
       if (!billHasNoEmptyFields(newBillValues)) {
         alert('Bills cannot have empty fields. Please confirm all fields are filled.');
         return false;
@@ -758,27 +750,20 @@ function editBill () {
         data: JSON.stringify(changedValues),
         success: function (response) {
           storeBillsLocally(response);
-          $('#new-bill-form').trigger("reset").hide();
-          hideFormDivs();
-          removeExtraBillPayerInputs();
+          resetAddNewBillForm();
         },
         error: function(error) {console.error(error)}
       });
     });
   })();
 
-  // save old values in vars
-    // if new values !== old values
-    // only send new values
-      // if newValues.length === 0, don't do anything
-
-    removeAdditionalParty('#edit-bill-form');
+    removeAdditionalParty();
     listenIfBillIsRecurring();
     listenForBillRecurrenceFrequency();
     listenForPayingOrReceiving();
   });
 }
-
+// when the new bill modal populates on the DOM, the rest of the page blurs out - highlighting the form
 function blurBackground () {
   $('.bills, header').toggleClass('blur-it');
 }
@@ -798,15 +783,3 @@ $(document).ready(function() {
   deleteBill();
   editBill();
 });
-
-// Notes for making new bill cover page - this is called a "MODAL"
-// display: block;
-// background-color: green;
-// position: fixed;
-// left: 50%;
-// top: 50%;
-// width: 600px;sq
-// height: 400px;aaaqq
-// margin: 0 auto;
-
-// look into flexbox (bookmarked) to center horizontally and vertically
