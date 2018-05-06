@@ -26,9 +26,6 @@ router.get('/', (req, res, next) => {
       });
 });
 
-// TODO: add endpoint for users to add bills
-// endpoint name is ambiguous - creating new user?
-  // "/:userID/bills"
 router.post('/:userID/bills', jwtAuth, (req, res) => {
 
   User.findByIdAndUpdate(

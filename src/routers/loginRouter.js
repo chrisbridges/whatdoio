@@ -23,25 +23,21 @@ const createAuthToken = function(user) {
 };
 
 router.post('/', jsonParser, (req, res) => {
-	let user;
   return User.findOne({username: req.body.username})
-		.then(_user => {
-			user = _user;
+		.then(user => {
 			if (!user) {
-				res.status(404).json({message: 'username not found', location: 'username'});
+				return res.status(404).json({message: 'username not found', location: 'username'});
 			}
-			return user.validatePassword(req.body.pass);
-		})
-		.then(passwordIsValid => {
+			const passwordIsValid = user.validatePassword(req.body.pass);
 			if (!passwordIsValid) {
-				res.status(401).json({message: 'username or password incorrect'});
+				return res.status(401).json({message: 'username or password incorrect'});
 			}
 			const authToken = createAuthToken(user);
 			res.json({authToken});
 		})
 		.catch(err => {
-			console.error(err);
-			res.status(500).json({message: 'Internal server error'});
+			// console.error(err);
+			return res.status(500).json({message: 'Internal server error'});
 		});
 });
 

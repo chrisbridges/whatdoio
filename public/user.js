@@ -131,7 +131,7 @@ function formatBill (bill) {
 // populates 'select' dropdowns with dates and auto-selects with today's date
 function populateDateDropdowns (dayfield, monthfield, yearfield) {
   // INSPIRED FROM JAVASCRIPT KIT, HEAVILY MODIFIED BY CHRIS BRIDGES
-  const monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
   const today = new Date();
   var dayfield = document.getElementsByClassName(dayfield);
   var monthfield = document.getElementsByClassName(monthfield);
@@ -146,8 +146,8 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
   for (let j = 0; j < monthfield.length; j++) {
     for (var m = 0; m < 12; m++) {
       //select today's month
-      monthfield[j].options[m] = new Option(monthtext[m], monthtext[m]);
-      monthfield[j].options[today.getMonth()] = new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true);
+      monthfield[j].options[m] = new Option(months[m], months[m]);
+      monthfield[j].options[today.getMonth()] = new Option(months[today.getMonth()], months[today.getMonth()], true, true);
     }
   }
   var thisyear = today.getFullYear();
@@ -498,7 +498,7 @@ function editBill () {
 
     const $billID = $(this).closest('.bill').data('id');
     const editBillFormHTML = `
-    <form role="form" id="edit-bill-form">
+    <form role="form" id="edit-bill-form" aria-live="assertive">
 
     <div class="bill-title">
       <label for="bill-title-input">Bill Title:</label>
