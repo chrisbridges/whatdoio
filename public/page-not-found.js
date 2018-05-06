@@ -1,6 +1,6 @@
 function redirectToHomePage () {
   setTimeout(function () {
-    window.location.href = '/';
+    window.location.href = '/user';
   }, 3000);
 }
 
