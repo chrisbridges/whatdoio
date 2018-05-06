@@ -84,7 +84,6 @@ router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-  //remove token from local storage - CLIENT-SIDE
   return res.sendFile('logout.html', { root: path.join(__dirname, '../../public') });
 });
 
