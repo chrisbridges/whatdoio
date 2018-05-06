@@ -7,12 +7,12 @@ function parseJwt (token) {
   var base64 = base64Url.replace('-', '+').replace('_', '/');
   return JSON.parse(window.atob(base64));
 };
-
+// parse token and return user ID
 function getUserIDFromToken () {
   const result = parseJwt(getToken());
   return result.user._id;
 }
-
+// parse token and return username
 function getUserNameFromToken () {
   const result = parseJwt(getToken());
   return result.user.name;
@@ -171,7 +171,7 @@ function showNewBillForm () {
     $('#new-bill-form').show();
   });
 }
-
+// if user decides to not add new bill
 function cancelNewBill () {
   $('.cancel-new-bill').on('click', function (event) {
     event.preventDefault();
@@ -180,7 +180,7 @@ function cancelNewBill () {
     blurBackground();
   });
 }
-
+// clear out any form elements that may have been added to the DOM
 function resetAddNewBillForm () {
   $('#new-bill-form').trigger("reset").hide();
   // reset hidden divs back to hidden upon form submit

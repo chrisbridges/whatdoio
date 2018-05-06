@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,26 +10,25 @@
 </head>
 <body>
 
-  <header>
+  <header role="banner">
     <div class="row">
       <div class="col-12">
         <h1>Whatdo.io</h1>
         <h2>Welcome <span id="welcome-user"></span></h2>
         <button id="add-new-bill">Add New Bill</button>
       </div>
-      <!-- <button id="add-new-bill">Add New Bill</button> -->
     </div>
   </header>
-
+<main role="main">
   <div class="row">
     <div class="col-6">
-      <section class="bills">
+      <section role="region" class="bills">
         <h1>Recurring Bills That I Owe:</h1>
         <ul id ="recurring-I-owe"></ul>
       </section>
     </div>
     <div class="col-6">
-      <section class="bills">
+      <section role="region" class="bills">
         <h1>One-Time Bills That I Owe:</h1>
         <ul id="one-time-I-owe"></ul>
       </section>
@@ -37,29 +36,30 @@
   </div>
   <div class="row">
     <div class="col-6">
-      <section class="bills">
+      <section role="region" class="bills">
         <h1>Recurring Bills That Are Owed to Me:</h1>
         <ul id="recurring-owed-me"></ul>
       </section>
     </div>
     <div class="col-6">
-      <section class="bills">
+      <section role="region" class="bills">
         <h1>One-Time Bills That Are Owed to Me:</h1>
         <ul id="one-time-owed-me"></ul>
       </section>
     </div>
   </div>
+</main>
 
   <form hidden role="form" id="new-bill-form">
     <legend class="underline">New Bill</legend>
 
     <div class="bill-title">
-      <!-- <label for="bill-title-input">Bill Title:</label><br> -->
+      <label for="bill-title-input"></label>
       <input type="text" name="bill-title" id="bill-title-input" placeholder="bill title" required>
     </div>
 
     <div class="bill-amount">
-      <!-- <label for="bill-amount-input">Amount:</label><br> -->
+      <label for="bill-amount-input"></label>
       <input type="number" min="0" step="0.01" id="bill-amount-input" placeholder="bill amount" required>
     </div>
 
