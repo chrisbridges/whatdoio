@@ -16,6 +16,3 @@ const jwtStrategy = new JwtStrategy(
 );
 
 module.exports = jwtStrategy;
-
-// How do I check for the token in local storage when my 
-  // strategy is looking in the header?
