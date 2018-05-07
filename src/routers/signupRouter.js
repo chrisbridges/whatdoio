@@ -122,8 +122,6 @@ router.post('/', (req, res) => {
       // console.error(err);
       res.status(500).json({code: 500, message: 'Internal server error'});
     });
-      //look at 'Authenticating with JWS' curriculum for example glitch
-        //TODO: usernames should not allow spaces in middle
 });
 
 module.exports = router;

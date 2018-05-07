@@ -162,7 +162,7 @@ function populateDateDropdowns (dayfield, monthfield, yearfield) {
 }
 // display form for user to add new bill
 function showNewBillForm () {
-  $('#add-new-bill').click(function () {
+  $('.add-new-bill').click(function () {
     // run this function to clear the page of any 'edit bill forms'
       // ensuring that only one form is displayed at once
     resetAddNewBillForm();
@@ -766,6 +766,14 @@ function editBill () {
 // when the new bill modal populates on the DOM, the rest of the page blurs out - highlighting the form
 function blurBackground () {
   $('.bills, header').toggleClass('blur-it');
+}
+// refreshes user token
+function refreshAuthToken () {
+
+}
+// log's out user and removes auth token
+function logoutUser () {
+
 }
 
 $(document).ready(function() {
