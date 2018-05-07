@@ -96,7 +96,7 @@ function seedUserData () {
     }
 
     const bills = [];
-    const randomNum = randomNumberWithinRange(1, 10);
+    const randomNum = randomNumberWithinRange(1, 5);
     for (let i = 0; i < randomNum; i++) {
       const billParties = randomlyDecideMe();
       const bill = {
@@ -118,7 +118,7 @@ function seedUserData () {
     return bills;
   }
 
-  const randomNumberOfUsers = randomNumberWithinRange(1,10);
+  const randomNumberOfUsers = randomNumberWithinRange(1,5);
   for (let i = 0; i < randomNumberOfUsers; i++) {
     seedData.push({
       username: faker.internet.userName(),
