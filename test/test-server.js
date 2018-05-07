@@ -348,7 +348,7 @@ describe('Testing API', function () {
   });
 
   describe('User page', () => {
-
+    
   });
 
   describe('Logout page', () => {

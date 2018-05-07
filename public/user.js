@@ -769,7 +769,17 @@ function blurBackground () {
 }
 // refreshes user token
 function refreshAuthToken () {
-
+  // tokens expire after 7 days, refresh every 6
+  setInterval(function () {
+    $.ajax({
+      type: 'POST',
+      url: 'login/refresh',
+      success: function (response) {
+        localStorage.setItem("authToken", response.authToken);
+      },
+      error: function(error) {console.error(error)}
+    });
+  }, 518400000);
 }
 // log's out user and removes auth token
 function logoutUser () {
@@ -780,7 +790,8 @@ function logoutUser () {
       url: 'user/logout',
       success: function () {
         window.location.href = '/user/logout';
-      }
+      },
+      error: function(error) {console.error(error)}
     });
   });
 }
