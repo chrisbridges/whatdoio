@@ -113,7 +113,7 @@ router.post('/', (req, res) => {
       });
     })
     .then(user => {
-      res.status(201).json(user.serialize());
+      return res.status(201).json(user.serialize());
     })
     .catch(err => {
       if (err.reason === 'ValidationError') {

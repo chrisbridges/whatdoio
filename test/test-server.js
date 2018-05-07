@@ -236,7 +236,7 @@ describe('Testing API', function () {
     const randomUser = generateRandomUser();
     const {username, pass, name} = randomUser;
     const hashedPassword = User.hashPassword(pass);
-    console.log(randomUser, hashedPassword);
+    // console.log(randomUser, hashedPassword);
 
     // const username = 'exampleUser';
     // const pass = 'examplePass';
@@ -315,7 +315,7 @@ describe('Testing API', function () {
         .post('/login')
         .send({username, pass: 'thisPasswordIsWrong'})
         .then(res => {
-          console.log(res);
+          // console.log(res);
           expect(res).to.have.status(401);
         })
         .catch(err => {
@@ -337,7 +337,7 @@ describe('Testing API', function () {
           const payload = jwt.verify(token, JWT_SECRET, {
             algorithm: ['HS256']
           });
-          console.log(payload);
+          // console.log(payload);
           expect(payload.user).to.have.keys(['username', 'name', 'bills', 'pass']);
         })
         .catch(err => {

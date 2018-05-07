@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
 }, jwtAuth, (req, res) => {
     User.findById(req.user._id)
       .then(user => {
-        res.status(200).json(user.serialize());
+       return res.status(200).json(user.serialize());
       })
       .catch(err => {
         console.error(err);
@@ -33,7 +33,7 @@ router.post('/:userID/bills', jwtAuth, (req, res) => {
     {$push: {bills: req.body}},
     {safe: true, upsert: true, new: true}) // new makes the promise return the user with the new bill
     .then(user => {
-      res.json(user.serialize());
+      return res.json(user.serialize());
     })
     .catch(err => {
       console.error(err);
@@ -43,12 +43,10 @@ router.post('/:userID/bills', jwtAuth, (req, res) => {
 
 router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
-  let user;
   User.findById(userID)
-    .then(_user => {
-      user = _user;
+    .then(user => {
       user.deleteBill(billID);
-      res.json(user.serialize());
+      return res.json(user.serialize());
     })
     .catch(err => {
       console.error(err);
@@ -72,7 +70,7 @@ router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
       return User.findById(userID);
     })
     .then(user => {
-      res.json(user.serialize());
+      return res.json(user.serialize());
     })
     .catch(err => {
       console.error(err);
