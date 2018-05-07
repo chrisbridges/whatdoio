@@ -773,7 +773,16 @@ function refreshAuthToken () {
 }
 // log's out user and removes auth token
 function logoutUser () {
-
+  $('.logout-button').on('click', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: 'GET',
+      url: 'user/logout',
+      success: function () {
+        window.location.href = '/user/logout';
+      }
+    });
+  });
 }
 
 $(document).ready(function() {
@@ -790,4 +799,5 @@ $(document).ready(function() {
   postNewBill();
   deleteBill();
   editBill();
+  logoutUser();
 });

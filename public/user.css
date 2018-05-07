@@ -21,7 +21,13 @@ h2 {
 }
 
 .logout-button {
-  
+  background-color: rgb(163,217,228);
+  float: left;
+  color: white;
+  width: 60px;
+  height: 20px;
+  border-radius: 5px;
+  margin-bottom: 25px;
 }
 
 .add-new-bill:hover, .submit-new-bill:hover, .save-bill-edits:hover {
@@ -169,7 +175,7 @@ label, input {
   background-color: rgb(163,217,228);
 }
 
-.cancel-new-bill:hover, .cancel-bill-edits:hover {
+.cancel-new-bill:hover, .cancel-bill-edits:hover, .logout-button:hover {
   background-color: white;
   color: rgb(163,217,228);
 }
