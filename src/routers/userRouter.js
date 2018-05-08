@@ -10,13 +10,15 @@ passport.use(jwtStrategy);
 
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
+// get user bills
 router.get('/', (req, res, next) => {
   if (req.get('Content-Type') !== 'application/json') {
     return res.sendFile('user.html', { root: path.join(__dirname, '../../public') });
   }
   next();
 }, jwtAuth, (req, res) => {
-    User.findById(req.user._id)
+  // console.log(req);
+    return User.findById(req.user._id)
       .then(user => {
        return res.status(200).json(user.serialize());
       })
@@ -26,9 +28,10 @@ router.get('/', (req, res, next) => {
       });
 });
 
+// add new bill
 router.post('/:userID/bills', jwtAuth, (req, res) => {
 
-  User.findByIdAndUpdate(
+  return User.findByIdAndUpdate(
     req.user._id,
     {$push: {bills: req.body}},
     {safe: true, upsert: true, new: true}) // new makes the promise return the user with the new bill
@@ -41,9 +44,10 @@ router.post('/:userID/bills', jwtAuth, (req, res) => {
     });
 });
 
+// delete user bill
 router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
-  User.findById(userID)
+  return User.findById(userID)
     .then(user => {
       user.deleteBill(billID);
       return res.json(user.serialize());
@@ -54,6 +58,7 @@ router.delete('/:userID/bills/:billID', jwtAuth, (req, res) => {
     });
 });
 
+// update user bill
 router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
   const {userID, billID} = req.params;
   // cleansing the data, only using the updated object
@@ -65,7 +70,7 @@ router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
     }
   });
 
-  User.update({'bills._id': billID}, {$set: updated}, {new: true})
+  return User.update({'bills._id': billID}, {$set: updated}, {new: true})
     .then(() => {
       return User.findById(userID);
     })
@@ -78,6 +83,7 @@ router.put('/:userID/bills/:billID', jwtAuth, (req, res) => {
     });
 });
 
+// logout user
 router.get('/logout', (req, res) => {
   return res.sendFile('logout.html', { root: path.join(__dirname, '../../public') });
 });

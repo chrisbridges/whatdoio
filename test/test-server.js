@@ -2,10 +2,11 @@
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+// chai.use(require('chai-things'));
 const faker = require('faker');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require('../config');
+const {JWT_SECRET, JWT_EXPIRY} = require('../config');
 
 const {User} = require('../src/models');
 const {TEST_DATABASE_URL} = require('../config');
@@ -14,14 +15,28 @@ const {app, runServer, closeServer} = require('../server');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-function seedUserData () {
+function randomNumberWithinRange (min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function seedUserData (numberOfUsers = randomNumberWithinRange(1,5)) {
   // console.info('seeding user data');
   const seedData = [];
 
-  // generate random number for # of bills
-  function randomNumberWithinRange (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  // const randomNumberOfUsers = randomNumberWithinRange(1,5);
+  for (let i = 0; i < numberOfUsers; i++) {
+    seedData.push({
+      username: faker.internet.userName(),
+      pass: faker.internet.password(),
+      name: faker.name.firstName(),
+      bills: generateBills()
+    });
   }
+
+  return User.insertMany(seedData);
+}
+
+function generateBills (numberofBills = randomNumberWithinRange(1, 5)) {
 
   function addNumberSuffix (num) {
     let j = num % 10;
@@ -70,65 +85,51 @@ function seedUserData () {
     return `${randomMonth} ${randomNumberWithinRange(1, 31)}, ${randomYear}`;
   }
 
-  function generateBills () {
-    // for every bill, either "for" or "from" === ['Me'], the other can be anyone else
-    function randomlyDecideMe () {
-      const billParties = [];
-      const randomMe = randomNumberWithinRange(0,1);
-      billParties[randomMe] = ['Me'];
+  // for every bill, either "for" or "from" === ['Me'], the other can be anyone else
+  function randomlyDecideMe () {
+    const billParties = [];
+    const randomMe = randomNumberWithinRange(0,1);
+    billParties[randomMe] = ['Me'];
 
-      function generateBillParties () {
-        const parties = [];
-        for (let i = 0; i < randomNumberWithinRange(1, 5); i++) {
-          parties.push(faker.name.firstName());
-        }
-        return parties;
+    function generateBillParties () {
+      const parties = [];
+      for (let i = 0; i < randomNumberWithinRange(1, 5); i++) {
+        parties.push(faker.name.firstName());
       }
-
-      if (billParties[0]) {
-        billParties[1] = generateBillParties();
-      } else {
-        billParties[0] = generateBillParties();
-        billParties[1] = ['Me'];
-      }
-
-      return billParties;
+      return parties;
     }
 
-    const bills = [];
-    const randomNum = randomNumberWithinRange(1, 5);
-    for (let i = 0; i < randomNum; i++) {
-      const billParties = randomlyDecideMe();
-      const bill = {
-        from: billParties[0],
-        for: billParties[1],
-        recurring: faker.random.boolean(),
-        title: faker.lorem.words(),
-        amount: faker.random.number()
-      };
-      // if recurring === true, set up intervals
-      if (bill.recurring === true) {
-        bill.interval = generateBillInterval();
-      } else {
-        bill.interval = null;
-      }
-      bill.dueDate = generateBillDueDate(bill.interval);
-      bills.push(bill);
+    if (billParties[0]) {
+      billParties[1] = generateBillParties();
+    } else {
+      billParties[0] = generateBillParties();
+      billParties[1] = ['Me'];
     }
-    return bills;
+
+    return billParties;
   }
 
-  const randomNumberOfUsers = randomNumberWithinRange(1,5);
-  for (let i = 0; i < randomNumberOfUsers; i++) {
-    seedData.push({
-      username: faker.internet.userName(),
-      pass: faker.internet.password(),
-      name: faker.name.firstName(),
-      bills: generateBills()
-    });
+  const bills = [];
+  // const randomNum = randomNumberWithinRange(1, 5);
+  for (let i = 0; i < numberofBills; i++) {
+    const billParties = randomlyDecideMe();
+    const bill = {
+      from: billParties[0],
+      for: billParties[1],
+      recurring: faker.random.boolean(),
+      title: faker.lorem.words(),
+      amount: faker.random.number()
+    };
+    // if recurring === true, set up intervals
+    if (bill.recurring === true) {
+      bill.interval = generateBillInterval();
+    } else {
+      bill.interval = null;
+    }
+    bill.dueDate = generateBillDueDate(bill.interval);
+    bills.push(bill);
   }
-
-  return User.insertMany(seedData);
+  return bills;
 }
 
 function generateRandomUser () {
@@ -169,6 +170,9 @@ describe('Testing API', function () {
       .get('/')
       .then(res => {
         expect(res).to.have.status(200);
+      })
+      .catch(err => {
+        throw err;
       });
     });
 
@@ -178,6 +182,9 @@ describe('Testing API', function () {
       .get('/signup')
       .then(res => {
         expect(res).to.have.status(200);
+      })
+      .catch(err => {
+        throw err;
       });
     });
 
@@ -187,6 +194,9 @@ describe('Testing API', function () {
       .get('/login')
       .then(res => {
         expect(res).to.have.status(200);
+      })
+      .catch(err => {
+        throw err;
       });
     });
 
@@ -196,6 +206,9 @@ describe('Testing API', function () {
       .get('/user')
       .then(res => {
         expect(res).to.have.status(200);
+      })
+      .catch(err => {
+        throw err;
       });
     });
   });
@@ -226,6 +239,9 @@ describe('Testing API', function () {
         })
         .then(passwordIsCorrect => {
           expect(passwordIsCorrect).to.be.true;
+        })
+        .catch(err => {
+          throw err;
         });
 
     });
@@ -242,7 +258,7 @@ describe('Testing API', function () {
     // const pass = 'examplePass';
     // const name = 'Example';
 
-    beforeEach(function() {
+    before(function() {
       
       // User.hashPassword(pass)
       //   .then(hashedPassword => {
@@ -273,12 +289,11 @@ describe('Testing API', function () {
         .then(res => {
           // console.log(res);
           expect(res).to.have.status(200);
-          expect(res).to.have.keys('auth', 'token');
-          expect(res.auth).to.be.true;
-          expect(res.token).to.be.a('string');
+          expect(res.body).to.have.keys('authToken');
+          expect(res.body.authToken).to.be.a('string');
         })
         .catch(err => {
-
+          throw err;
         });
     });
 
@@ -290,11 +305,9 @@ describe('Testing API', function () {
           expect(res).to.have.status(404);
         })
         .catch(err => {
-          if (err instanceof chai.AssertionError) {
-            throw err;
-          }
-          const res = err.response;
-          expect(res).to.have.status(400);
+          throw err;
+          // const res = err.response;
+          // expect(res).to.have.status(400);
         });
     });
 
@@ -306,7 +319,7 @@ describe('Testing API', function () {
           expect(res).to.have.status(404);
         })
         .catch(err => {
-          console.error(err);
+          throw err;
         });
     });
 
@@ -319,7 +332,7 @@ describe('Testing API', function () {
           expect(res).to.have.status(401);
         })
         .catch(err => {
-          console.error(err);
+          throw err;
         });
     });
 
@@ -341,14 +354,60 @@ describe('Testing API', function () {
           expect(payload.user).to.have.keys(['username', 'name', 'bills', 'pass']);
         })
         .catch(err => {
-          console.error(err);
+          throw err;
         });
     });
 
   });
 
-  describe('User page', () => {
-    
+  describe('User page (Protected)', () => {
+
+    const randomUser = generateRandomUser();
+    const {username, pass, name} = randomUser;
+    const hashedPassword = User.hashPassword(pass);
+    const token = jwt.sign({randomUser}, JWT_SECRET, {algorithm: 'HS256', expiresIn: JWT_EXPIRY});
+    User.create({username, pass: hashedPassword, name});
+    const user = User.find({username});
+    console.log(user);
+
+    it('should be able to get user bills', function () {
+      return chai.request(app)
+        .get('/user')
+        .set('Authorization', `Bearer ${token}`)
+        .set('content-type', 'application/json')
+        .then(res => {
+          expect(res).to.have.status(200);
+          expect(res).to.have.keys(['_id', 'username', 'name', 'bills']);
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+
+    it('should be able to add a bill', function () {
+      const newBill = generateBills(1);
+      return chai.request(app)
+        .post(`/user/${user._id}/bills`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('content-type', 'application/json')
+        .send(newBill)
+        .then(res => {
+          // console.log(res.body);
+          expect(res.body).to.have.keys(['_id', 'username', 'name', 'bills']);
+          expect(res.body.bills).should.include.something.that.deep.equals(newBill);
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+
+    it('should be able to delete a bill', function () {
+
+    });
+
+    it('should be able to edit a bill', function () {
+
+    });
   });
 
   describe('Logout page', () => {
