@@ -13,3 +13,5 @@ Users can edit their existing bills without ever leaving the page
 
 Whatdo.io is a manager for all of a user's random expenses. 
 I often found myself setting reminders or calendar notifications for bills that I split with people or recurred often, so I set to create an app that could document all of these charges in one concise app.
+
+Technologies used: HTML / CSS / JavaScript / NodeJS & Express / Mocha & Chai / Travis CI
