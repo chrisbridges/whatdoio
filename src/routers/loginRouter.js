@@ -28,20 +28,32 @@ router.post('/', jsonParser, (req, res) => {
 		.then(_user => {
 			user = _user;
 			if (!user) {
-				return res.status(404).json({message: 'username not found', location: 'username'});
+				return Promise.reject({
+					code: 404,
+					message: 'username not found',
+					location: 'username'
+				});
+				// return res.status(404).json({message: 'username not found', location: 'username'});
 			}
 			return user.validatePassword(req.body.pass);
 		})
 		.then(passwordIsValid => {
 			if (!passwordIsValid) {
-				return res.status(401).json({message: 'username or password incorrect'});
+				return Promise.reject({
+					code: 401,
+					message: 'username or password incorrect'
+					// location: 'username'
+				});
+				// return res.status(401).json({message: 'username or password incorrect'});
 			}
 			const authToken = createAuthToken(user);
 			return res.json({authToken});
 		})
 		.catch(err => {
+			return res.status(err.code).json(err);
 			// console.error(err);
-			res.status(500).json({message: 'Internal server error'});
+			// res.status(500).json({message: 'Internal server error'});
+
 		});
 });
 

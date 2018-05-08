@@ -417,3 +417,6 @@ describe('Testing API', function () {
   
 
 });
+
+// am I misunderstanding Promise rejections? does returning a 'res' object not terminate the chain?
+  // 
