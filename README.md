@@ -1,4 +1,4 @@
-# whatdoio
+# whatdoio ("What do I owe?")
 App for logging and managing all of life's random expenses
 
 ![screen shot 2018-05-08 at 3 38 51 pm](https://user-images.githubusercontent.com/25094137/39779147-4a1b0e2e-52d6-11e8-856d-93fc5dfadf6b.png)
@@ -11,5 +11,5 @@ New bill form
 Users can edit their existing bills without ever leaving the page
 ![screen shot 2018-05-08 at 3 40 40 pm](https://user-images.githubusercontent.com/25094137/39779306-c74e4834-52d6-11e8-98cc-df368cfc034b.png)
 
-Whatdo.io ("What do I owe?") is a manager for all of a user's random expenses. 
+Whatdo.io is a manager for all of a user's random expenses. 
 I often found myself setting reminders or calendar notifications for bills that I split with people or recurred often, so I set to create an app that could document all of these charges in one concise app.
