@@ -22,7 +22,7 @@
   },
   "scripts": {
     "test": "mocha --exit",
-    "start": "nodemon server.js"
+    "start": "server.js"
   },
   "author": "",
   "license": "ISC"
