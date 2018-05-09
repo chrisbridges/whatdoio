@@ -46,12 +46,12 @@ router.post('/', jsonParser, (req, res) => {
 				});
 				// return res.status(401).json({message: 'username or password incorrect'});
 			}
-			const authToken = createAuthToken(user);
+			const authToken = createAuthToken(user.serialize());
 			return res.json({authToken});
 		})
 		.catch(err => {
 			return res.status(err.code).json(err);
-			// console.error(err);
+			// console.error(JSON.stringify(err));
 			// res.status(500).json({message: 'Internal server error'});
 
 		});

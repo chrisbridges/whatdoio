@@ -258,7 +258,7 @@ describe('Testing API', function () {
     // const pass = 'examplePass';
     // const name = 'Example';
 
-    before(function() {
+    beforeEach(function() {
       
       // User.hashPassword(pass)
       //   .then(hashedPassword => {
@@ -287,7 +287,6 @@ describe('Testing API', function () {
         .post('/login')
         .send({username, pass})
         .then(res => {
-          // console.log(res);
           expect(res).to.have.status(200);
           expect(res.body).to.have.keys('authToken');
           expect(res.body.authToken).to.be.a('string');
@@ -351,7 +350,7 @@ describe('Testing API', function () {
             algorithm: ['HS256']
           });
           // console.log(payload);
-          expect(payload.user).to.have.keys(['username', 'name', 'bills', 'pass']);
+          expect(payload.user).to.have.keys(['username', 'name', 'bills', 'id']);
         })
         .catch(err => {
           throw err;
@@ -365,49 +364,67 @@ describe('Testing API', function () {
     const randomUser = generateRandomUser();
     const {username, pass, name} = randomUser;
     const hashedPassword = User.hashPassword(pass);
-    const token = jwt.sign({randomUser}, JWT_SECRET, {algorithm: 'HS256', expiresIn: JWT_EXPIRY});
-    User.create({username, pass: hashedPassword, name});
-    const user = User.find({username});
-    console.log(user);
+
+    beforeEach(function () {
+      return User.create({username, pass: hashedPassword, name, bills: generateBills(1)});
+    });
+
+    afterEach(function() {
+      return User.remove({});
+    });
+    
+    // no gloval vars
+      // go through every step that a user would need to do
+      // ie - create a user, grab the token, etc to test auth endpoints
 
     it('should be able to get user bills', function () {
       return chai.request(app)
-        .get('/user')
-        .set('Authorization', `Bearer ${token}`)
-        .set('content-type', 'application/json')
+        .post('/login')
+        .send({username, pass})
         .then(res => {
-          expect(res).to.have.status(200);
-          expect(res).to.have.keys(['_id', 'username', 'name', 'bills']);
+          const token = res.body.authToken;
+          return chai.request(app)
+            .get('/user')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .then(res => {
+              expect(res).to.have.status(200);
+              expect(res.body).to.have.keys(['id', 'username', 'name', 'bills']);
+            })
+            .catch(err => {
+              throw err;
+            });
         })
         .catch(err => {
           throw err;
         });
+       
     });
 
-    it('should be able to add a bill', function () {
-      const newBill = generateBills(1);
-      return chai.request(app)
-        .post(`/user/${user._id}/bills`)
-        .set('Authorization', `Bearer ${token}`)
-        .set('content-type', 'application/json')
-        .send(newBill)
-        .then(res => {
-          // console.log(res.body);
-          expect(res.body).to.have.keys(['_id', 'username', 'name', 'bills']);
-          expect(res.body.bills).should.include.something.that.deep.equals(newBill);
-        })
-        .catch(err => {
-          throw err;
-        });
-    });
+    // it('should be able to add a bill', function () {
+    //   const newBill = generateBills(1);
+    //   return chai.request(app)
+    //     .post(`/user/${user._id}/bills`)
+    //     .set('Authorization', `Bearer ${token}`)
+    //     .set('content-type', 'application/json')
+    //     .send(newBill)
+    //     .then(res => {
+    //       // console.log(res);
+    //       // expect(res.body).to.have.keys(['_id', 'username', 'name', 'bills']);
+    //       // expect(res.body.bills).should.include.something.that.deep.equals(newBill);
+    //     })
+    //     .catch(err => {
+    //       throw err;
+    //     });
+    // });
 
-    it('should be able to delete a bill', function () {
+    // it('should be able to delete a bill', function () {
 
-    });
+    // });
 
-    it('should be able to edit a bill', function () {
+    // it('should be able to edit a bill', function () {
 
-    });
+    // });
   });
 
   describe('Logout page', () => {
