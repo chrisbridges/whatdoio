@@ -10,7 +10,7 @@ function parseJwt (token) {
 // parse token and return user ID
 function getUserIDFromToken () {
   const result = parseJwt(getToken());
-  return result.user._id;
+  return result.user.id;
 }
 // parse token and return username
 function getUserNameFromToken () {
