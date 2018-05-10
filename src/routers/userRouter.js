@@ -32,7 +32,7 @@ router.get('/', (req, res, next) => {
 router.post('/:userID/bills', jwtAuth, (req, res) => {
 
   return User.findByIdAndUpdate(
-    req.user._id,
+    req.user.id,
     {$push: {bills: req.body}},
     {safe: true, upsert: true, new: true}) // new makes the promise return the user with the new bill
     .then(user => {

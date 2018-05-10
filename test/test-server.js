@@ -14,6 +14,9 @@ const {app, runServer, closeServer} = require('../server');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
+// chai.use(require('chai-like'));
+chai.should();
+chai.use(require('chai-things'));
 
 function randomNumberWithinRange (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -138,6 +141,19 @@ function generateRandomUser () {
     pass: faker.internet.password(12), // ensure passwords are 12 characters long (10 is minimum)
     name: faker.name.firstName()
   };
+}
+
+// function to parseJWT (used to retrieve userID without making another call to back-end)
+  // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript
+function parseJwt (token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace('-', '+').replace('_', '/');
+  return JSON.parse(window.atob(base64));
+};
+// parse token and return user ID
+function getUserIDFromToken (token) {
+  const result = parseJwt(token);
+  return result.user.id;
 }
 
 function tearDownDB () {
@@ -364,6 +380,9 @@ describe('Testing API', function () {
     const randomUser = generateRandomUser();
     const {username, pass, name} = randomUser;
     const hashedPassword = User.hashPassword(pass);
+    
+
+
 
     beforeEach(function () {
       return User.create({username, pass: hashedPassword, name, bills: generateBills(1)});
@@ -373,7 +392,7 @@ describe('Testing API', function () {
       return User.remove({});
     });
     
-    // no gloval vars
+    // no global vars
       // go through every step that a user would need to do
       // ie - create a user, grab the token, etc to test auth endpoints
 
@@ -398,29 +417,80 @@ describe('Testing API', function () {
         .catch(err => {
           throw err;
         });
-       
+      //  fucking logi n and GET THE BILLS THEN DELETE
     });
 
-    // it('should be able to add a bill', function () {
-    //   const newBill = generateBills(1);
-    //   return chai.request(app)
-    //     .post(`/user/${user._id}/bills`)
-    //     .set('Authorization', `Bearer ${token}`)
-    //     .set('content-type', 'application/json')
-    //     .send(newBill)
-    //     .then(res => {
-    //       // console.log(res);
-    //       // expect(res.body).to.have.keys(['_id', 'username', 'name', 'bills']);
-    //       // expect(res.body.bills).should.include.something.that.deep.equals(newBill);
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    // });
+    it('should be able to add a bill', function () {
+      const newBill = generateBills(1)[0];
 
-    // it('should be able to delete a bill', function () {
+      return chai.request(app)
+        .post('/login')
+        .send({username, pass})
+        .then(res => {
+          const token = res.body.authToken;
+          return chai.request(app)
+            .get('/user')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .then(res => {
+              const userID = res.body.id;
+              return chai.request(app)
+                .post(`/user/${userID}/bills`)
+                .set('Authorization', `Bearer ${token}`)
+                .set('content-type', 'application/json')
+                .send(newBill)
+                .then(res => {
+                  expect(res.body).to.have.keys(['id', 'username', 'name', 'bills']);
+                  expect(res.body.bills.length).to.be.equal(2);
+                  const addedBill = res.body.bills[res.body.bills.length - 1];
+                  const billFor = addedBill.for;
+                  const billFrom = addedBill.from;
+                  const {recurring, title, amount, dueDate, interval} = addedBill;
+                  expect(billFor).to.deep.equal(newBill.for);
+                  expect(billFrom).to.deep.equal(newBill.from);
+                  expect(recurring).to.equal(newBill.recurring);
+                  expect(title).to.equal(newBill.title);
+                  expect(amount).to.equal(newBill.amount);
+                  expect(dueDate).to.equal(newBill.dueDate);
+                  expect(interval).to.equal(newBill.interval);
+                })
+            .catch(err => {
+              throw err;
+            });
+        });
+      });
+    });
 
-    // });
+    it('should be able to delete a bill', function () {
+
+      return chai.request(app)
+        .post('/login')
+        .send({username, pass})
+        .then(res => {
+          const token = res.body.authToken;
+          return chai.request(app)
+            .get('/user')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .then(res => {
+              const userID = res.body.id;
+              const bills = res.body.bills;
+              const billID = bills[0]._id;
+              expect(bills.length).to.equal(1);
+              return chai.request(app)
+                .delete(`/user/${userID}/bills/${billID}`)
+                .set('Authorization', `Bearer ${token}`)
+                .set('content-type', 'application/json')
+                .then(res => {
+                  expect(res.body).to.have.keys(['id', 'username', 'name', 'bills']);
+                  expect(res.body.bills.length).to.equal(0);
+                })
+            })
+          })
+        .catch(err => {
+          throw err;
+        });
+    });
 
     // it('should be able to edit a bill', function () {
 
@@ -434,6 +504,3 @@ describe('Testing API', function () {
   
 
 });
-
-// am I misunderstanding Promise rejections? does returning a 'res' object not terminate the chain?
-  // 
