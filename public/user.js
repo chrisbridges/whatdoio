@@ -1,3 +1,4 @@
+// sole global variable used to store user's bills
 let bills = [];
 
 // function to parseJWT (used to retrieve userID without making another call to back-end)
@@ -56,7 +57,6 @@ function storeBillsLocally (response) {
 // display bills client-side
 function displayUserBills (bills) {
   // clear out previously shown bills before appending new ones
-  // STRETCH: display bills by which is due soonest
   $('ul').empty();
   const me = 'Me';
   bills.forEach(function (bill) {
@@ -98,6 +98,7 @@ function formatBill (bill) {
     billParties = billParties.join(', ');
   }
   function limitNumbersAfterDecimal (num) {
+    // if decimal values are only trailing zeroes, forget em
     if (num.toString() === num.toFixed(0)) {
       return num;
     }
@@ -625,13 +626,11 @@ function editBill () {
     // Paid: By Me or To Me?
     (function payingOrReceiving () {
       if (billPayer[0] === 'Me' && billPayer.length === 1) {
-        const input = `
-          <input type="text" name="bill-paid-by-me-input[]" id="bill-paid-by-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
-          <button class="add-additional-party">Add Additional</button>`;
         $(`#edit-bill-form input[name="bill-payer-input"][value="By Me"]`).prop("checked", true);
         addAdditionalParty();
         for (let i = 0; i < billReceiver.length; i ++) {
           if (i === 0) {
+            // for the first party, an additional input does not need to be added to the DOM, since one is loaded initially
             $($('#edit-bill-form input[name="bill-paid-by-me-input[]"]')[i]).val(billReceiver[i]);
             continue;
           }
@@ -640,9 +639,6 @@ function editBill () {
         }
       }
       else if (billReceiver[0] === 'Me' && billReceiver.length === 1) {
-        const input = `
-          <input type="text" name="bill-paid-to-me-input[]" id="bill-paid-to-me-input" placeholder="Jack, Jill, Up The Hill, Inc.">
-          <button class="add-additional-party">Add Additional</button>`;
         $(`#edit-bill-form input[name="bill-payer-input"][value="To Me"]`).prop("checked", true);
         addAdditionalParty();
         for (let i = 0; i < billPayer.length; i ++) {

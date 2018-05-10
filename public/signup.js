@@ -12,11 +12,9 @@ function processSignUpForm () {
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify({"name": $("#name").val(), "username": username, "pass": pass}),
       success: function(data) {
-        console.log(data);
         loginNewUser(username, pass);
       },
       error: function(error) {
-        console.log(error);
         alert(`${error.responseJSON.location}: ${error.responseJSON.message}`);
       }
     });
@@ -32,16 +30,13 @@ function loginNewUser (username, pass) {
     contentType: "application/json; charset=utf-8",
     data: JSON.stringify({"username": username, "pass": pass}),
     success: function(data) {
-      console.log(data);
       localStorage.setItem('authToken', data.authToken);
       window.location.href = '/user';
     },
-    error: function(error) {console.log(error)}
+    error: function(error) {console.error(error)}
   });
 }
 
-function documentReady () {
+$(document).ready(function () {
   processSignUpForm();
-}
-
-$(documentReady);
+});

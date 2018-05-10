@@ -2,7 +2,6 @@
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-// chai.use(require('chai-things'));
 const faker = require('faker');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -14,19 +13,14 @@ const {app, runServer, closeServer} = require('../server');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
-// chai.use(require('chai-like'));
-chai.should();
-chai.use(require('chai-things'));
 
 function randomNumberWithinRange (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function seedUserData (numberOfUsers = randomNumberWithinRange(1,5)) {
-  // console.info('seeding user data');
   const seedData = [];
 
-  // const randomNumberOfUsers = randomNumberWithinRange(1,5);
   for (let i = 0; i < numberOfUsers; i++) {
     seedData.push({
       username: faker.internet.userName(),
@@ -113,7 +107,6 @@ function generateBills (numberofBills = randomNumberWithinRange(1, 5)) {
   }
 
   const bills = [];
-  // const randomNum = randomNumberWithinRange(1, 5);
   for (let i = 0; i < numberofBills; i++) {
     const billParties = randomlyDecideMe();
     const bill = {
@@ -144,7 +137,6 @@ function generateRandomUser () {
 }
 
 // function to parseJWT (used to retrieve userID without making another call to back-end)
-  // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript
 function parseJwt (token) {
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace('-', '+').replace('_', '/');
@@ -157,7 +149,6 @@ function getUserIDFromToken (token) {
 }
 
 function tearDownDB () {
-  // console.warn('Deleting database');
   return mongoose.connection.dropDatabase();
 }
 
@@ -268,25 +259,8 @@ describe('Testing API', function () {
     const randomUser = generateRandomUser();
     const {username, pass, name} = randomUser;
     const hashedPassword = User.hashPassword(pass);
-    // console.log(randomUser, hashedPassword);
-
-    // const username = 'exampleUser';
-    // const pass = 'examplePass';
-    // const name = 'Example';
 
     beforeEach(function() {
-      
-      // User.hashPassword(pass)
-      //   .then(hashedPassword => {
-      //     return User.create({username, pass: hashedPassword, name});
-      //   });
-      // chai.request(app).post('/signup').send({username, pass, name}) // look into this process, because incorrect password test was passing prior
-      // .then(res => {
-      //   // console.log(res.body);
-      // })
-      // .catch(err => {
-      //   // console.error(err);
-      // });
       return User.create({
         username,
         pass: hashedPassword,
@@ -321,8 +295,6 @@ describe('Testing API', function () {
         })
         .catch(err => {
           throw err;
-          // const res = err.response;
-          // expect(res).to.have.status(400);
         });
     });
 
@@ -343,7 +315,6 @@ describe('Testing API', function () {
         .post('/login')
         .send({username, pass: 'thisPasswordIsWrong'})
         .then(res => {
-          // console.log(res);
           expect(res).to.have.status(401);
         })
         .catch(err => {
@@ -357,7 +328,6 @@ describe('Testing API', function () {
         .post('/login')
         .send({username, pass})
         .then(res => {
-          // console.log(res);
           expect(res).to.have.status(200);
           expect(res.body).to.be.an('object');
           const token = res.body.authToken;
@@ -365,8 +335,32 @@ describe('Testing API', function () {
           const payload = jwt.verify(token, JWT_SECRET, {
             algorithm: ['HS256']
           });
-          // console.log(payload);
           expect(payload.user).to.have.keys(['username', 'name', 'bills', 'id']);
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+
+    it('should be able to refresh user token', function () {
+  
+      return chai
+        .request(app)
+        .post('/login')
+        .send({username, pass})
+        .then(res => {
+          const firstToken = res.body.authToken;
+          return chai.request(app)
+            .post('/login/refresh')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${firstToken}`)
+            .send({username, pass})
+            .then(res => {
+              console.log(res.body);
+              const secondToken = res.body.authToken;
+              expect(firstToken).to.not.equal(secondToken);
+              expect(secondToken).to.be.a('string');
+            })
         })
         .catch(err => {
           throw err;
@@ -381,9 +375,6 @@ describe('Testing API', function () {
     const {username, pass, name} = randomUser;
     const hashedPassword = User.hashPassword(pass);
     
-
-
-
     beforeEach(function () {
       return User.create({username, pass: hashedPassword, name, bills: generateBills(1)});
     });
@@ -391,10 +382,6 @@ describe('Testing API', function () {
     afterEach(function() {
       return User.remove({});
     });
-    
-    // no global vars
-      // go through every step that a user would need to do
-      // ie - create a user, grab the token, etc to test auth endpoints
 
     it('should be able to get user bills', function () {
       return chai.request(app)
@@ -417,7 +404,6 @@ describe('Testing API', function () {
         .catch(err => {
           throw err;
         });
-      //  fucking logi n and GET THE BILLS THEN DELETE
     });
 
     it('should be able to add a bill', function () {
@@ -492,14 +478,79 @@ describe('Testing API', function () {
         });
     });
 
-    // it('should be able to edit a bill', function () {
+    it('should be able to edit a bill', function () {
+      const newBill = generateBills(1)[0];
 
-    // });
+      return chai.request(app)
+        .post('/login')
+        .send({username, pass})
+        .then(res => {
+          const token = res.body.authToken;
+          return chai.request(app)
+            .get('/user')
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${token}`)
+            .then(res => {
+              const userID = res.body.id;
+              const bills = res.body.bills;
+              const billID = bills[0]._id;
+              expect(bills.length).to.equal(1);
+              return chai.request(app)
+                .put(`/user/${userID}/bills/${billID}`)
+                .set('Authorization', `Bearer ${token}`)
+                .set('content-type', 'application/json')
+                .send(newBill)
+                .then(res => {
+                  const billsUpdated = res.body.bills;
+                  const updatedBill = billsUpdated[0];
+                  expect(res.body).to.have.keys(['id', 'username', 'name', 'bills']);
+                  expect(billsUpdated.length).to.equal(1);
+                  expect(updatedBill.for).to.deep.equal(newBill.for);
+                  expect(updatedBill.from).to.deep.equal(newBill.from);
+                  expect(updatedBill.recurring).to.equal(newBill.recurring);
+                  expect(updatedBill.title).to.equal(newBill.title);
+                  expect(updatedBill.amount).to.equal(newBill.amount);
+                  expect(updatedBill.dueDate).to.equal(newBill.dueDate);
+                  expect(updatedBill.interval).to.equal(newBill.interval);
+                })
+            })
+          })
+        .catch(err => {
+          throw err;
+        });
+    });
   });
 
-  describe('Logout page', () => {
+  // describe('Logout page', () => {
+
+  //   const randomUser = generateRandomUser();
+  //   const {username, pass, name} = randomUser;
+  //   const hashedPassword = User.hashPassword(pass);
     
-  });
+  //   beforeEach(function () {
+  //     return User.create({username, pass: hashedPassword, name, bills: generateBills(1)});
+  //   });
+
+  //   afterEach(function() {
+  //     return User.remove({});
+  //   });
+
+  //   return chai.request(app)
+  //     .post('/login')
+  //     .send({username, pass})
+  //     .then(res => {
+  //       const token = res.body.authToken;
+  //       return chai.request(app)
+  //         .get('/logout')
+  //         .then(() => {
+  //           expect(localStorage.getItem("authToken")).to.be.undefined;
+  //         })
+  //     })
+  //     .catch(err => {
+  //       throw err;
+  //     });
+
+  // });
   
   
 

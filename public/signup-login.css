@@ -9,13 +9,6 @@ body {
   color: black;
 }
 
-/* .container {
-  background-color: #e5e5e5;
-  height: 100vh;
-  margin: 15px 25px;
-  padding: 5px 0px;
-} */
-
 form {
   display: inline-block;
   text-align: center;
@@ -23,7 +16,6 @@ form {
 
 legend, label, input {
   display: block;
-  /* text-align: center; */
 }
 
 legend {

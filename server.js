@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
 const passport = require('passport');
-//passport.use(jwtStrategy);
 
 const {DATABASE_URL, TEST_DATABASE_URL, PORT} = require('./config');
 const {User} = require('./src/models');
@@ -14,7 +13,7 @@ const signupRouter = require('./src/routers/signupRouter');
 const loginRouter = require('./src/routers/loginRouter');
 const userRouter = require('./src/routers/userRouter');
 
-// app.use(morgan('common'));
+app.use(morgan('common'));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 

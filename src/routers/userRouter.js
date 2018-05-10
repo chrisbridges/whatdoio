@@ -17,7 +17,6 @@ router.get('/', (req, res, next) => {
   }
   next();
 }, jwtAuth, (req, res) => {
-  // console.log(req);
     return User.findById(req.user.id)
       .then(user => {
        return res.status(200).json(user.serialize());

@@ -33,7 +33,6 @@ router.post('/', jsonParser, (req, res) => {
 					message: 'username not found',
 					location: 'username'
 				});
-				// return res.status(404).json({message: 'username not found', location: 'username'});
 			}
 			return user.validatePassword(req.body.pass);
 		})
@@ -42,18 +41,13 @@ router.post('/', jsonParser, (req, res) => {
 				return Promise.reject({
 					code: 401,
 					message: 'username or password incorrect'
-					// location: 'username'
 				});
-				// return res.status(401).json({message: 'username or password incorrect'});
 			}
 			const authToken = createAuthToken(user.serialize());
 			return res.json({authToken});
 		})
 		.catch(err => {
 			return res.status(err.code).json(err);
-			// console.error(JSON.stringify(err));
-			// res.status(500).json({message: 'Internal server error'});
-
 		});
 });
 

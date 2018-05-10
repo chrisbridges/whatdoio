@@ -2,4 +2,6 @@ function logoutUser () {
   localStorage.removeItem("authToken");
 }
 
-$(logoutUser());
+$(document).ready(function () {
+  logoutUser();
+});
