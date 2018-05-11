@@ -344,8 +344,7 @@ describe('Testing API', function () {
 
     it('should be able to refresh user token', function () {
   
-      return chai
-        .request(app)
+      return chai.request(app)
         .post('/login')
         .send({username, pass})
         .then(res => {
@@ -521,36 +520,36 @@ describe('Testing API', function () {
     });
   });
 
-  // describe('Logout page', () => {
+  describe('Logout page', () => {
 
-  //   const randomUser = generateRandomUser();
-  //   const {username, pass, name} = randomUser;
-  //   const hashedPassword = User.hashPassword(pass);
+    const randomUser = generateRandomUser();
+    const {username, pass, name} = randomUser;
+    const hashedPassword = User.hashPassword(pass);
     
-  //   beforeEach(function () {
-  //     return User.create({username, pass: hashedPassword, name, bills: generateBills(1)});
-  //   });
+    beforeEach(function () {
+      return User.create({username, pass: hashedPassword, name, bills: generateBills(1)});
+    });
 
-  //   afterEach(function() {
-  //     return User.remove({});
-  //   });
+    afterEach(function() {
+      return User.remove({});
+    });
 
-  //   return chai.request(app)
-  //     .post('/login')
-  //     .send({username, pass})
-  //     .then(res => {
-  //       const token = res.body.authToken;
-  //       return chai.request(app)
-  //         .get('/logout')
-  //         .then(() => {
-  //           expect(localStorage.getItem("authToken")).to.be.undefined;
-  //         })
-  //     })
-  //     .catch(err => {
-  //       throw err;
-  //     });
+    return chai.request(app)
+      .post('/login')
+      .send({username, pass})
+      .then(res => {
+        const token = res.body.authToken;
+        return chai.request(app)
+          .get('/logout')
+          .then(() => {
+            expect(res).to.have.status(200);
+          })
+      })
+      .catch(err => {
+        throw err;
+      });
 
-  // });
+  });
   
   
 
