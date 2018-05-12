@@ -342,19 +342,6 @@ describe('Testing API', function () {
         });
     });
 
-    it('should properly log in the demo user', function () {
-      return chai.request(app)
-        .post('/login')
-        .send({username: 'sallySample', pass: 'demopassword'})
-        .then(res => {
-          expect(res).to.have.status(200);
-          expect(res.body.authToken).to.be.a('string');
-        })
-        .catch(err => {
-          throw err;
-        });
-    });
-
     it('should be able to refresh user token', function () {
   
       return chai.request(app)
@@ -565,24 +552,34 @@ describe('Testing API', function () {
 
   });
 
-  // describe('Demo user', function () {
+  describe('Demo user', function () {
 
-  //   // const username = 'sallySample';
-  //   // const pass = 'demopassword';
+    const username = 'sallySample';
+    const password = 'demopassword';
+    const name = 'Sally';
+    const hashedPassword = User.hashPassword(password);
 
-  //   it('should properly log in the demo user', function () {
-  //     return chai.request(app)
-  //       .post('/login')
-  //       .send({username: 'sallySample', pass: 'demopassword'})
-  //       .then(res => {
-  //         expect(res).to.have.status(200);
-  //         expect(res.body.authToken).to.be.a('string');
-  //       })
-  //       .catch(err => {
-  //         throw err;
-  //       });
-  //   });
-  // });
+    beforeEach(function () {
+      return User.create({username: username, pass: hashedPassword, name: name});
+    });
+
+    afterEach(function () {
+      return User.remove({});
+    });
+
+    it('should properly log in the demo user', function () {
+      return chai.request(app)
+        .post('/login')
+        .send({username: username, pass: password})
+        .then(res => {
+          expect(res).to.have.status(200);
+          expect(res.body.authToken).to.be.a('string');
+        })
+        .catch(err => {
+          throw err;
+        });
+    });
+  });
   
   
 
