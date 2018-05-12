@@ -349,15 +349,16 @@ describe('Testing API', function () {
         .send({username, pass})
         .then(res => {
           const firstToken = res.body.authToken;
+          // console.log(firstToken);
           return chai.request(app)
             .post('/login/refresh')
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${firstToken}`)
-            .send({username, pass})
+            // .send({username, pass})
             .then(res => {
-              console.log(res.body);
               const secondToken = res.body.authToken;
-              expect(firstToken).to.not.equal(secondToken);
+              console.log(secondToken);
+              expect(secondToken).to.not.equal(firstToken);
               expect(secondToken).to.be.a('string');
             })
         })

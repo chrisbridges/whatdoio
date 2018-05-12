@@ -1,14 +1,13 @@
-function processLoginForm () {
-
-  $("#login-form").submit(function(event) {
+function loginDemoUser () {
+  $('.login-demo-user').on('click', function () {
     event.preventDefault();
 
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: 'login',
       dataType: 'json',
       contentType: "application/json; charset=utf-8",
-      data: JSON.stringify({"username": $("#username").val(), "pass": $("#pass").val()}),
+      data: JSON.stringify({"username": "sallySample", "pass": "demopassword"}),
       success: function(data) {
         //save JWT token that returns and redirect user to their page
         localStorage.setItem("authToken", data.authToken);
@@ -19,8 +18,9 @@ function processLoginForm () {
         alert(error.responseJSON.message);
       }
     });
-
   });
 }
 
-$(processLoginForm());
+$(document).ready(function () {
+  loginDemoUser();
+});
