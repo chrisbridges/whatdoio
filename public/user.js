@@ -379,7 +379,7 @@ function defineBillData () {
   let recurring = defineRecurring();
   let interval;
   let title = $('#bill-title-input').val();
-  let amount = parseInt($('#bill-amount-input').val());
+  let amount = parseFloat($('#bill-amount-input').val());
   let dueDate;
   // check if bill is recurring
   function defineRecurring (value) {
