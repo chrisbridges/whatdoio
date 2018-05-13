@@ -12,6 +12,7 @@ const jwtAuth = passport.authenticate('jwt', {session: false});
 
 // get user bills
 router.get('/', (req, res, next) => {
+  // this middleware prevents unauthorized users from accessing the user page
   if (req.get('Content-Type') !== 'application/json') {
     return res.sendFile('user.html', { root: path.join(__dirname, '../../public') });
   }
