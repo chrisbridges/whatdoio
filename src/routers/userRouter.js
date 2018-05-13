@@ -20,7 +20,7 @@ router.get('/', (req, res, next) => {
 }, jwtAuth, (req, res) => {
     return User.findById(req.user.id)
       .then(user => {
-       return res.status(200).json(user.serialize());
+        return res.status(200).json(user.serialize());
       })
       .catch(err => {
         console.error(err);
