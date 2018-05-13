@@ -136,18 +136,6 @@ function generateRandomUser () {
   };
 }
 
-// function to parseJWT (used to retrieve userID without making another call to back-end)
-function parseJwt (token) {
-  var base64Url = token.split('.')[1];
-  var base64 = base64Url.replace('-', '+').replace('_', '/');
-  return JSON.parse(window.atob(base64));
-};
-// parse token and return user ID
-function getUserIDFromToken (token) {
-  const result = parseJwt(token);
-  return result.user.id;
-}
-
 function tearDownDB () {
   return mongoose.connection.dropDatabase();
 }
@@ -342,31 +330,31 @@ describe('Testing API', function () {
         });
     });
 
-    it('should be able to refresh user token', function () {
+    // it('should be able to refresh user token', function () {
   
-      return chai.request(app)
-        .post('/login')
-        .send({username, pass})
-        .then(res => {
-          const firstToken = res.body.authToken;
-          console.log(firstToken);
-          return chai.request(app)
-            .post('/login/refresh')
-            // .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${firstToken}`)
-            // .send({username, pass})
-            .then(res => {
-              expect(res).to.have.status(200);
-              const secondToken = res.body.authToken;
-              console.log(secondToken);
-              expect(secondToken).to.not.equal(firstToken);
-              expect(secondToken).to.be.a('string');
-            })
-        })
-        .catch(err => {
-          throw err;
-        });
-    });
+    //   return chai.request(app)
+    //     .post('/login')
+    //     .send({username, pass})
+    //     .then(res => {
+    //       const firstToken = res.body.authToken;
+    //       console.log(firstToken);
+    //       return chai.request(app)
+    //         .post('/login/refresh')
+    //         // .set('Content-Type', 'application/json')
+    //         .set('Authorization', `Bearer ${firstToken}`)
+    //         // .send({username, pass})
+    //         .then(res => {
+    //           expect(res).to.have.status(200);
+    //           const secondToken = res.body.authToken;
+    //           console.log(secondToken);
+    //           expect(secondToken).to.not.equal(firstToken);
+    //           expect(secondToken).to.be.a('string');
+    //         })
+    //     })
+    //     .catch(err => {
+    //       throw err;
+    //     });
+    // });
 
   });
 
