@@ -11,7 +11,6 @@ router.get('/', (req, res) => {
   res.sendFile('signup.html', { root: path.join(__dirname, '../../public') });
 });
 
-// look at blogpost post end point for help
 router.post('/', (req, res) => {
   //check for missing fields in request
   const requiredFields = ['username', 'pass', 'name'];
