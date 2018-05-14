@@ -330,36 +330,6 @@ describe('Testing API', function () {
         });
     });
 
-    // it('should be able to refresh user token', function (done) {
-  
-    //   return chai.request(app)
-    //     .post('/login')
-    //     .set('Content-Type', 'application/json')
-    //     .send({username, pass})
-    //     .then(res => {
-    //       const firstToken = res.body.authToken;
-    //       console.log(firstToken);
-    //       return chai.request(app)
-    //         .post('/login/refresh')
-    //         .set('Content-Type', 'application/json')
-    //         .set('Authorization', `Bearer ${firstToken}`)
-    //         .send({username, pass})
-    //         .then(response => {
-    //           setTimeout(function () {
-    //             expect(response).to.have.status(200);
-    //             const secondToken = response.body.authToken;
-    //             console.log(secondToken);
-    //             expect(secondToken).to.not.equal(firstToken);
-    //             expect(secondToken).to.be.a('string');
-    //             done();
-    //           }, 1500);
-    //         })
-    //     })
-    //     .catch(err => {
-    //       throw err;
-    //     });
-    // });
-
   });
 
   describe('User page (Protected)', () => {
